@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="New Button"
             android:id="@+id/button1"
-            android:tag="#8bc34a"
+            android:tag="#5f55fe"
             android:layout_row="0"
             android:layout_column="0" />
         <Button
