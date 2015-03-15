@@ -4,46 +4,51 @@
     tools:context=".MainActivity">
 
     <at.markushi.ui.RevealColorView
-        android:id="@+id/reveal"
+        android:id="@+id/revealview_main_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#212121"/>
 
     <GridLayout
+        android:id="@+id/gl_main_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button1"
-            android:tag="#5f55fe"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text=" "
+            android:id="@+id/btn_main_newinvoice"
+            android:tag="@color/newinvoice_primary"
+            android:background="@color/newinvoice_primary"
             android:layout_row="0"
             android:layout_column="0" />
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text=" "
+            android:id="@+id/btn_main_invlist"
             android:tag="#3f51b5"
+            android:background="#3f51b5"
             android:layout_row="0"
             android:layout_column="1" />
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button3"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text=" "
+            android:id="@+id/btn_main_saleshistory"
             android:tag="#00bcd4"
+            android:background="#00bcd4"
             android:layout_row="1"
             android:layout_column="0" />
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button4"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text=" "
+            android:id="@+id/btn_main_settings"
             android:tag="#e91e63"
+            android:background="#e91e63"
             android:layout_row="1"
             android:layout_column="1" />
     </GridLayout>

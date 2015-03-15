@@ -55,7 +55,8 @@ public class DebugActivity extends ActionBarActivity implements View.OnClickList
                 i = new Intent(this, MainActivity.class);
                 break;
             case R.id.btn_debug_newinvoice:
-
+                i = new Intent(this, NewInvoiceActivity.class);
+                break;
             case R.id.btn_debug_salesconfirm:
 
             case R.id.btn_debug_saleshistory:

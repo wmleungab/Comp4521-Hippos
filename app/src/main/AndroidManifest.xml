@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hkust.comp4521.hippos" >
+
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
@@ -29,12 +30,18 @@
         <activity
             android:name=".WiFiTransferActivity"
             android:label="@string/title_activity_nfctransfer"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/com.hkust.comp4521.hippos" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".NewInvoiceActivity"
+            android:label="@string/title_activity_new_invoice" >
         </activity>
     </application>
 
