@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="newinvoice_primary">#4fc3f7</color>
+    <color name="newinvoice_primary">#4fff8e</color>
     <color name="newinvoice_accent">#009688</color>
 
     <color name="color_set_2_primary">#42bd41</color>
