@@ -1,187 +1,137 @@
 package com.hkust.comp4521.hippos;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.support.v7.app.ActionBarActivity;
+import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.hkust.comp4521.hippos.services.NFCService;
-import com.skyfishjy.library.RippleBackground;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+public class WiFiTransferActivity extends ActionBarActivity implements WifiP2pManager.ChannelListener, DeviceListFragment.DeviceActionListener {
 
 
-public class WiFiTransferActivity extends ActionBarActivity {
-    // enum for NFC Transfer stages
-    private static int WIFI_SEARCHER = 0;
-    private static int WIFI_EMITTER = 1;
-    private static int WIFI_TRANSFERRING_SEARCHER = 2;
-    private static int WIFI_TRANSFERRING_EMITTER = 3;
-    private static int WIFI_COMPLETED = 4;
-    private int NFCTransferStage = WIFI_SEARCHER;
-
+    public static final String TAG = "WiFiTransferActivity";
+    private final IntentFilter intentFilter = new IntentFilter();
+    //Wifi Direct
+    private WifiP2pManager manager;
+    private boolean isWifiP2pEnabled = false;
+    private boolean retryChannel = false;
+    private WifiP2pManager.Channel channel;
+    private BroadcastReceiver receiver = null;
     // Context
     private Activity mActivity;
+    private ProgressDialog progressDialog = null;
 
-    // View-related
-    private SmoothProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfctransfer);
         mActivity = this;
-
-        initViews();
+        initWiFiFunc();
     }
 
-    private void initViews() {
-        progressBar = (SmoothProgressBar) findViewById(R.id.pb_nfc_transferring);
-        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
-        final ImageView imageView=(ImageView)findViewById(R.id.iv_nfc_self);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (NFCTransferStage == WIFI_EMITTER) {
-                    NFCTransferStage = WIFI_SEARCHER;
-                    imageView.setImageDrawable(getResources().getDrawable(R.mipmap.icon_hippos_grey));
-                    scaleView(rippleBackground, 1, 0);
-                    //rippleBackground.stopRippleAnimation();
-                } else {
-                    NFCTransferStage = WIFI_EMITTER;
-                    imageView.setImageDrawable(getResources().getDrawable(R.mipmap.icon_hippos_white));
-                    scaleView(rippleBackground, 0, 1);
-                    rippleBackground.stopRippleAnimation();
-                    rippleBackground.startRippleAnimation();
-                }
-            }
-        });
-        findViewById(R.id.btn_nfc_nextstage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(NFCTransferStage == WIFI_SEARCHER || NFCTransferStage == WIFI_EMITTER) {
-                    transitionToTransferStage();
-                } else if(NFCTransferStage == WIFI_TRANSFERRING_SEARCHER || NFCTransferStage == WIFI_TRANSFERRING_EMITTER) {
-                    endTransfer();
-                }
-            }
-        });
+
+    private void initWiFiFunc() {
+        // add necessary intent values to be matched.
+
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = manager.initialize(this, getMainLooper(), null);
     }
 
-    private void transitionToTransferStage() {
-        // Animate for hippos, then show progress bar
-        float xShift = -getDeviceWidth()/2.0f * 0.65f;
-        if(NFCTransferStage == WIFI_SEARCHER) {
-            xShift *= -1;
-            NFCTransferStage = WIFI_TRANSFERRING_SEARCHER;
+    /**
+     * @param isWifiP2pEnabled the isWifiP2pEnabled to set
+     */
+    public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
+        this.isWifiP2pEnabled = isWifiP2pEnabled;
+    }
+
+    public void searchForPeer() {
+        if (!isWifiP2pEnabled) {
+            Toast.makeText(WiFiTransferActivity.this, "Enable P2P from action bar button above or system settings",
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
-        // but if self-emitting, kill off the ripple animation first
-        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
-        final ImageView imageView=(ImageView)findViewById(R.id.iv_nfc_self);
-        if (NFCTransferStage == WIFI_EMITTER) {
-            NFCTransferStage = WIFI_TRANSFERRING_EMITTER;
-            imageView.setImageDrawable(getResources().getDrawable(R.mipmap.icon_hippos_grey));
-            scaleView(rippleBackground, 1, 0);
-        }
-        final ImageView imageView2=(ImageView)findViewById(R.id.iv_nfc_opponent);
-        TranslateAnimation animation = new TranslateAnimation(0.0f, xShift, 0.0f, 0.0f);
-        animation.setDuration(300);  // animation duration
-        animation.setFillAfter(true);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
 
+        final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
+                .findFragmentById(R.id.frag_devices_list);
+        fragment.onInitiateDiscovery();
+
+        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+
+            @Override
+            public void onSuccess() {
+                Toast.makeText(WiFiTransferActivity.this, "Discovery Initiated",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                startTransfer();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+            public void onFailure(int reasonCode) {
+                Toast.makeText(WiFiTransferActivity.this, "Discovery Failed : " + reasonCode,
+                        Toast.LENGTH_SHORT).show();
             }
         });
-        imageView.startAnimation(animation);  // start animation
-        TranslateAnimation animation2 = new TranslateAnimation(0.0f, -xShift, 0.0f, 0.0f);
-        animation2.setDuration(300);  // animation duration
-        animation2.setFillAfter(true);
-        imageView2.startAnimation(animation2);  // start animation
+        return;
     }
 
-    private void startTransfer() {
-        // Completely kill off ripple background
-        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
-        rippleBackground.stopRippleAnimation();
-        // Change progress bar params first
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) progressBar.getLayoutParams();
-        params.width = (int) (getDeviceWidth() * 0.4f);
-        progressBar.setLayoutParams(params);
-        progressBar.setVisibility(View.VISIBLE);
-        // Animation for progress bar
-        AlphaAnimation animation = new AlphaAnimation(0, 1);          //  new TranslateAnimation(xFrom,xTo, yFrom,yTo)
-        animation.setDuration(300);  // animation duration
-        animation.setFillAfter(true);
-        progressBar.startAnimation(animation);  // start animation
+    /**
+     * register the BroadcastReceiver with the intent values to be matched
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
+        registerReceiver(receiver, intentFilter);
+        Log.i("NFC", "onResume()");
     }
 
-    private void endTransfer() {
-        // Animation for progress bar
-        AlphaAnimation a1 = new AlphaAnimation(1, 0);          //  new TranslateAnimation(xFrom,xTo, yFrom,yTo)
-        Animation a2 = new ScaleAnimation(1, 1, 1, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        AnimationSet as = new AnimationSet(true);
-        as.setDuration(500);
-        as.addAnimation(a1);
-        as.addAnimation(a2);
-        as.setFillAfter(true);
-        progressBar.startAnimation(as);  // start animation
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 
-    public int getDeviceWidth() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        return width;
+    protected void onNewIntent(Intent intent) {
+        // Get the Intent action
+        super.onNewIntent(intent);
+        String action = getIntent().getAction();
+        Toast.makeText(this, action, Toast.LENGTH_LONG);
     }
 
-    public void scaleView(View v, float startScale, float endScale) {
-        Animation anim = new ScaleAnimation(
-                startScale, endScale, // Start and end values for the X axis scaling
-                startScale, endScale, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-        anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(300);
-        anim.setInterpolator(new DecelerateInterpolator());
-        v.startAnimation(anim);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_nfctransfer, menu);
+
+        //   MenuInflater inflater = getMenuInflater();
+        //   inflater.inflate(R.menu.action_items, menu);
         return true;
     }
 
+    /*
+    * (non-Javadoc)
+    * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -193,18 +143,115 @@ public class WiFiTransferActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+
+
     }
 
-    protected void onResume() {
-        super.onResume();
-        Log.i("NFC", "onResume()");
+    public void resetData() {
+        DeviceListFragment fragmentList = (DeviceListFragment) getFragmentManager()
+                .findFragmentById(R.id.frag_devices_list);
+
+        if (fragmentList != null) {
+            fragmentList.clearPeers();
+        }
+
     }
 
-    protected void onNewIntent(Intent intent) {
-        // Get the Intent action
-        super.onNewIntent(intent);
-        String action = getIntent().getAction();
-        Toast.makeText(this, action, Toast.LENGTH_LONG);
+    @Override
+    public void showDetails(WifiP2pDevice device) {
+//        DeviceDetailFragment fragment = (DeviceDetailFragment) getFragmentManager()
+//                .findFragmentById(R.id.frag_detail);
+//        fragment.showDetails(device);
+
+    }
+
+    @Override
+    public void connect(WifiP2pConfig config) {
+        manager.connect(channel, config, new WifiP2pManager.ActionListener() {
+
+            @Override
+            public void onSuccess() {
+                // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Toast.makeText(WiFiTransferActivity.this, "Connect failed. Retry.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void disconnect() {
+//        final DeviceDetailFragment fragment = (DeviceDetailFragment) getFragmentManager()
+//                .findFragmentById(R.id.frag_detail);
+//        fragment.resetViews();
+//        manager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+//
+//            @Override
+//            public void onFailure(int reasonCode) {
+//                Log.d(TAG, "Disconnect failed. Reason :" + reasonCode);
+//
+//            }
+//
+//            @Override
+//            public void onSuccess() {
+//                fragment.getView().setVisibility(View.GONE);
+//            }
+//
+//        });
+    }
+
+    @Override
+    public void onChannelDisconnected() {
+        // we will try once more
+        if (manager != null && !retryChannel) {
+            Toast.makeText(this, "Channel lost. Trying again", Toast.LENGTH_LONG).show();
+            resetData();
+            retryChannel = true;
+            manager.initialize(this, getMainLooper(), this);
+        } else {
+            Toast.makeText(this,
+                    "Severe! Channel is probably lost premanently. Try Disable/Re-Enable P2P.",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void cancelDisconnect() {
+
+        /*
+         * A cancel abort request by user. Disconnect i.e. removeGroup if
+         * already connected. Else, request WifiP2pManager to abort the ongoing
+         * request
+         */
+        if (manager != null) {
+            final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
+                    .findFragmentById(R.id.frag_devices_list);
+            if (fragment.getDevice() == null
+                    || fragment.getDevice().status == WifiP2pDevice.CONNECTED) {
+                disconnect();
+            } else if (fragment.getDevice().status == WifiP2pDevice.AVAILABLE
+                    || fragment.getDevice().status == WifiP2pDevice.INVITED) {
+
+                manager.cancelConnect(channel, new WifiP2pManager.ActionListener() {
+
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(WiFiTransferActivity.this, "Aborting connection",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int reasonCode) {
+                        Toast.makeText(WiFiTransferActivity.this,
+                                "Connect abort request failed. Reason Code: " + reasonCode,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
 
     }
 }
