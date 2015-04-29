@@ -7,7 +7,16 @@
         android:id="@+id/revealview_main_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#212121"/>
+        android:background="#FFFFFF"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/main_bg"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerCrop" />
 
     <GridLayout
         android:id="@+id/gl_main_buttons"
@@ -16,40 +25,51 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
         <Button
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
             android:text=" "
             android:id="@+id/btn_main_newinvoice"
-            android:tag="@color/newinvoice_primary"
-            android:background="@color/newinvoice_primary"
+            android:tag="@color/blue_primary"
+            android:background="@mipmap/menu_button_blue"
             android:layout_row="0"
             android:layout_column="0" />
         <Button
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
             android:text=" "
             android:id="@+id/btn_main_invlist"
-            android:tag="#3f51b5"
-            android:background="#3f51b5"
+            android:tag="@color/green_primary"
+            android:background="@mipmap/menu_button_green"
             android:layout_row="0"
             android:layout_column="1" />
         <Button
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
             android:text=" "
             android:id="@+id/btn_main_saleshistory"
-            android:tag="#00bcd4"
-            android:background="#00bcd4"
+            android:tag="@color/red_primary"
+            android:background="@mipmap/menu_button_red"
             android:layout_row="1"
             android:layout_column="0" />
         <Button
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
             android:text=" "
             android:id="@+id/btn_main_settings"
-            android:tag="#e91e63"
-            android:background="#e91e63"
+            android:tag="@color/yellow_primary"
+            android:background="@mipmap/menu_button_yellow"
             android:layout_row="1"
             android:layout_column="1" />
     </GridLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HiPPoS"
+        android:id="@+id/tv_main_title"
+        android:textColor="@color/text_description"
+        android:textSize="56dp"
+        android:layout_marginBottom="32dp"
+        android:layout_above="@+id/gl_main_buttons"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

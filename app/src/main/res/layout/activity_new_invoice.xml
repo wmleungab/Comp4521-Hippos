@@ -7,27 +7,84 @@
     android:background="#EEEEEE"
     tools:context="com.hkust.comp4521.hippos.NewInvoiceActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <RelativeLayout
         android:id="@+id/actionBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/newinvoice_primary" >
-        <!-- Title Text -->
+        android:elevation="6dp"
+        android:tag="@color/blue_primary"
+        android:background="@color/blue_primary" >
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/new_invoice_badge_icon" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="56dp"
-            android:text="Report Situation"
+            android:text="New Invoice"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
+        <ImageButton
+            android:id="@+id/ib_new_invoice_complete"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/invoice_confirm_tick" />
+
+        <ImageButton
+            android:id="@+id/ib_new_invoice_add_from_inv_list"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_toLeftOf="@id/ib_new_invoice_complete"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/add_inv_list" />
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cardList"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/iv_new_invoice_nfc_hint"
+            android:src="@mipmap/nfc_icon" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Tap NFC tag to add item"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/iv_new_invoice_nfc_hint" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

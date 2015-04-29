@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hkust.comp4521.hippos.InventoryDetailsActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:id="@+id/iv_inventory"
+        android:src="@mipmap/placeholder"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/ib_actionBar_back"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentLeft="true"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/left_arrow" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_below="@+id/iv_inventory"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Item Name"
+            android:id="@+id/tv_inventory_item_name"
+            android:textColor="@color/text_primary"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Item Description"
+            android:id="@+id/tv_inventory_item_desc"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/text_description"
+            android:layout_below="@+id/tv_inventory_item_name"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Stock: 123"
+            android:id="@+id/tv_inventory_item_stock"
+            android:textColor="@color/text_primary"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/iv_inventory"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </LinearLayout>
+</RelativeLayout>

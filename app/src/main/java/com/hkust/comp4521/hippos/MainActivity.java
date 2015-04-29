@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.GridLayout;
+import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
@@ -21,9 +22,12 @@ import at.markushi.ui.RevealColorView;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
+
     private RevealColorView revealColorView;
     private View selectedView;
     private GridLayout buttonGridLayout;
+    private TextView titleText;
+
     private int backgroundColor;
 
     private Context mContext;
@@ -39,9 +43,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        backgroundColor = Color.parseColor("#212121");
+        backgroundColor = Color.parseColor("#FFFFFF");
+        TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         revealColorView = (RevealColorView) findViewById(R.id.revealview_main_bg);
         buttonGridLayout = (GridLayout) findViewById(R.id.gl_main_buttons);
+        titleText = (TextView) findViewById(R.id.tv_main_title);
 
         findViewById(R.id.btn_main_newinvoice).setOnClickListener(this);
         findViewById(R.id.btn_main_invlist).setOnClickListener(this);
@@ -58,12 +64,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
             selectedView = null;
             applyFadeAnimation(buttonGridLayout, 1);
-            TintedStatusBar.changeStatusBarColor(this, 0);
+            applyFadeAnimation(titleText, 1);
+            TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         } else {
             revealColorView.reveal(p.x, p.y, color, v.getHeight() / 2, 340, new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-
+                    ThreadService.delayedStart(MainActivity.this, new Runnable() {
+                        @Override
+                        public void run() {
+                            TintedStatusBar.changeStatusBarColor(MainActivity.this, color);
+                        }
+                    }, 100);
                 }
 
                 @Override
@@ -73,6 +85,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     switch(v.getId()) {
                         case R.id.btn_main_newinvoice:
                             i = new Intent(mContext, NewInvoiceActivity.class);
+                            break;
+                        case R.id.btn_main_invlist:
+                            i = new Intent(mContext, InventoryListActivity.class);
                             break;
                         default:
                             break;
@@ -95,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             });
             selectedView = v;
             applyFadeAnimation(buttonGridLayout, 0);
-            TintedStatusBar.changeStatusBarColor(this, color);
+            applyFadeAnimation(titleText, 0);
             subActivityLaunched = true;
         }
     }
@@ -133,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
                         selectedView = null;
                         applyFadeAnimation(buttonGridLayout, 1);
-                        TintedStatusBar.changeStatusBarColor(MainActivity.this, 0);
+                        TintedStatusBar.changeStatusBarColor(MainActivity.this, backgroundColor);
                         subActivityLaunched = false;
                     }
                 }
@@ -149,7 +164,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
             selectedView = null;
             applyFadeAnimation(buttonGridLayout, 1);
-            TintedStatusBar.changeStatusBarColor(this, 0);
+            applyFadeAnimation(titleText, 1);
+            TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         } else {
             super.onBackPressed();
         }

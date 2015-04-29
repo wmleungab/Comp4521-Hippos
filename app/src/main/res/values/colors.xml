@@ -11,4 +11,19 @@
 
     <color name="color_set_4_primary">#ff8a65</color>
     <color name="color_set_4_accent">#d500f9</color>
+
+    <color name="green_primary">#15C07B</color>
+    <color name="green_primary_dark">#0F8253</color>
+
+    <color name="blue_primary">#14A1C2</color>
+    <color name="blue_primary_dark">#0F728A</color>
+
+    <color name="red_primary">#FF7D68</color>
+    <color name="red_primary_dark">#FD3924</color>
+
+    <color name="yellow_primary">#FFC82B</color>
+    <color name="yellow_primary_dark">#F4AB02</color>
+
+    <color name="text_primary">#343434</color>
+    <color name="text_description">#898989</color>
 </resources>

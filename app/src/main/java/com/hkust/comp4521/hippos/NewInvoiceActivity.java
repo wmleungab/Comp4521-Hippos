@@ -1,8 +1,14 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Intent;
 import android.graphics.Point;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,13 +18,17 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.views.InventoryListAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NewInvoiceActivity extends ActionBarActivity {
 
-    private RelativeLayout relativeLayoutBG;
     private RelativeLayout mActionBar;
 
     @Override
@@ -26,9 +36,18 @@ public class NewInvoiceActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_invoice);
 
-        relativeLayoutBG = (RelativeLayout) findViewById(R.id.rl_newinvoice_bg);
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
-        TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(relativeLayoutBG));
+        TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
+
+        RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+
+        final List<Inventory> addedList = new ArrayList<Inventory>();
+        InventoryListAdapter adapter = new InventoryListAdapter(1);
+        recList.setAdapter(adapter);
     }
 
     @Override
