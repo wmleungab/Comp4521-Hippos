@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewInvoiceActivity extends ActionBarActivity {
+public class NewInvoiceActivity extends AppCompatActivity {
 
     private RelativeLayout mActionBar;
 
@@ -46,7 +47,7 @@ public class NewInvoiceActivity extends ActionBarActivity {
         recList.setLayoutManager(llm);
 
         final List<Inventory> addedList = new ArrayList<Inventory>();
-        InventoryListAdapter adapter = new InventoryListAdapter(1);
+        InventoryListAdapter adapter = new InventoryListAdapter(this, 1);
         recList.setAdapter(adapter);
     }
 

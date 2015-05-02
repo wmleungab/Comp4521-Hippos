@@ -8,6 +8,7 @@ public class Inventory {
     private String name;
     private int catId;
     private float price;
+    private String fileName;
 
     public static String INVENTORY_CAT_ID = "inventory_catId";
     public static String INVENTORY_INV_ID = "inventory_invId";
@@ -16,11 +17,12 @@ public class Inventory {
         _id = -2;
     }
 
-    public Inventory(String pName, int pCatId, int pPrice) {
+    public Inventory(String pName, int pCatId, int pPrice, String pfileName) {
         _id = -1;
         name = pName;
         catId = pCatId;
         price = pPrice;
+        fileName = pfileName;
     }
 
     public long getId() {
@@ -55,4 +57,5 @@ public class Inventory {
         this.price = price;
     }
 
+    public String getFileName() { return fileName; }
 }

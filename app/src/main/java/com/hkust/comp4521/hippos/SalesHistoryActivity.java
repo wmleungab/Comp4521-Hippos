@@ -1,7 +1,6 @@
 package com.hkust.comp4521.hippos;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -29,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class InventoryListActivity extends AppCompatActivity {
+public class SalesHistoryActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
@@ -38,7 +36,7 @@ public class InventoryListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory_list);
+        setContentView(R.layout.activity_sales_history);
 
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
@@ -54,12 +52,12 @@ public class InventoryListActivity extends AppCompatActivity {
         }
 
         // Initialize ViewPager
-        mViewPager = (ViewPager) findViewById(R.id.vp_inventory_list);
+        mViewPager = (ViewPager) findViewById(R.id.vp_sales_history);
         mViewPager.setAdapter(new InventoryListViewPagerAdapter(viewList));
         mViewPager.setCurrentItem(0);
 
         // Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_inventory_list);
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_sales_history);
         tabs.setViewPager(mViewPager);
 
         // Bind RecyclerView and setup appropriate adapter for each of the page
@@ -80,18 +78,18 @@ public class InventoryListActivity extends AppCompatActivity {
                 public void onClick(View v, int catId, int invId) {
                     // get position of the card
                     Inventory item = Commons.getInventory(catId, invId);
-                    Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
+                    Intent intent = new Intent(SalesHistoryActivity.this, InventoryDetailsActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt(Inventory.INVENTORY_CAT_ID, catId);
                     bundle.putInt(Inventory.INVENTORY_INV_ID, invId);
                     intent.putExtras(bundle);
                     ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            InventoryListActivity.this,
+                            SalesHistoryActivity.this,
                             new Pair<View, String>(v.findViewById(R.id.iv_inventory), InventoryDetailsActivity.VIEW_NAME_HEADER_IMAGE),
                             new Pair<View, String>(v.findViewById(R.id.tv_inventory_item_name), InventoryDetailsActivity.VIEW_NAME_HEADER_TITLE)
                     );
                     // Now we can start the Activity, providing the activity options as a bundle
-                    ActivityCompat.startActivity(InventoryListActivity.this, intent, activityOptions.toBundle());
+                    ActivityCompat.startActivity(SalesHistoryActivity.this, intent, activityOptions.toBundle());
 
                 }
             });
@@ -103,7 +101,7 @@ public class InventoryListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_inventory_list, menu);
+        getMenuInflater().inflate(R.menu.menu_sales_history, menu);
         return true;
     }
 

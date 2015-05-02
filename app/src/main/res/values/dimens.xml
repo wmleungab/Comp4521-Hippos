@@ -6,4 +6,6 @@
     <!--main activity-->
     <dimen name="main_icon_size">136dp</dimen>
     <dimen name="main_icon_cutout_size">96dp</dimen>
+
+    <dimen name="flexible_space_height">192dp</dimen>
 </resources>

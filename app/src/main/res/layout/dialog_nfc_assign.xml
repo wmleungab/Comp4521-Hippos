@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <com.skyfishjy.library.RippleBackground
+        android:layout_width="196dp"
+        android:layout_height="196dp"
+        android:id="@+id/content"
+        android:layout_gravity="center"
+        app:rb_color="#0099CC"
+        app:rb_radius="24dp"
+        app:rb_rippleAmount="4"
+        app:rb_duration="2000"
+        app:rb_scale="4">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/centerImage"
+            android:src="@mipmap/icon_hippos_white"/>
+
+    </com.skyfishjy.library.RippleBackground>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="16dp"
+        android:text="Ready to write NFC tag"
+        android:textColor="@color/text_description"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

@@ -89,6 +89,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         case R.id.btn_main_invlist:
                             i = new Intent(mContext, InventoryListActivity.class);
                             break;
+                        case R.id.btn_main_saleshistory:
+                            i = new Intent(mContext, SalesHistoryActivity.class);
+                            break;
                         default:
                             break;
                     }
@@ -148,6 +151,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
                         selectedView = null;
                         applyFadeAnimation(buttonGridLayout, 1);
+                        applyFadeAnimation(titleText, 1);
                         TintedStatusBar.changeStatusBarColor(MainActivity.this, backgroundColor);
                         subActivityLaunched = false;
                     }

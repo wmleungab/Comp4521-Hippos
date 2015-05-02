@@ -28,18 +28,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".WiFiTransferActivity"
-            android:label="@string/title_activity_nfctransfer"
-            android:launchMode="singleTop" >
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="application/com.hkust.comp4521.hippos" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".NewInvoiceActivity"
             android:label="@string/title_activity_new_invoice" >
         </activity>
@@ -50,6 +38,14 @@
         <activity
             android:name=".InventoryDetailsActivity"
             android:label="@string/title_activity_inventory_details" >
+        </activity>
+        <activity
+            android:name=".SalesHistoryActivity"
+            android:label="@string/title_activity_sales_history" >
+        </activity>
+        <activity
+            android:name=".SalesDetailsActivity"
+            android:label="@string/title_activity_sales_details" >
         </activity>
     </application>
 

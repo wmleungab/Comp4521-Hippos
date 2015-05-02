@@ -1,24 +1,30 @@
 package com.hkust.comp4521.hippos.views;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 
+import java.io.IOException;
 import java.util.List;
 
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.InventoryViewHolder>{
 
         private int categoryId;
+        private Context mContext;
         private List<Inventory> invList;
         private OnInventoryClickListener mOnClickListener;
 
-        public InventoryListAdapter(int cId) {
+        public InventoryListAdapter(Context pCon, int cId) {
+            this.mContext = pCon;
             this.categoryId = cId;
             this.invList = Commons.getInventoryList(cId);
         }
@@ -32,12 +38,16 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i);
              contactViewHolder.itemName.setText(ci.getName());
-             contactViewHolder.itemDesc.setText("Item Description");
              contactViewHolder.itemPrice.setText("$" + ci.getPrice());
              contactViewHolder.itemStock.setText("Stock: 12");
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
+            try {
+                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {
@@ -58,9 +68,9 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     public static class InventoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             protected TextView itemName;
-            protected TextView itemDesc;
             protected TextView itemPrice;
             protected TextView itemStock;
+            protected ImageView heroImage;
 
             // Info used for referring in OnClick method
             protected int catId;
@@ -72,9 +82,9 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
                 catId = -1;
                 invId = -1;
                 itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
-                itemDesc = (TextView)  v.findViewById(R.id.tv_card_inventory_item_desc);
                 itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
                 itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
+                heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
                 v.setOnClickListener(this);
             }
 

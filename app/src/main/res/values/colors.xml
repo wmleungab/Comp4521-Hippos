@@ -17,9 +17,11 @@
 
     <color name="blue_primary">#14A1C2</color>
     <color name="blue_primary_dark">#0F728A</color>
+    <color name="blue_primary_highlighted">#2962FF</color>
 
     <color name="red_primary">#FF7D68</color>
     <color name="red_primary_dark">#FD3924</color>
+    <color name="red_primary_darker">#b3001e</color>
 
     <color name="yellow_primary">#FFC82B</color>
     <color name="yellow_primary_dark">#F4AB02</color>

@@ -187,9 +187,15 @@ public class NFCService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Toast.makeText(ctx, "ERROR:" + e, Toast.LENGTH_SHORT).show();
 		} catch (FormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Toast.makeText(ctx, "ERROR:" + e, Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Toast.makeText(ctx, "ERROR:" + e, Toast.LENGTH_SHORT).show();
 		}
 	}
 

@@ -65,10 +65,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HiPPoS"
+        android:text="Welcome to HiPPoS!"
         android:id="@+id/tv_main_title"
         android:textColor="@color/text_description"
-        android:textSize="56dp"
+        android:textSize="32dp"
         android:layout_marginBottom="32dp"
         android:layout_above="@+id/gl_main_buttons"
         android:layout_centerHorizontal="true" />

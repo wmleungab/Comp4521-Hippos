@@ -3,12 +3,13 @@ package com.hkust.comp4521.hippos;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 
-public class DebugActivity extends ActionBarActivity implements View.OnClickListener{
+public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +59,11 @@ public class DebugActivity extends ActionBarActivity implements View.OnClickList
                 i = new Intent(this, NewInvoiceActivity.class);
                 break;
             case R.id.btn_debug_salesconfirm:
-
+                i = new Intent(this, SalesDetailsActivity.class);
+                break;
             case R.id.btn_debug_saleshistory:
-
+                i = new Intent(this, SalesHistoryActivity.class);
+                break;
             case R.id.btn_debug_invlist:
                 i = new Intent(this, InventoryListActivity.class);
                 break;
