@@ -39,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="6dp"
+        app:pstsShouldExpand="true"
         android:textColorPrimary="#FFFFFF"
         android:layout_below="@id/actionBar"
         android:background="@color/red_primary" />

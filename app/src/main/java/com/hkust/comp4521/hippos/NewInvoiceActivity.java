@@ -23,6 +23,7 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
+import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
         recList.setLayoutManager(llm);
 
         final List<Inventory> addedList = new ArrayList<Inventory>();
-        InventoryListAdapter adapter = new InventoryListAdapter(this, 1);
+        InvoiceInventoryListAdapter adapter = new InvoiceInventoryListAdapter(this, 1);
         recList.setAdapter(adapter);
     }
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+             xmlns:card_view="http://schemas.android.com/apk/res-auto"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:id="@+id/card_view"
+             android:layout_width="match_parent"
+             android:layout_height="72dp"
+             card_view:cardCornerRadius="4dp"
+             android:layout_margin="4dp">
+
+       <RelativeLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+           <de.hdodenhof.circleimageview.CircleImageView
+               xmlns:app="http://schemas.android.com/apk/res-auto"
+               android:id="@+id/iv_inventory"
+               android:src="@mipmap/placeholder"
+               android:layout_width="56dp"
+               android:layout_height="56dp"
+               android:layout_marginLeft="16dp"
+               android:layout_centerVertical="true"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentStart="true"
+               app:border_width="0dp"
+               app:border_color="#FF000000"/>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:text="Item Name"
+               android:id="@+id/tv_inventory_item_name"
+               android:layout_centerVertical="true"
+               android:layout_marginLeft="16dp"
+               android:textColor="@color/text_primary"
+               android:layout_toRightOf="@+id/iv_inventory"
+               android:layout_toEndOf="@+id/iv_inventory" />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:text="Stock: 1"
+               android:id="@+id/tv_card_inventory_item_stock"
+               android:layout_marginBottom="16dp"
+               android:textColor="@color/text_description"
+               android:layout_alignParentRight="true"
+               android:layout_alignParentBottom="true"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:text="$123.00"
+               android:id="@+id/tv_card_inventory_item_price"
+               android:layout_marginEnd="16dp"
+               android:layout_marginRight="16dp"
+               android:layout_marginBottom="16dp"
+               android:textColor="@color/text_primary"
+               android:layout_alignParentBottom="true"
+               android:layout_alignParentRight="true"/>
+       </RelativeLayout>
+</android.support.v7.widget.CardView>

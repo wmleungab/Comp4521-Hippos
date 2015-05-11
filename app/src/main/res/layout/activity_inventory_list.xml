@@ -32,6 +32,16 @@
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
+        <ImageButton
+            android:id="@+id/ib_inventory_list_add_item"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/plus" />
     </RelativeLayout>
 
     <com.astuetz.PagerSlidingTabStrip

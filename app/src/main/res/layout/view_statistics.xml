@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="16dp"
+    android:orientation="vertical"
+    tools:context="com.hkust.comp4521.hippos.InventoryListActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Daily Sales"
+        android:id="@+id/textView2" />
+
+    <lecho.lib.hellocharts.view.LineChartView
+        android:id="@+id/chart_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+    </lecho.lib.hellocharts.view.LineChartView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Monthly Sales"/>
+
+    <lecho.lib.hellocharts.view.ColumnChartView
+        android:id="@+id/chart_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+    </lecho.lib.hellocharts.view.ColumnChartView>
+</LinearLayout>

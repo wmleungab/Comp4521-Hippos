@@ -16,15 +16,111 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/flexible_space_height">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
                 android:background="@android:color/white"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="@string/lipsum" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/blue_primary"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_horizontal_margin"
+                    android:text="Charges"
+                    android:id="@+id/textView4" />
+
+
+                <TableLayout
+                    android:stretchColumns="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:paddingBottom="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:text="Sub-total"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:text="$29.0"/>
+                    </TableRow>
+                    <TableRow
+                        android:paddingBottom="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:text="Discount"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:text="-$9.0"/>
+                    </TableRow>
+                    <TableRow
+                        android:paddingBottom="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:text="Grand Total"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/text_description"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:text="$20.0"/>
+                    </TableRow>
+                </TableLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/blue_primary"
+                    android:paddingTop="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:text="Sales Details"
+                    android:id="@+id/textView3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lipsum" />
+
+            </LinearLayout>
         </FrameLayout>
 
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
@@ -33,6 +129,7 @@
         android:id="@+id/flexible_space"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:elevation="6dp"
         android:background="@color/blue_primary" />
 
     <android.support.v7.widget.Toolbar
@@ -40,7 +137,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue_primary"
+        android:tag="@color/blue_primary"
         android:minHeight="?attr/actionBarSize"
+        android:elevation="6dp"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
     <!--
@@ -50,10 +149,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="6dp"
         android:paddingLeft="72dp">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/tv_sales_details_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -61,6 +161,18 @@
             android:maxLines="1"
             android:minHeight="?attr/actionBarSize"
             android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_sales_details_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="3"
+            android:minHeight="?attr/actionBarSize"
+            android:textColor="@android:color/white"
+            android:text="May 1, 2015"
             android:textSize="20sp" />
 
         <LinearLayout

@@ -9,6 +9,7 @@ import java.util.List;
 public class Commons {
     private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
+
     private static ArrayList<ArrayList<Inventory>> inventoryList = null;
     private static int lastUpdate = -1;
 
@@ -35,6 +36,10 @@ public class Commons {
 
     public static String[] getCategories() {
         return INVENTORY_CATEGORY;
+    }
+
+    public static String[] getSalesHistoryTabs() {
+        return SALESHISTORY_CATEGORY;
     }
 
     private static void initializeInventoryList() {

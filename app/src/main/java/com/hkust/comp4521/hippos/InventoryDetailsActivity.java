@@ -102,7 +102,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         mHeaderTitle.setText(mItem.getName());
         // actionBar buttons
         btnBack = (ImageButton) findViewById(R.id.ib_actionBar_back);
-        btnCamera = (ImageButton) findViewById(R.id.ib_actionBar_camera);
+        btnCamera = (ImageButton) findViewById(R.id.ib_actionBar_pencil);
         // NFC assign button and its dialog
         btnNFCAssign = (LinearLayout) findViewById(R.id.ll_inventory_details_nfc_assign);
         btnNFCAssign.setOnClickListener(new View.OnClickListener() {

@@ -22,15 +22,43 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.InventoryListViewPagerAdapter;
+import com.hkust.comp4521.hippos.views.SalesHistoryViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lecho.lib.hellocharts.gesture.ZoomType;
+import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.model.Viewport;
+import lecho.lib.hellocharts.util.ChartUtils;
+import lecho.lib.hellocharts.view.ColumnChartView;
+import lecho.lib.hellocharts.view.LineChartView;
 
 
 public class SalesHistoryActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
+
+    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+            "Sep", "Oct", "Nov", "Dec",};
+
+    public final static String[] days = new String[]{"Mon", "Tue", "Wen", "Thu", "Fri", "Sat", "Sun",};
+
+    private LineChartView chartTop;
+    private ColumnChartView chartBottom;
+
+    private LineChartData lineData;
+    private ColumnChartData columnData;
+
     List<View> viewList;
 
     @Override
@@ -46,55 +74,33 @@ public class SalesHistoryActivity extends AppCompatActivity {
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();
 
-        for(int i=0; i < Commons.getCategoryCount(); i++) {
-            View v = mInflater.inflate(R.layout.view_inventory_list, null);
-            viewList.add(v);
-        }
+        View v = mInflater.inflate(R.layout.view_invoice, null);
+        viewList.add(v);
+        v = mInflater.inflate(R.layout.view_statistics, null);
+        viewList.add(v);
+        v = mInflater.inflate(R.layout.view_revenue, null);
+        viewList.add(v);
 
         // Initialize ViewPager
         mViewPager = (ViewPager) findViewById(R.id.vp_sales_history);
-        mViewPager.setAdapter(new InventoryListViewPagerAdapter(viewList));
+        mViewPager.setAdapter(new SalesHistoryViewPagerAdapter(viewList));
         mViewPager.setCurrentItem(0);
 
         // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_sales_history);
         tabs.setViewPager(mViewPager);
 
-        // Bind RecyclerView and setup appropriate adapter for each of the page
-        for(int i=0; i < Commons.getCategoryCount(); i++) {
-            // Setup RecyclerView
-            View view = viewList.get(i);
-            RecyclerView recList = (RecyclerView) view.findViewById(R.id.cardList);
-            recList.setHasFixedSize(true);
-            LinearLayoutManager llm = new LinearLayoutManager(this);
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            recList.setLayoutManager(llm);
+        // setup charts for statistics view
+        View view = viewList.get(1);
 
-            // Setup list adapter
-            final int cId = i;
-            InventoryListAdapter adapter = new InventoryListAdapter(this, cId);
-            adapter.setOnClickListener(new InventoryListAdapter.OnInventoryClickListener() {
-                @Override
-                public void onClick(View v, int catId, int invId) {
-                    // get position of the card
-                    Inventory item = Commons.getInventory(catId, invId);
-                    Intent intent = new Intent(SalesHistoryActivity.this, InventoryDetailsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Inventory.INVENTORY_CAT_ID, catId);
-                    bundle.putInt(Inventory.INVENTORY_INV_ID, invId);
-                    intent.putExtras(bundle);
-                    ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            SalesHistoryActivity.this,
-                            new Pair<View, String>(v.findViewById(R.id.iv_inventory), InventoryDetailsActivity.VIEW_NAME_HEADER_IMAGE),
-                            new Pair<View, String>(v.findViewById(R.id.tv_inventory_item_name), InventoryDetailsActivity.VIEW_NAME_HEADER_TITLE)
-                    );
-                    // Now we can start the Activity, providing the activity options as a bundle
-                    ActivityCompat.startActivity(SalesHistoryActivity.this, intent, activityOptions.toBundle());
+        // Generate and set data for line chart
+        chartTop = (LineChartView) view.findViewById(R.id.chart_top);
+        generateInitialLineData();
+        chartBottom = (ColumnChartView) view.findViewById(R.id.chart_bottom);
+        generateColumnData();
 
-                }
-            });
-            recList.setAdapter(adapter);
-        }
+
+
     }
 
 
@@ -125,4 +131,122 @@ public class SalesHistoryActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.none, android.R.anim.fade_out);
     }
+
+    private void generateColumnData() {
+
+        int numSubcolumns = 1;
+        int numColumns = months.length;
+
+        List<AxisValue> axisValues = new ArrayList<AxisValue>();
+        List<Column> columns = new ArrayList<Column>();
+        List<SubcolumnValue> values;
+        for (int i = 0; i < numColumns; ++i) {
+
+            values = new ArrayList<SubcolumnValue>();
+            for (int j = 0; j < numSubcolumns; ++j) {
+                values.add(new SubcolumnValue((float) Math.random() * 50f + 5, ChartUtils.pickColor()));
+            }
+
+            axisValues.add(new AxisValue(i).setLabel(months[i]));
+
+            columns.add(new Column(values).setHasLabelsOnlyForSelected(true));
+        }
+
+        columnData = new ColumnChartData(columns);
+
+        columnData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
+        columnData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(2));
+
+        chartBottom.setColumnChartData(columnData);
+
+        // Set value touch listener that will trigger changes for chartTop.
+        chartBottom.setOnValueTouchListener(new ValueTouchListener());
+
+        // Set selection mode to keep selected month column highlighted.
+        chartBottom.setValueSelectionEnabled(true);
+
+        chartBottom.setZoomType(ZoomType.HORIZONTAL);
+
+        // chartBottom.setOnClickListener(new View.OnClickListener() {
+        //
+        // @Override
+        // public void onClick(View v) {
+        // SelectedValue sv = chartBottom.getSelectedValue();
+        // if (!sv.isSet()) {
+        // generateInitialLineData();
+        // }
+        //
+        // }
+        // });
+
+    }
+
+    /**
+     * Generates initial data for line chart. At the begining all Y values are equals 0. That will change when user
+     * will select value on column chart.
+     */
+    private void generateInitialLineData() {
+        int numValues = 7;
+
+        List<AxisValue> axisValues = new ArrayList<AxisValue>();
+        List<PointValue> values = new ArrayList<PointValue>();
+        for (int i = 0; i < numValues; ++i) {
+            values.add(new PointValue(i, 0));
+            axisValues.add(new AxisValue(i).setLabel(days[i]));
+        }
+
+        Line line = new Line(values);
+        line.setColor(ChartUtils.COLOR_GREEN).setCubic(true);
+
+        List<Line> lines = new ArrayList<Line>();
+        lines.add(line);
+
+        lineData = new LineChartData(lines);
+        lineData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
+        lineData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(3));
+
+        chartTop.setLineChartData(lineData);
+
+        // For build-up animation you have to disable viewport recalculation.
+        chartTop.setViewportCalculationEnabled(false);
+
+        // And set initial max viewport and current viewport- remember to set viewports after data.
+        Viewport v = new Viewport(0, 110, 6, 0);
+        chartTop.setMaximumViewport(v);
+        chartTop.setCurrentViewport(v);
+
+        chartTop.setZoomType(ZoomType.HORIZONTAL);
+    }
+
+    private void generateLineData(int color, float range) {
+        // Cancel last animation if not finished.
+        chartTop.cancelDataAnimation();
+
+        // Modify data targets
+        Line line = lineData.getLines().get(0);// For this example there is always only one line.
+        line.setColor(color);
+        for (PointValue value : line.getValues()) {
+            // Change target only for Y value.
+            value.setTarget(value.getX(), (float) Math.random() * range);
+        }
+
+        // Start new data animation with 300ms duration;
+        chartTop.startDataAnimation(300);
+    }
+
+    private class ValueTouchListener implements ColumnChartOnValueSelectListener {
+
+        @Override
+        public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
+            generateLineData(value.getColor(), 100);
+        }
+
+        @Override
+        public void onValueDeselected() {
+
+            generateLineData(ChartUtils.COLOR_GREEN, 0);
+
+        }
+    }
+
 }

@@ -1,13 +1,9 @@
 package com.hkust.comp4521.hippos;
 
-import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +11,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.nineoldandroids.view.ViewHelper;
 
 
@@ -22,7 +19,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
 
     private View mFlexibleSpaceView;
     private View mToolbarView;
-    private TextView mTitleView;
+    private TextView mTitleView, mSubTitleView;
     private int mFlexibleSpaceHeight;
 
     @Override
@@ -34,10 +31,13 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFlexibleSpaceView = findViewById(R.id.flexible_space);
-        mTitleView = (TextView) findViewById(R.id.title);
-        mTitleView.setText(getTitle());
+        mTitleView = (TextView) findViewById(R.id.tv_sales_details_title);
+        mSubTitleView = (TextView) findViewById(R.id.tv_sales_details_subtitle);
+        mTitleView.setText("Invoice #001");
+        mSubTitleView.setText("Date: May 26th, 2015\nHandled by: Wyman Leung");
         setTitle(null);
         mToolbarView = findViewById(R.id.toolbar);
+        TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mToolbarView));
 
         final ObservableScrollView scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
@@ -73,33 +73,33 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         ViewHelper.setTranslationY(mFlexibleSpaceView, -scrollY);
         int adjustedScrollY = scrollY;
         int heightCompensation = mTitleView.getHeight();
+        int flexibleSpacetoToolBarRange = mFlexibleSpaceHeight - mToolbarView.getHeight();
         if (scrollY < 0) {
             adjustedScrollY = 0;
         } else if (mFlexibleSpaceHeight < scrollY) {
             adjustedScrollY = mFlexibleSpaceHeight;
         }
-        float maxScale = (float) (mFlexibleSpaceHeight - mToolbarView.getHeight()) / mToolbarView.getHeight();
-        //float scale = maxScale * ((float) mFlexibleSpaceHeight - adjustedScrollY) / mFlexibleSpaceHeight;
-        float scale = 0f;
+
+        float maxScale = 1.2f;
+        // Scale of Title: from 1.2f to 0.0f, 0.0f reached when flexible space is collapsed
+        float scale = Math.max(maxScale * ((float) flexibleSpacetoToolBarRange - adjustedScrollY) / flexibleSpacetoToolBarRange, 0.0f);
 
         ViewHelper.setPivotX(mTitleView, 0);
         ViewHelper.setPivotY(mTitleView, 0);
         ViewHelper.setScaleX(mTitleView, 1 + scale);
         ViewHelper.setScaleY(mTitleView, 1 + scale);
-        /*
-        int maxTitleTranslationY = mToolbarView.getHeight() + mFlexibleSpaceHeight - (int) (mTitleView.getHeight() * (1 + scale));
-        int titleTranslationY = (int) (maxTitleTranslationY * ((float) mFlexibleSpaceHeight - adjustedScrollY) / mFlexibleSpaceHeight);*/
+        ViewHelper.setPivotX(mSubTitleView, 0);
+        ViewHelper.setPivotY(mSubTitleView, 0);
+        ViewHelper.setScaleX(mSubTitleView, 1);
+        ViewHelper.setScaleY(mSubTitleView, 1);
 
-        int maxTitleTranslationY = mToolbarView.getHeight() + mFlexibleSpaceHeight - mTitleView.getHeight();
-        float heightScale = (float) (mFlexibleSpaceHeight - adjustedScrollY) / mFlexibleSpaceHeight;
-        /*Log.wtf("SalesDetails", "mFlexibleSpaceHeight: " + mFlexibleSpaceHeight);
-        Log.wtf("SalesDetails", "mToolbarView.getHeight(): " + mToolbarView.getHeight());
-        Log.wtf("SalesDetails", "adjustedScrollY: " + adjustedScrollY);*/
-        if(adjustedScrollY > mFlexibleSpaceHeight - mToolbarView.getHeight()) {
-            heightCompensation = 0;
-            heightScale = 0;
-        }
-        int titleTranslationY = (int) (maxTitleTranslationY * heightScale - heightCompensation);
+        int padding = getResources().getDimensionPixelSize(R.dimen.default_padding_top);
+        int maxTitleTranslationY = mToolbarView.getHeight() + mTitleView.getHeight() - 2*padding;
+        float heightScale = scale / maxScale;
+
+        int titleTranslationY = (int) (maxTitleTranslationY * heightScale);
+        ViewHelper.setTranslationY(mSubTitleView, titleTranslationY - 2*padding);
         ViewHelper.setTranslationY(mTitleView, titleTranslationY);
+        ViewHelper.setAlpha(mSubTitleView, heightScale);
     }
 }
