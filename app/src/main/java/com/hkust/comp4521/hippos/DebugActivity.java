@@ -1,7 +1,6 @@
 package com.hkust.comp4521.hippos;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -9,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
+public class DebugActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         Intent i = null;
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.btn_debug_main:
                 i = new Intent(this, MainActivity.class);
                 break;
@@ -71,9 +70,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 //i = new Intent(this, WiFiTransferActivity.class);
                 break;
             case R.id.btn_debug_setting:
-
+                i = new Intent(this, SettingActivity.class);
+                break;
         }
-        if(i != null)
+        if (i != null)
             startActivity(i);
     }
 }
