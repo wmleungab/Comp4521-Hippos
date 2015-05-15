@@ -17,8 +17,8 @@ public class Inventory {
         _id = -2;
     }
 
-    public Inventory(String pName, int pCatId, int pPrice, String pfileName) {
-        _id = -1;
+    public Inventory(long pId, String pName, int pCatId, int pPrice, String pfileName) {
+        _id = pId;
         name = pName;
         catId = pCatId;
         price = pPrice;

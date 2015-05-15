@@ -1,5 +1,8 @@
 package com.hkust.comp4521.hippos;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -24,11 +27,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.skyfishjy.library.RippleBackground;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,17 +56,36 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     // View name of the header title. Used for activity scene transitions
     public static final String VIEW_NAME_HEADER_TITLE = "detail:header:title";
 
+    // Views
     private ImageView mHeaderImageView;
     private TextView mHeaderTitle;
     private ImageButton btnBack, btnCamera;
     private LinearLayout btnNFCAssign;
 
+    // Activity-related
+    private Activity mActivity;
+    private Context mContext;
+    final MaterialDialog mMaterialDialog;
+
+    // Data structure
     private Inventory mItem;
+
+    // Services
+    private NFCService mNFC;
+
+    {
+         mMaterialDialog = new MaterialDialog(InventoryDetailsActivity.this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_details);
+
+        mActivity = this;
+        mContext = this;
+
+        mNFC = new NFCService(mActivity, mContext);
 
         // get information from previous activity
         Bundle bundle = this.getIntent().getExtras();
@@ -81,6 +108,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             getWindow().setExitTransition(fade);
             getWindow().setEnterTransition(fade);
         }
+
     }
 
     private void initViews() {
@@ -111,13 +139,15 @@ public class InventoryDetailsActivity extends ActionBarActivity {
                 // inflate view for dialog
                 LayoutInflater mInflater = getLayoutInflater().from(InventoryDetailsActivity.this);
                 View vv = mInflater.inflate(R.layout.dialog_nfc_assign, null);
-                final MaterialDialog mMaterialDialog = new MaterialDialog(InventoryDetailsActivity.this).setContentView(vv);
+                mMaterialDialog.setContentView(vv);
                 mMaterialDialog.setNegativeButton("Cancel", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mNFC.WriteModeOff();
                         mMaterialDialog.dismiss();
                     }
                 });
+                mNFC.WriteModeOn();
                 mMaterialDialog.show();
                 // start ripple animation
                 final RippleBackground rippleBackground=(RippleBackground) vv.findViewById(R.id.content);
@@ -152,6 +182,43 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mNFC.WriteModeOff();
         TintedStatusBar.changeStatusBarColor(this, this.getResources().getColor(R.color.green_primary));
+    }
+
+
+    // NFC intent received actions
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(mNFC.discoverTag(intent) != null) {
+            String jsonStr = "";
+            JSONObject jsonObj = new JSONObject();
+            try {
+                jsonObj.put("inventory_id", mItem.getId());
+                jsonObj.put("category_id", mItem.getCatId());
+                jsonStr = jsonObj.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mNFC.writeTag(jsonStr, new NFCService.NFCWriteTagListener() {
+                @Override
+                public void onTagWrite(String writeStr) {
+                    Toast.makeText(mContext, "NFC write successfully", Toast.LENGTH_SHORT).show();
+                    //mNFC.WriteModeOff();
+                    mMaterialDialog.dismiss();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mNFC.WriteModeOff();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

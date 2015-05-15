@@ -43,18 +43,16 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
 
         @Override
         public void onBindViewHolder(InvoiceInventoryViewHolder contactViewHolder, int i) {
-             //Inventory ci = invList.get(i);
-             /*contactViewHolder.itemName.setText(ci.getName());
-                             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
-                             contactViewHolder.itemStock.setText("x1");
-                             contactViewHolder.catId = categoryId;
-                             contactViewHolder.invId = i;
-                             contactViewHolder.mListener = mOnClickListener;
-                            try {
-                                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }*/
+             Inventory ci = invList.get(i).getInventory();
+             contactViewHolder.itemName.setText(ci.getName());
+             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
+             contactViewHolder.itemStock.setText("x1");
+             contactViewHolder.invId = i;
+            try {
+                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

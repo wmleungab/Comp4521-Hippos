@@ -66,36 +66,36 @@ public class Commons {
 
         // Unsorted
         list = inventoryList.get(0);
-        list.add(new Inventory("Dog Doll", 0, 100, "dog_doll"));
-        list.add(new Inventory("The Flight Book", 0, 100, "flight_book"));
-        list.add(new Inventory("Poster Card", 0, 100, "poster_card"));
-        list.add(new Inventory("Butterfly Bookmark", 0, 100, "butterfly_bookmark"));
+        list.add(new Inventory(1,"Dog Doll", 0, 100, "dog_doll"));
+        list.add(new Inventory(2,"The Flight Book", 0, 100, "flight_book"));
+        list.add(new Inventory(3,"Poster Card", 0, 100, "poster_card"));
+        list.add(new Inventory(4,"Butterfly Bookmark", 0, 100, "butterfly_bookmark"));
 
         // Books
         list = inventoryList.get(1);
-        list.add(new Inventory("Harry Potter", 0, 100, "harry_potter"));
-        list.add(new Inventory("Tuesdays wth Morrie", 0, 100, "tuesdays_with_morrie"));
-        list.add(new Inventory("Alice's Adventures in Wonderland", 0, 100, "alice_adv_in_wonderland"));
-        list.add(new Inventory("Moby Dick", 0, 100, "moby_dick"));
+        list.add(new Inventory(5,"Harry Potter", 1, 100, "harry_potter"));
+        list.add(new Inventory(6,"Tuesdays wth Morrie", 1, 100, "tuesdays_with_morrie"));
+        list.add(new Inventory(7,"Alice's Adventures in Wonderland", 1, 100, "alice_adv_in_wonderland"));
+        list.add(new Inventory(8,"Moby Dick", 1, 100, "moby_dick"));
 
         // Confectionery
         list = inventoryList.get(2);
-        list.add(new Inventory("Skittles", 0, 100, "skittles"));
-        list.add(new Inventory("M&Ms", 0, 100, "m_and_m"));
-        list.add(new Inventory("Milk Ball", 0, 100, "milk_ball"));
+        list.add(new Inventory(9,"Skittles", 2, 100, "skittles"));
+        list.add(new Inventory(10,"M&Ms", 2, 100, "m_and_m"));
+        list.add(new Inventory(11,"Milk Ball", 2, 100, "milk_ball"));
 
         // Toys
         list = inventoryList.get(3);
-        list.add(new Inventory("Lego Box Set", 0, 100, "lego_boxset"));
-        list.add(new Inventory("RC Car", 0, 100, "rc_car"));
-        list.add(new Inventory("Toy Doll", 0, 100, "toy_doll"));
-        list.add(new Inventory("Rubber Duck", 0, 100, "rubber_duck"));
+        list.add(new Inventory(12,"Lego Box Set", 3, 100, "lego_boxset"));
+        list.add(new Inventory(13,"RC Car", 3, 100, "rc_car"));
+        list.add(new Inventory(14,"Toy Doll", 3, 100, "toy_doll"));
+        list.add(new Inventory(15,"Rubber Duck", 3, 100, "rubber_duck"));
 
         // Stationery
         list = inventoryList.get(4);
-        list.add(new Inventory("Pencil", 0, 100, "pencil"));
-        list.add(new Inventory("Stainless Steel Pen", 0, 100, "steel_pen"));
-        list.add(new Inventory("Correction Tape", 0, 100, "correction_tape"));
-        list.add(new Inventory("A4 Notebook", 0, 100, "a4_notebook"));
+        list.add(new Inventory(16,"Pencil", 4, 100, "pencil"));
+        list.add(new Inventory(17,"Stainless Steel Pen", 4, 100, "steel_pen"));
+        list.add(new Inventory(18,"Correction Tape", 4, 100, "correction_tape"));
+        list.add(new Inventory(19,"A4 Notebook", 4, 100, "a4_notebook"));
     }
 }
