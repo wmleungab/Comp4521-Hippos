@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="72dp">
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="72dp"></View>
+   <de.hdodenhof.circleimageview.CircleImageView
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       android:id="@+id/iv_inventory"
+       android:src="@mipmap/placeholder"
+       android:layout_width="48dp"
+       android:layout_height="48dp"
+       android:layout_marginLeft="16dp"
+       android:layout_centerVertical="true"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentStart="true"
+       app:border_width="0dp"
+       app:border_color="#FF000000"/>
+   <TextView
+       android:layout_width="128dp"
+       android:layout_height="wrap_content"
+       android:textAppearance="?android:attr/textAppearanceMedium"
+       android:text="Item Name"
+       android:id="@+id/tv_inventory_item_name"
+       android:layout_centerVertical="true"
+       android:layout_marginLeft="16dp"
+       android:textColor="@color/text_primary"
+       android:layout_toRightOf="@+id/iv_inventory"
+       android:layout_toEndOf="@+id/iv_inventory" />
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:textAppearance="?android:attr/textAppearanceSmall"
+       android:text="x 1"
+       android:id="@+id/tv_card_inventory_item_stock"
+       android:paddingTop="24dp"
+       android:layout_marginRight="16dp"
+       android:textColor="@color/yellow_primary_dark"
+       android:layout_centerVertical="true"
+       android:layout_alignParentRight="true"/>
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:textAppearance="?android:attr/textAppearanceSmall"
+       android:text="$123.00"
+       android:id="@+id/tv_card_inventory_item_price"
+       android:layout_marginRight="16dp"
+       android:paddingBottom="24dp"
+       android:textColor="@color/text_primary"
+       android:layout_centerVertical="true"
+       android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

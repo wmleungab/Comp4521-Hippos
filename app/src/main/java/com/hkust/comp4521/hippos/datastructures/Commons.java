@@ -10,6 +10,10 @@ public class Commons {
     private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
 
+    // Adapter modes
+    public static int MODE_NEW_INVOICE = 0;
+    public static int MODE_SALES_CONFIRM = 1;
+
     private static ArrayList<ArrayList<Inventory>> inventoryList = null;
     private static int lastUpdate = -1;
 
@@ -34,8 +38,16 @@ public class Commons {
         return inventoryList.get(cIndex).get(iIndex);
     }
 
-    public static String[] getCategories() {
+    public static String[] getCategoryTabs() {
         return INVENTORY_CATEGORY;
+    }
+
+    public static Inventory getRandomInventory() {
+        int catId = (int) Math.random() * getCategoryCount();
+        ArrayList<Inventory> list = inventoryList.get(catId);
+        int invId = (int) Math.random() * list.size();
+        Inventory toReturn = list.get(invId);
+        return toReturn;
     }
 
     public static String[] getSalesHistoryTabs() {

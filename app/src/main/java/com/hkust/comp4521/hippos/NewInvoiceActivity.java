@@ -1,37 +1,30 @@
 package com.hkust.comp4521.hippos;
 
-import android.content.Intent;
-import android.graphics.Point;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.services.ThreadService;
+import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
-import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class NewInvoiceActivity extends AppCompatActivity {
 
     private RelativeLayout mActionBar;
+    private ImageButton btnAddFromInventoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +32,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_invoice);
 
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
+        btnAddFromInventoryList = (ImageButton) findViewById(R.id.ib_new_invoice_add_from_inv_list);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
 
         RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
@@ -47,9 +41,17 @@ public class NewInvoiceActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        final List<Inventory> addedList = new ArrayList<Inventory>();
-        InvoiceInventoryListAdapter adapter = new InvoiceInventoryListAdapter(this, 1);
+        final InvoiceInventoryListAdapter adapter = new InvoiceInventoryListAdapter(this, Commons.MODE_NEW_INVOICE);
         recList.setAdapter(adapter);
+        recList.setItemAnimator(new DefaultItemAnimator());
+
+        btnAddFromInventoryList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Inventory inv = Commons.getRandomInventory();
+                adapter.addItem(new InvoiceInventory(inv, 1));
+            }
+        });
     }
 
     @Override

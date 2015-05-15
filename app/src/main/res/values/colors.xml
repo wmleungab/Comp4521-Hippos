@@ -28,4 +28,6 @@
 
     <color name="text_primary">#343434</color>
     <color name="text_description">#898989</color>
+
+    <color name="icon_dark">#696969</color>
 </resources>

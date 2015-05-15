@@ -1,15 +1,8 @@
 package com.hkust.comp4521.hippos;
 
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,11 +11,8 @@ import android.widget.RelativeLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
-import com.hkust.comp4521.hippos.views.InventoryListAdapter;
-import com.hkust.comp4521.hippos.views.InventoryListViewPagerAdapter;
-import com.hkust.comp4521.hippos.views.SalesHistoryViewPagerAdapter;
+import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +38,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
 
-    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-            "Sep", "Oct", "Nov", "Dec",};
+    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",};
 
-    public final static String[] days = new String[]{"Mon", "Tue", "Wen", "Thu", "Fri", "Sat", "Sun",};
+    public final static String[] days = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",};
 
     private LineChartView chartTop;
     private ColumnChartView chartBottom;
@@ -83,7 +72,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // Initialize ViewPager
         mViewPager = (ViewPager) findViewById(R.id.vp_sales_history);
-        mViewPager.setAdapter(new SalesHistoryViewPagerAdapter(viewList));
+        mViewPager.setAdapter(new ViewPagerAdapter(viewList, Commons.getSalesHistoryTabs()));
         mViewPager.setCurrentItem(0);
 
         // Bind the tabs to the ViewPager

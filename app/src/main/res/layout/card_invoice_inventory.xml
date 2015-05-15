@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-             xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:id="@+id/card_view"
-             android:layout_width="match_parent"
-             android:layout_height="72dp"
-             card_view:cardCornerRadius="4dp"
-             android:layout_margin="4dp">
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            card_view:cardCornerRadius="4dp"
+            android:layout_margin="4dp">
 
        <RelativeLayout
               android:layout_width="match_parent"
@@ -17,8 +17,8 @@
                xmlns:app="http://schemas.android.com/apk/res-auto"
                android:id="@+id/iv_inventory"
                android:src="@mipmap/placeholder"
-               android:layout_width="56dp"
-               android:layout_height="56dp"
+               android:layout_width="48dp"
+               android:layout_height="48dp"
                android:layout_marginLeft="16dp"
                android:layout_centerVertical="true"
                android:layout_alignParentLeft="true"
@@ -26,7 +26,7 @@
                app:border_width="0dp"
                app:border_color="#FF000000"/>
            <TextView
-               android:layout_width="wrap_content"
+               android:layout_width="128dp"
                android:layout_height="wrap_content"
                android:textAppearance="?android:attr/textAppearanceMedium"
                android:text="Item Name"
@@ -41,12 +41,13 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:textAppearance="?android:attr/textAppearanceSmall"
-               android:text="Stock: 1"
+               android:text="x 1"
                android:id="@+id/tv_card_inventory_item_stock"
-               android:layout_marginBottom="16dp"
-               android:textColor="@color/text_description"
-               android:layout_alignParentRight="true"
-               android:layout_alignParentBottom="true"/>
+               android:paddingTop="24dp"
+               android:layout_marginRight="44dp"
+               android:textColor="@color/yellow_primary_dark"
+               android:layout_centerVertical="true"
+               android:layout_alignParentRight="true"/>
 
            <TextView
                android:layout_width="wrap_content"
@@ -54,11 +55,31 @@
                android:textAppearance="?android:attr/textAppearanceSmall"
                android:text="$123.00"
                android:id="@+id/tv_card_inventory_item_price"
-               android:layout_marginEnd="16dp"
-               android:layout_marginRight="16dp"
-               android:layout_marginBottom="16dp"
+               android:layout_marginRight="40dp"
+               android:paddingBottom="24dp"
                android:textColor="@color/text_primary"
-               android:layout_alignParentBottom="true"
+               android:layout_centerVertical="true"
                android:layout_alignParentRight="true"/>
+
+           <ImageButton
+               android:id="@+id/ib_invoice_inventory_add"
+               style="?android:attr/borderlessButtonStyle"
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:layout_centerVertical="true"
+               android:padding="8dp"
+               android:scaleType="fitCenter"
+               android:layout_alignParentRight="true"
+               android:src="@mipmap/plus_dark" />
+           <ImageButton
+               android:id="@+id/ib_invoice_inventory_subtract"
+               style="?android:attr/borderlessButtonStyle"
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:layout_centerVertical="true"
+               android:padding="8dp"
+               android:scaleType="fitCenter"
+               android:layout_toLeftOf="@id/tv_card_inventory_item_price"
+               android:src="@mipmap/minus_dark" />
        </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -6,27 +6,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInventoryListAdapter.InventoryViewHolder>{
+public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInventoryListAdapter.InvoiceInventoryViewHolder>{
 
-        private int categoryId;
         private Context mContext;
-        private List<Inventory> invList;
-        private OnInventoryClickListener mOnClickListener;
+        private int mode = -1;
+        private List<InvoiceInventory> invList;
 
-        public InvoiceInventoryListAdapter(Context pCon, int cId) {
+        public InvoiceInventoryListAdapter(Context pCon, int mode) {
             this.mContext = pCon;
-            this.categoryId = cId;
-            this.invList = Commons.getInventoryList(cId);
+            this.invList = new ArrayList<InvoiceInventory>();
+            this.mode = mode;
         }
          
         @Override
@@ -34,66 +36,55 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
             return invList.size();
         }
 
-        @Override
-        public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
-             Inventory ci = invList.get(i);
-             contactViewHolder.itemName.setText(ci.getName());
-             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
-             contactViewHolder.itemStock.setText("Stock: 12");
-             contactViewHolder.catId = categoryId;
-             contactViewHolder.invId = i;
-             contactViewHolder.mListener = mOnClickListener;
-            try {
-                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void setOnClickListener(OnInventoryClickListener ocl) {
-            mOnClickListener = ocl;
+        public void addItem(InvoiceInventory mInv) {
+            invList.add(mInv);
+            this.notifyItemInserted(invList.size() - 1);
         }
 
         @Override
-        public InventoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        public void onBindViewHolder(InvoiceInventoryViewHolder contactViewHolder, int i) {
+             //Inventory ci = invList.get(i);
+             /*contactViewHolder.itemName.setText(ci.getName());
+                             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
+                             contactViewHolder.itemStock.setText("x1");
+                             contactViewHolder.catId = categoryId;
+                             contactViewHolder.invId = i;
+                             contactViewHolder.mListener = mOnClickListener;
+                            try {
+                                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }*/
+        }
+
+        @Override
+        public InvoiceInventoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext()).
             inflate(R.layout.card_invoice_inventory, viewGroup, false);
-            return new InventoryViewHolder(itemView);
+            return new InvoiceInventoryViewHolder(itemView);
         }
 
-    // Interface for onClick function in the adapter
-    public interface OnInventoryClickListener {
-        public void onClick(View v, int cId, int iId);
-    }
+        public static class InvoiceInventoryViewHolder extends RecyclerView.ViewHolder {
+                protected TextView itemName;
+                protected TextView itemPrice;
+                protected TextView itemStock;
+                protected ImageView heroImage;
+                protected ImageButton btnAdd, btnSubtract;
 
-    public static class InventoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            protected TextView itemName;
-            protected TextView itemPrice;
-            protected TextView itemStock;
-            protected ImageView heroImage;
+                // Info used for referring in OnClick method
+                protected int invId;
 
-            // Info used for referring in OnClick method
-            protected int catId;
-            protected int invId;
-            protected OnInventoryClickListener mListener;
-
-            public InventoryViewHolder(View v) {
-                super(v);
-                catId = -1;
-                invId = -1;
-                itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
-                itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
-                itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
-                heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
-                v.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                // trigger on click method from delegated listener
-                //mListener.onClick(v, catId, invId);
-            }
-    }
+                public InvoiceInventoryViewHolder(View v) {
+                    super(v);
+                    invId = -1;
+                    itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
+                    itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
+                    itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
+                    heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
+                    btnAdd = (ImageButton) v.findViewById(R.id.ib_invoice_inventory_add);
+                    btnSubtract = (ImageButton) v.findViewById(R.id.ib_invoice_inventory_add);
+                }
+        }
 
 }
 

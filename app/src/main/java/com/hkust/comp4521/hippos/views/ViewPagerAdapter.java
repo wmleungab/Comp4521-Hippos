@@ -11,15 +11,17 @@ import java.util.List;
 /**
  * Created by TC on 4/27/2015.
  */
-public class InventoryListViewPagerAdapter extends PagerAdapter {
+public class ViewPagerAdapter extends PagerAdapter {
     private List<View> mListViews;
+    private String[] mTabsName;
 
     public CharSequence getPageTitle(int position) {
-        return Commons.getCategories()[position];
+        return mTabsName[position];
     }
 
-    public InventoryListViewPagerAdapter(List<View> mListViews) {
+    public ViewPagerAdapter(List<View> mListViews, String[] mTabsName) {
         this.mListViews = mListViews;
+        this.mTabsName = mTabsName;
     }
 
     @Override
