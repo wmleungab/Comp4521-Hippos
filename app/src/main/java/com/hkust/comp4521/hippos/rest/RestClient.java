@@ -51,7 +51,7 @@ public class RestClient {
             instance.login(email, password, new RestListener<User>() {
                 @Override
                 public void onSuccess(User user) {
-                    Commons.setUserId(user.id);
+                    Commons.setUser(user);
                 }
 
                 @Override

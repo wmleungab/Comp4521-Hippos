@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Commons {
 
-    private static int userId = -1;
+    private static User user = null;
 
     private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
@@ -25,22 +25,37 @@ public class Commons {
     public static int MODE_NEW_INVOICE = 0;
     public static int MODE_SALES_CONFIRM = 1;
 
+    private static List<Category> categoryList = null;
     private static HashMap<Integer, ArrayList<Inventory>> inventoryList = null;
     private static int lastUpdate = -1;
 
     public static int getCategoryCount() {
-        return inventoryList.size();
+        if(categoryList == null)
+            return -1;
+        return categoryList.size();
     }
 
     public static ArrayList<Inventory> getInventoryList(int index) {
+        if(inventoryList == null)
+            return null;
         return inventoryList.get(index);
     }
 
+    public static Category getCategory(int cIndex) {
+        if(categoryList == null)
+            return null;
+        return categoryList.get(cIndex);
+    }
+
     public static Inventory getInventory(int cIndex, int iIndex) {
+        if(inventoryList == null)
+            return null;
         return inventoryList.get(cIndex).get(iIndex);
     }
 
     public static String[] getCategoryTabs() {
+        if(categoryList == null)
+            return null;
         return INVENTORY_CATEGORY;
     }
 
@@ -64,14 +79,21 @@ public class Commons {
         }
         inventoryList = new HashMap<Integer, ArrayList<Inventory>>();
         final RestClient rc = RestClient.getInstance();
+        // Init Category information
         rc.getAllCategory(new RestListener<List<Category>>() {
             @Override
             public void onSuccess(List<Category> categories) {
                 if (categories != null) {
                     Log.i("Commons", "Get category list");
+                    categoryList = categories;
+                    INVENTORY_CATEGORY = new String[categories.size()];
                     for (Category c : categories) {
                         inventoryList.put(c.getID(), new ArrayList<Inventory>());
                     }
+                    for(int i = 0; i < categories.size(); i++) {
+                        INVENTORY_CATEGORY[i] = categories.get(i).getName();
+                    }
+                    // Init Inventory information
                     rc.getAllInventory(new RestListener<List<Inventory>>() {
                         @Override
                         public void onSuccess(List<Inventory> netInventories) {
@@ -103,11 +125,11 @@ public class Commons {
         public void onInitialized();
     }
 
-    public static int getUserId() {
-        return userId;
+    public static User getUser() {
+        return user;
     }
 
-    public static void setUserId(int userId) {
-        Commons.userId = userId;
+    public static void setUser(User user) {
+        Commons.user = user;
     }
 }
