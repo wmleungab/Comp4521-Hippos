@@ -12,11 +12,6 @@ public class Response_InventoryList {
     public String message;
     List<NetInventory> inventory;
 
-    public List<NetInventory> getCategoryList() {
-
-        return this.inventory;
-    }
-
     public List<NetInventory> getInventoryList() {
         return inventory;
     }

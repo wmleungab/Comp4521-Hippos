@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos.rest;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
+import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.NetInventory;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
@@ -61,7 +62,8 @@ public class RestClient {
             }
             @Override
             public void failure(RetrofitError error) {
-
+                if (error.getResponse().getStatus() == 400)
+                    rl.onFailure(RestListener.INVALID_EMAIL);
             }
         });
     }
@@ -261,7 +263,7 @@ public class RestClient {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
         } else if (updatedName.equals("") || updatedName == null || id < 0
-                || updatedPrice < 0 || updatedStock < 0 || updatedStatus < 0 || updatedCategory < 0) {
+                || updatedPrice < 0 || updatedStock < 0 || updatedCategory < 0) {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
@@ -290,6 +292,166 @@ public class RestClient {
                     @Override
                     public void failure(RetrofitError error) {
 
+            }
+        });
+    }
+
+    public void getInvoice(final int id, final RestListener<Invoice> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (id < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.getInvoice(authorization, id, new Callback<Response_Invoice>() {
+
+            @Override
+            public void success(Response_Invoice response_invoice, Response response) {
+                Invoice invoice = response_invoice.getInvoice();
+                restListener.onSuccess(invoice);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getResponse().getStatus() == 404)
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+            }
+        });
+    }
+
+    public void getAllInvoice(final RestListener<List<Invoice>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
+        serverAPI.getAllInvoice(authorization, new Callback<Response_InvoiceList>() {
+            @Override
+            public void success(Response_InvoiceList response_invoiceList, Response response) {
+                if (!response_invoiceList.error) {
+                    restListener.onSuccess(response_invoiceList.getInvoiceList());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public void getMonthlyInvoice(final RestListener<List<Invoice>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
+        serverAPI.getMonthlyInvoice(authorization, new Callback<Response_InvoiceList>() {
+            @Override
+            public void success(Response_InvoiceList response_invoiceList, Response response) {
+                if (!response_invoiceList.error) {
+                    restListener.onSuccess(response_invoiceList.getInvoiceList());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public void getDailyInvoice(final RestListener<List<Invoice>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
+        serverAPI.getDailyInvoice(authorization, new Callback<Response_InvoiceList>() {
+            @Override
+            public void success(Response_InvoiceList response_invoiceList, Response response) {
+                if (!response_invoiceList.error) {
+                    restListener.onSuccess(response_invoiceList.getInvoiceList());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public void createInvoice(final double total_price, final double final_price,
+                              final String content, final String email, final RestListener<Invoice> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (content.equals("") || content == null ||
+                email.equals("") || email == null || total_price < 0 || final_price < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.createInvoice(authorization, total_price, final_price, content, email, new Callback<Response_Invoice>() {
+            @Override
+            public void success(Response_Invoice response_invoice, Response response) {
+                if (!response_invoice.error) {
+                    getInvoice(response_invoice.getID(), new RestListener<Invoice>() {
+                        @Override
+                        public void onSuccess(Invoice invoice) {
+                            restListener.onSuccess(invoice);
+                        }
+
+                        @Override
+                        public void onFailure(int status) {
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getResponse().getStatus() == 400)
+                    restListener.onFailure(RestListener.INVALID_EMAIL);
+            }
+        });
+    }
+
+    public void updateInvoice(final int id, final double updatedTotal_price, final double updatedFinal_price,
+                              final String updatedContent, final String updatedEmail, final int updatedStatus, final RestListener<Invoice> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (updatedContent.equals("") || updatedContent == null ||
+                updatedEmail.equals("") || updatedEmail == null || updatedTotal_price < 0 || updatedFinal_price < 0 || id < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.updateInvoice(authorization, id, updatedTotal_price, updatedFinal_price, updatedContent, updatedEmail, updatedStatus, new Callback<Response_Invoice>() {
+            @Override
+            public void success(Response_Invoice response_invoice, Response response) {
+                if (!response_invoice.error) {
+                    getInvoice(id, new RestListener<Invoice>() {
+                        @Override
+                        public void onSuccess(Invoice invoice) {
+                            restListener.onSuccess(invoice);
+                        }
+
+                        @Override
+                        public void onFailure(int status) {
+
+                        }
+                    });
+                } else {
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getResponse().getStatus() == 400)
+                    restListener.onFailure(RestListener.INVALID_EMAIL);
             }
         });
     }
