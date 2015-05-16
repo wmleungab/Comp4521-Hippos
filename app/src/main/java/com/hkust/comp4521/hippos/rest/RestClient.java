@@ -1,12 +1,16 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.util.Log;
+
 import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import retrofit.Callback;
@@ -19,11 +23,9 @@ import retrofit.client.Response;
  * Created by Yman on 15/5/2015.
  */
 public class RestClient {
-    private static RestClient instance;
     public static final String SERVER_ID = "ec2-54-92-12-108.ap-northeast-1.compute.amazonaws.com/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
-
-
+    private static RestClient instance;
     private static ServerAPI serverAPI;
     private String authorization;
 
@@ -478,5 +480,45 @@ public class RestClient {
                     restListener.onFailure(RestListener.INVALID_EMAIL);
             }
         });
+    }
+
+    public void fileUpload(String name, String exten, InputStream fileIS, final RestListener<String> restListener) {
+        if (fileIS == null) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        // String content = new Scanner(fileIS).useDelimiter("\\Z").next();
+        String content = "";
+        byte[] buffer = null;
+        int size = 0;
+        try {
+            size = fileIS.available();
+            Log.i(" restClient", "" + size);
+            buffer = new byte[size];
+            int read = fileIS.read(buffer);
+            Log.i(" restClient", "read=" + read);
+            fileIS.close();
+            content = new String(buffer, "UTF-8");
+            Log.i(" restClient", "" + content.length());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        serverAPI.uploadFile(authorization, name, exten, content, new Callback<Response_FileUpload>() {
+            @Override
+            public void success(Response_FileUpload response_fileUpload, Response response) {
+                if (!response_fileUpload.error) {
+                    restListener.onSuccess(response_fileUpload.path);
+                } else {
+                    restListener.onFailure(RestListener.UPLOAD_FAIL);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                restListener.onFailure(RestListener.UPLOAD_FAIL);
+            }
+        });
+
     }
 }

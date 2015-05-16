@@ -75,4 +75,12 @@
         android:layout_centerHorizontal="true"
         android:text="updateCat" />
 
+    <Button
+        android:id="@+id/upload_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/setting_btn"
+        android:layout_centerHorizontal="true"
+        android:text="Upload  a file" />
+
 </RelativeLayout>

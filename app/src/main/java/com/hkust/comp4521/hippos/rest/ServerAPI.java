@@ -69,4 +69,8 @@ public interface ServerAPI {
     @PUT("/invoice/{id}")
     void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price
             , @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
+
+    @FormUrlEncoded
+    @POST("/upload")
+    void uploadFile(@Header("Authorization") String authorization, @Field("name") String fileName, @Field("extension") String fileExten, @Field("content") String fileContent, Callback<Response_FileUpload> callback);
 }

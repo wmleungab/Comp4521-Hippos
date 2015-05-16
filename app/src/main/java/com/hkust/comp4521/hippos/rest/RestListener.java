@@ -10,6 +10,7 @@ public interface RestListener<T> {
     public static final int INVALID_PARA = 2;
     public static final int NOT_EXIST_OR_SAME_VALUE = 3;
     public static final int INVALID_EMAIL = 4;
+    public static final int UPLOAD_FAIL = 5;
 
     public void onSuccess(T t);
 
