@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,10 +21,13 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
 import com.nineoldandroids.view.ViewHelper;
+
+import java.io.IOException;
 
 
 public class SalesDetailsActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
@@ -82,9 +87,23 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
                 adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
                 */
         LinearLayout llInvoiceItems = (LinearLayout) findViewById(R.id.ll_sales_details_invoice_items);
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<5; i++) {
+            Inventory ci = Commons.getRandomInventory();
             View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
             llInvoiceItems.addView(itemView);
+            TextView tv = (TextView) itemView.findViewById(R.id.tv_inventory_item_name);
+            tv.setText(ci.getName());
+            tv = (TextView) itemView.findViewById(R.id.tv_card_inventory_item_price);
+            tv.setText("$" + ci.getPrice());
+            tv = (TextView) itemView.findViewById(R.id.tv_card_inventory_item_stock);
+            tv.setText("x1");
+            ImageView heroImage = (ImageView) itemView.findViewById(R.id.iv_inventory);
+            /*
+            try {
+                heroImage.setImageDrawable(Drawable.createFromStream(this.getAssets().open(ci.getFileName() + ".jpg"), null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
         }
     }
 

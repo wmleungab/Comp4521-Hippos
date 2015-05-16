@@ -43,11 +43,12 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
+            /*
             try {
                 contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {

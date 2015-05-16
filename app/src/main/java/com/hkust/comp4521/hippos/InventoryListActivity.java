@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
@@ -29,6 +30,12 @@ import java.util.List;
 
 public class InventoryListActivity extends AppCompatActivity {
 
+    // Mode Flag
+    public static int MODE_NORMAL = 0;
+    public static int MODE_SELECT_INVENTORY = 1;
+    private int currentMode = MODE_NORMAL;
+
+    // Views
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
     List<View> viewList;
@@ -37,6 +44,23 @@ public class InventoryListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
+
+        // Initialize Inventory List
+        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+            @Override
+            public void onInitialized() {
+                Toast.makeText(InventoryListActivity.this, "Loaded List", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // change onclicklistener behaviour for different mode
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Boolean modeChange = extras.getBoolean("selection_mode");
+            if(modeChange) {
+                currentMode = MODE_SELECT_INVENTORY;
+            }
+        }
 
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
@@ -78,19 +102,28 @@ public class InventoryListActivity extends AppCompatActivity {
                 public void onClick(View v, int catId, int invId) {
                     // get position of the card
                     Inventory item = Commons.getInventory(catId, invId);
-                    Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Inventory.INVENTORY_CAT_ID, catId);
-                    bundle.putInt(Inventory.INVENTORY_INV_ID, invId);
-                    intent.putExtras(bundle);
-                    ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            InventoryListActivity.this,
-                            new Pair<View, String>(v.findViewById(R.id.iv_inventory), InventoryDetailsActivity.VIEW_NAME_HEADER_IMAGE),
-                            new Pair<View, String>(v.findViewById(R.id.tv_inventory_item_name), InventoryDetailsActivity.VIEW_NAME_HEADER_TITLE)
-                    );
-                    // Now we can start the Activity, providing the activity options as a bundle
-                    ActivityCompat.startActivity(InventoryListActivity.this, intent, activityOptions.toBundle());
-
+                    if(currentMode == MODE_NORMAL) {
+                        Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Inventory.INVENTORY_CAT_ID, catId);
+                        bundle.putInt(Inventory.INVENTORY_INV_ID, invId);
+                        intent.putExtras(bundle);
+                        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                InventoryListActivity.this,
+                                new Pair<View, String>(v.findViewById(R.id.iv_inventory), InventoryDetailsActivity.VIEW_NAME_HEADER_IMAGE),
+                                new Pair<View, String>(v.findViewById(R.id.tv_inventory_item_name), InventoryDetailsActivity.VIEW_NAME_HEADER_TITLE)
+                        );
+                        // Now we can start the Activity, providing the activity options as a bundle
+                        ActivityCompat.startActivity(InventoryListActivity.this, intent, activityOptions.toBundle());
+                    } else if(currentMode == MODE_SELECT_INVENTORY) {
+                        Intent i=new Intent();
+                        Bundle b=new Bundle();
+                        b.putInt("category_id", catId);
+                        b.putInt("inventory_id", invId);
+                        i.putExtras(b);
+                        setResult(RESULT_OK, i);
+                        finish();
+                    }
                 }
             });
             recList.setAdapter(adapter);

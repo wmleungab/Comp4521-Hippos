@@ -43,12 +43,12 @@ public class InventoryDB {
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_NAME, item.getName());
-        cv.put(COLUMN_CATEGORY, item.getCatId());
+        cv.put(COLUMN_CATEGORY, item.getCategory());
         cv.put(COLUMN_PRICE, item.getPrice());
 
         long id = db.insert(TABLE_NAME, null, cv);
 
-        item.setId(id);
+        item.setId((int) id);
         return item;
     }
 
@@ -56,7 +56,7 @@ public class InventoryDB {
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_NAME, item.getName());
-        cv.put(COLUMN_CATEGORY, item.getCatId());
+        cv.put(COLUMN_CATEGORY, item.getCategory());
         cv.put(COLUMN_PRICE, item.getPrice());
 
         String where = COLUMN_ID + "=" + item.getId();
@@ -98,9 +98,9 @@ public class InventoryDB {
     public Inventory getRecord(Cursor cursor) {
         Inventory result = new Inventory();
 
-        result.setId(cursor.getLong(0));
+        result.setId(cursor.getInt(0));
         result.setName(cursor.getString(1));
-        result.setCatId(cursor.getInt(2));
+        result.setCategory(cursor.getInt(2));
         result.setPrice(cursor.getFloat(3));
 
         return result;

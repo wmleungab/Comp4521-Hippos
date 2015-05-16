@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.hkust.comp4521.hippos.datastructures.NetInventory;
+import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
@@ -78,17 +79,17 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 int category = 5;
 
 
-                rc.createInventory(name, price, stock, category, new RestListener<NetInventory>() {
+                rc.createInventory(name, price, stock, category, new RestListener<Inventory>() {
 
                     @Override
-                    public void onSuccess(NetInventory netInventory) {
+                    public void onSuccess(Inventory inventory) {
                         TextView tv = (TextView) findViewById(R.id.textView333);
-                        tv.setText("name: " + netInventory.getName() + "\n" +
-                                "Price: " + netInventory.getPrice() + "\n" +
-                                "Stock: " + netInventory.getStock() + "\n" +
-                                "Status: " + netInventory.getStatus() + "\n" +
-                                "TimeStamp: " + netInventory.getTimeStamp() + "\n" +
-                                "Category: " + netInventory.getCategory() + "\n");
+                        tv.setText("name: " + inventory.getName() + "\n" +
+                                "Price: " + inventory.getPrice() + "\n" +
+                                "Stock: " + inventory.getStock() + "\n" +
+                                "Status: " + inventory.getStatus() + "\n" +
+                                "TimeStamp: " + inventory.getTimeStamp() + "\n" +
+                                "Category: " + inventory.getCategory() + "\n");
                     }
 
                     @Override
@@ -101,16 +102,16 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
             case R.id.invent_get_btn: {
                 EditText ed = (EditText) findViewById(R.id.editText3);
 
-                rc.getInventory(Integer.parseInt(ed.getText().toString()), new RestListener<NetInventory>() {
+                rc.getInventory(Integer.parseInt(ed.getText().toString()), new RestListener<Inventory>() {
                     @Override
-                    public void onSuccess(NetInventory netInventory) {
+                    public void onSuccess(Inventory inventory) {
                         TextView tv = (TextView) findViewById(R.id.textView333);
-                        tv.setText("name: " + netInventory.getName() + "\n" +
-                                "Price: " + netInventory.getPrice() + "\n" +
-                                "Stock: " + netInventory.getStock() + "\n" +
-                                "Status: " + netInventory.getStatus() + "\n" +
-                                "TimeStamp: " + netInventory.getTimeStamp() + "\n" +
-                                "Category: " + netInventory.getCategory() + "\n");
+                        tv.setText("name: " + inventory.getName() + "\n" +
+                                "Price: " + inventory.getPrice() + "\n" +
+                                "Stock: " + inventory.getStock() + "\n" +
+                                "Status: " + inventory.getStatus() + "\n" +
+                                "TimeStamp: " + inventory.getTimeStamp() + "\n" +
+                                "Category: " + inventory.getCategory() + "\n");
                     }
 
                     @Override
@@ -124,18 +125,12 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 break;
             }
             case R.id.get_all_inv_btn: {
-                rc.getAllInventory(new RestListener<List<NetInventory>>() {
+                rc.getAllInventory(new RestListener<List<Inventory>>() {
 
                     @Override
-                    public void onSuccess(List<NetInventory> netInventories) {
+                    public void onSuccess(List<Inventory> netInventories) {
                         TextView tv = (TextView) findViewById(R.id.textView333);
-                        tv.setText("Size of list= " + netInventories.size() + "\n" +
-                                "name: " + netInventories.get(0).getName() + "\n" +
-                                "Price: " + netInventories.get(0).getPrice() + "\n" +
-                                "Stock: " + netInventories.get(0).getStock() + "\n" +
-                                "Status: " + netInventories.get(0).getStatus() + "\n" +
-                                "TimeStamp: " + netInventories.get(0).getTimeStamp() + "\n" +
-                                "Category: " + netInventories.get(0).getCategory() + "\n");
+                        tv.setText("Size of list= " + netInventories.size() + "\n");
                     }
 
                     @Override
@@ -151,16 +146,16 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 int stock = 10;
                 double price = 60.5;
                 int category = 5;
-                rc.updateInventory(num, name, price, stock, 1, category, new RestListener<NetInventory>() {
+                rc.updateInventory(num, name, price, stock, 1, category, new RestListener<Inventory>() {
                     @Override
-                    public void onSuccess(NetInventory netInventory) {
+                    public void onSuccess(Inventory inventory) {
                         TextView tv = (TextView) findViewById(R.id.textView333);
-                        tv.setText("name: " + netInventory.getName() + "\n" +
-                                "Price: " + netInventory.getPrice() + "\n" +
-                                "Stock: " + netInventory.getStock() + "\n" +
-                                "Status: " + netInventory.getStatus() + "\n" +
-                                "TimeStamp: " + netInventory.getTimeStamp() + "\n" +
-                                "Category: " + netInventory.getCategory() + "\n");
+                        tv.setText("name: " + inventory.getName() + "\n" +
+                                "Price: " + inventory.getPrice() + "\n" +
+                                "Stock: " + inventory.getStock() + "\n" +
+                                "Status: " + inventory.getStatus() + "\n" +
+                                "TimeStamp: " + inventory.getTimeStamp() + "\n" +
+                                "Category: " + inventory.getCategory() + "\n");
                     }
 
                     @Override

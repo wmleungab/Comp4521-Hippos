@@ -1,61 +1,91 @@
 package com.hkust.comp4521.hippos.datastructures;
 
 /**
- * Created by TC on 4/2/2015.
+ * Created by Yman on 15/5/2015.
  */
 public class Inventory {
-    private long _id;
-    private String name;
-    private int catId;
-    private float price;
-    private String fileName;
 
+    // Attributes
+    int id;
+    String name;
+    double price;
+    int stock;
+    int status;
+    String timestamp;
+    int category;
+
+    // Flags
     public static String INVENTORY_CAT_ID = "inventory_catId";
     public static String INVENTORY_INV_ID = "inventory_invId";
 
     public Inventory() {
-        _id = -2;
+
     }
 
-    public Inventory(long pId, String pName, int pCatId, int pPrice, String pfileName) {
-        _id = pId;
-        name = pName;
-        catId = pCatId;
-        price = pPrice;
-        fileName = pfileName;
+    public Inventory(int id, String name, double price, int stock, int status, String timestamp, int category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.status = status;
+        this.timestamp = timestamp;
+        this.category = category;
+
     }
 
-    public long getId() {
-        return _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setId(long _id) {
-        this._id = _id;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getTimeStamp() {
+        return timestamp;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public int getCatId() {
-        return catId;
-    }
-
-    public void setCatId(int catId) {
-        this.catId = catId;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getFileName() { return fileName; }
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 }

@@ -67,14 +67,29 @@ public class NewInvoiceActivity extends AppCompatActivity {
         recList.setAdapter(adapter);
         recList.setItemAnimator(new DefaultItemAnimator());
 
-        /*btnAddFromInventoryList.setOnClickListener(new View.OnClickListener() {
+        btnAddFromInventoryList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Inventory inv = Commons.getRandomInventory();
+                Intent i = new Intent(mContext, InventoryListActivity.class);
+                i.putExtra("selection_mode", true);
+                startActivityForResult(i, InventoryListActivity.MODE_SELECT_INVENTORY);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == InventoryListActivity.MODE_SELECT_INVENTORY) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Bundle b = data.getExtras();
+                Inventory inv = Commons.getInventory(b.getInt("category_id"), b.getInt("inventory_id"));
                 adapter.addItem(new InvoiceInventory(inv, 1));
             }
-        });*/
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,7 +1,10 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.hkust.comp4521.hippos.datastructures.Category;
-import com.hkust.comp4521.hippos.datastructures.NetInventory;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -17,6 +20,8 @@ import retrofit.client.Response;
  * Created by Yman on 15/5/2015.
  */
 public class RestClient {
+    public static RestClient instance;
+
     public static final String SERVER_ID = "ec2-54-92-12-108.ap-northeast-1.compute.amazonaws.com/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
 
@@ -28,20 +33,37 @@ public class RestClient {
         setupRestClient();
     }
 
-    //public static ServerAPI get() {
-    //return serverAPI;
-    // }
     public RestClient() {
         authorization = "";
 
     }
 
+    public static RestClient getInstance() {
+        if(instance == null) {
+            instance = new RestClient();
+            String email = "wmleungab@gmail.com";
+            String password = "456123";
+            instance.login(email, password, new RestListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    Log.i("RestClient", "Logged as: " + user.name);
+                }
+
+                @Override
+                public void onFailure(int status) {
+
+                }
+            });
+        }
+        return instance;
+    }
+
     private static void setupRestClient() {
         RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(SERVER_URL)
-                .setErrorHandler(new RetrofitErrorHandler())
-                .setClient(new OkClient(new OkHttpClient()))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
+                                                    .setEndpoint(SERVER_URL)
+                                                    .setErrorHandler(new RetrofitErrorHandler())
+                                                    .setClient(new OkClient(new OkHttpClient()))
+                                                    .setLogLevel(RestAdapter.LogLevel.FULL);
 
         RestAdapter restAdapter = builder.build();
         serverAPI = restAdapter.create(ServerAPI.class);
@@ -169,7 +191,7 @@ public class RestClient {
         });
     }
 
-    public void createInventory(final String name, final double price, final int stock, final int category, final RestListener<NetInventory> restListener) {
+    public void createInventory(final String name, final double price, final int stock, final int category, final RestListener<Inventory> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
@@ -182,10 +204,10 @@ public class RestClient {
             public void success(Response_Inventory response_inventory, Response response) {
                 if (!response_inventory.error) {
                     // Log.i("RestClient","response_inventory.id= "+response_inventory.getID());
-                    getInventory(response_inventory.getID(), new RestListener<NetInventory>() {
+                    getInventory(response_inventory.getId(), new RestListener<Inventory>() {
                         @Override
-                        public void onSuccess(NetInventory netInventory) {
-                            restListener.onSuccess(netInventory);
+                        public void onSuccess(Inventory inventory) {
+                            restListener.onSuccess(inventory);
                         }
 
                         @Override
@@ -206,7 +228,7 @@ public class RestClient {
 
     }
 
-    public void getInventory(final int id, final RestListener<NetInventory> restListener) {
+    public void getInventory(final int id, final RestListener<Inventory> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
@@ -218,7 +240,7 @@ public class RestClient {
             @Override
             public void success(Response_Inventory response_inventory, Response response) {
                 if (!response_inventory.error) {
-                    NetInventory inventory = response_inventory.getInventory();
+                    Inventory inventory = response_inventory.getInventory();
                     restListener.onSuccess(inventory);
                 }
             }
@@ -231,7 +253,7 @@ public class RestClient {
         });
     }
 
-    public void getAllInventory(final RestListener<List<NetInventory>> restListener) {
+    public void getAllInventory(final RestListener<List<Inventory>> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
@@ -254,7 +276,7 @@ public class RestClient {
 
     public void updateInventory(final int id, final String updatedName
             , final double updatedPrice, final int updatedStock, final int updatedStatus, final int updatedCategory
-            , final RestListener<NetInventory> restListener) {
+            , final RestListener<Inventory> restListener) {
 
 
         if (authorization.equals("")) {
@@ -271,10 +293,10 @@ public class RestClient {
                     @Override
                     public void success(Response_Inventory response_inventory, Response response) {
                         if (!response_inventory.error) {
-                            getInventory(id, new RestListener<NetInventory>() {
+                            getInventory(id, new RestListener<Inventory>() {
                                 @Override
-                                public void onSuccess(NetInventory netInventory) {
-                                    restListener.onSuccess(netInventory);
+                                public void onSuccess(Inventory inventory) {
+                                    restListener.onSuccess(inventory);
                                 }
 
                                 @Override

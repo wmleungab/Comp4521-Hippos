@@ -114,6 +114,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private void initViews() {
         // Header image and tint status bar by extracting Palette
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
+        /*
         try {
             InputStream bmStream = getAssets().open(mItem.getFileName() + ".jpg");
             Bitmap bm = BitmapFactory.decodeStream(bmStream);
@@ -124,7 +125,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             TintedStatusBar.changeStatusBarColor(this, newColor);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         // Item name
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());
@@ -195,7 +196,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             JSONObject jsonObj = new JSONObject();
             try {
                 jsonObj.put("inventory_id", mItem.getId());
-                jsonObj.put("category_id", mItem.getCatId());
+                jsonObj.put("category_id", mItem.getCategory());
                 jsonStr = jsonObj.toString();
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -48,11 +48,12 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
              contactViewHolder.itemPrice.setText("$" + ci.getPrice());
              contactViewHolder.itemStock.setText("x1");
              contactViewHolder.invId = i;
+            /*
             try {
                 contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         @Override

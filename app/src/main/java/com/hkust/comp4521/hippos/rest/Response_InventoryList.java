@@ -1,6 +1,6 @@
 package com.hkust.comp4521.hippos.rest;
 
-import com.hkust.comp4521.hippos.datastructures.NetInventory;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 
 import java.util.List;
 
@@ -10,14 +10,14 @@ import java.util.List;
 public class Response_InventoryList {
     public boolean error;
     public String message;
-    List<NetInventory> inventory;
+    List<Inventory> inventory;
 
-    public List<NetInventory> getCategoryList() {
+    public List<Inventory> getCategoryList() {
 
         return this.inventory;
     }
 
-    public List<NetInventory> getInventoryList() {
+    public List<Inventory> getInventoryList() {
         return inventory;
     }
 }
