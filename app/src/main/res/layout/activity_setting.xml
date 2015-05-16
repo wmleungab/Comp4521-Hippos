@@ -22,4 +22,13 @@
         android:layout_centerVertical="true"
         android:text="TesterButton" />
 
+    <Button
+        android:id="@+id/setting_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setting_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp"
+        android:text="New Button" />
+
 </RelativeLayout>

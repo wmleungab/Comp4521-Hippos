@@ -7,17 +7,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.User;
-import com.hkust.comp4521.hippos.rest.Response_User;
 import com.hkust.comp4521.hippos.rest.RestClient;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class SettingActivity extends Activity implements View.OnClickListener {
     User responseUser;
-
+    RestClient rc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +25,9 @@ public class SettingActivity extends Activity implements View.OnClickListener {
     }
 
     private void init() {
+        rc = new RestClient();
         findViewById(R.id.setting_btn).setOnClickListener(this);
+        findViewById(R.id.setting_btn2).setOnClickListener(this);
     }
 
 
@@ -58,7 +56,7 @@ public class SettingActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         String email = "wmleungab@gmail.com";
-        String password = "45123";
+        String password = "456123";
 //        RestClient.get().login(user.email, user.password, new Callback<Response>() {
 //            @Override
 //            public void success(Response response, Response response2) {
@@ -71,19 +69,15 @@ public class SettingActivity extends Activity implements View.OnClickListener {
 //
 //            }
 //        });
-        RestClient.get().login(email, password, new Callback<Response_User>() {
-            @Override
-            public void success(Response_User responseUser, Response response) {
-                if (!responseUser.error)
-                    ((TextView) findViewById(R.id.setting_textView)).setText(responseUser.apiKey);
-                else ((TextView) findViewById(R.id.setting_textView)).setText(responseUser.message);
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-
+        if (view.getId() == R.id.setting_btn) rc.login(email, password);
+        if (view.getId() == R.id.setting_btn2) {
+            Category c = rc.createCategory("BLURAY");
+            if (c != null) {
+                TextView tv = (TextView) findViewById(R.id.setting_textView);
+                tv.setText(c.getID() + "");
             }
-        });
-        // ((TextView)findViewById(R.id.setting_textView)).setText(n_user.apiKey);
+        }
+
     }
 }
