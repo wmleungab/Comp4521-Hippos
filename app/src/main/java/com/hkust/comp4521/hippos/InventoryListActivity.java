@@ -45,14 +45,6 @@ public class InventoryListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
-        // Initialize Inventory List
-        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
-            @Override
-            public void onInitialized() {
-                Toast.makeText(InventoryListActivity.this, "Loaded List", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         // change onclicklistener behaviour for different mode
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -66,6 +58,19 @@ public class InventoryListActivity extends AppCompatActivity {
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
 
+        // Initialize Inventory List
+        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+            @Override
+            public void onInitialized() {
+                Toast.makeText(InventoryListActivity.this, "Loaded List", Toast.LENGTH_SHORT).show();
+                setupList();
+            }
+        });
+
+    }
+
+    private void setupList() {
+        Toast.makeText(InventoryListActivity.this, "setupList", Toast.LENGTH_SHORT).show();
         // Setup pages of inventories
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();
@@ -95,7 +100,7 @@ public class InventoryListActivity extends AppCompatActivity {
             recList.setLayoutManager(llm);
 
             // Setup list adapter
-            final int cId = i;
+            final int cId = Commons.getCategory(i).getID();
             InventoryListAdapter adapter = new InventoryListAdapter(this, cId);
             adapter.setOnClickListener(new InventoryListAdapter.OnInventoryClickListener() {
                 @Override
