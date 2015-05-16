@@ -47,7 +47,10 @@
             android:label="@string/title_activity_setting" />
         <activity
             android:name=".InventoryTestActivity"
-            android:label="@string/title_activity_inventory_test"></activity>
+            android:label="@string/title_activity_inventory_test" />
+        <activity
+            android:name=".InvoiceTestActivity"
+            android:label="@string/title_activity_invoice_test"></activity>
     </application>
 
 </manifest>

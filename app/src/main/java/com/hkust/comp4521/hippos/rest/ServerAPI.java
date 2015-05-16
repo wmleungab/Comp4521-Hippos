@@ -47,4 +47,26 @@ public interface ServerAPI {
     void updateInventory(@Header("Authorization") String authorization, @Path("id") int id, @Field("name") String name
             , @Field("price") double price, @Field("stock") int stock, @Field("status") int status
             , @Field("category") int category, Callback<Response_Inventory> callback);
+
+    @GET("/invoice/{id}")
+    void getInvoice(@Header("Authorization") String authorization, @Path("id") int id, Callback<Response_Invoice> callback);
+
+    @GET("/invoice/")
+    void getAllInvoice(@Header("Authorization") String authorization, Callback<Response_InvoiceList> callback);
+
+    @GET("/invoice/month/")
+    void getMonthlyInvoice(@Header("Authorization") String authorization, Callback<Response_InvoiceList> callback);
+
+    @GET("/invoice/day/")
+    void getDailyInvoice(@Header("Authorization") String authorization, Callback<Response_InvoiceList> callback);
+
+    @FormUrlEncoded
+    @POST("/invoice")
+    void createInvoice(@Header("Authorization") String authorization, @Field("total_price") double total_price, @Field("final_price") double final_price
+            , @Field("content") String content, @Field("email") String email, Callback<Response_Invoice> callback);
+
+    @FormUrlEncoded
+    @PUT("/invoice/{id}")
+    void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price
+            , @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
 }

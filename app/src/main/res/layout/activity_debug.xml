@@ -1,67 +1,82 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.hkust.comp4521.hippos.DebugActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_gravity="center"
-            android:id="@+id/imageView"
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_logo" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Main Activity"
             android:id="@+id/btn_debug_main"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Invoice Activity "
+            android:layout_gravity="center_horizontal"
+            android:text="Main Activity" />
+
+        <Button
             android:id="@+id/btn_debug_newinvoice"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sales Confirm Activity "
+            android:layout_gravity="center_horizontal"
+            android:text="New Invoice Activity " />
+
+        <Button
             android:id="@+id/btn_debug_salesconfirm"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sales History Activity"
+            android:layout_gravity="center_horizontal"
+            android:text="Sales Confirm Activity " />
+
+        <Button
             android:id="@+id/btn_debug_saleshistory"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inventory List Activity"
+            android:layout_gravity="center_horizontal"
+            android:text="Sales History Activity" />
+
+        <Button
             android:id="@+id/btn_debug_invlist"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Setting Activity"
+            android:layout_gravity="center_horizontal"
+            android:text="Inventory List Activity" />
+
+        <Button
             android:id="@+id/btn_debug_setting"
-            android:layout_gravity="center_horizontal" />
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transfer Activity"
+            android:layout_gravity="center_horizontal"
+            android:text="Setting Activity" />
+
+        <Button
             android:id="@+id/btn_debug_nfctransfer"
-            android:layout_gravity="center_horizontal" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Transfer Activity" />
+
+        <Button
+            android:id="@+id/btn_debug_invoicetest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Invoice Test Activity" />
     </LinearLayout>
 </RelativeLayout>
