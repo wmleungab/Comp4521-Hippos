@@ -15,6 +15,9 @@ import java.util.List;
  * Created by TC on 4/29/2015.
  */
 public class Commons {
+
+    private static int userId = -1;
+
     private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
 
@@ -98,5 +101,13 @@ public class Commons {
 
     public interface onInventoryListInitializedListener {
         public void onInitialized();
+    }
+
+    public static int getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(int userId) {
+        Commons.userId = userId;
     }
 }
