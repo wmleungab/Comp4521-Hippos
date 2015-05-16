@@ -10,4 +10,12 @@ public class User {
     public String password;
     public String apiKey;
     public String createdAt;
+
+    public User(String name, String email, String password, String apiKey, String createdAt) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.apiKey = apiKey;
+        this.createdAt = createdAt;
+    }
 }

@@ -8,4 +8,12 @@ import com.hkust.comp4521.hippos.datastructures.User;
 public class Response_User extends User {
     public boolean error;
     public String message;
+
+    public Response_User(String name, String email, String password, String apiKey, String createdAt) {
+        super(name, email, password, apiKey, createdAt);
+    }
+
+    public User getUser() {
+        return (User) this;
+    }
 }

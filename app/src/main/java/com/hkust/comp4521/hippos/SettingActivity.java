@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
+
+import java.util.List;
 
 public class SettingActivity extends Activity implements View.OnClickListener {
     User responseUser;
@@ -28,6 +32,9 @@ public class SettingActivity extends Activity implements View.OnClickListener {
         rc = new RestClient();
         findViewById(R.id.setting_btn).setOnClickListener(this);
         findViewById(R.id.setting_btn2).setOnClickListener(this);
+        findViewById(R.id.get_all_cat).setOnClickListener(this);
+        findViewById(R.id.getACat_btn).setOnClickListener(this);
+        findViewById(R.id.updateCat_btn).setOnClickListener(this);
     }
 
 
@@ -70,14 +77,98 @@ public class SettingActivity extends Activity implements View.OnClickListener {
 //            }
 //        });
 
-        if (view.getId() == R.id.setting_btn) rc.login(email, password);
-        if (view.getId() == R.id.setting_btn2) {
-            Category c = rc.createCategory("BLURAY");
-            if (c != null) {
-                TextView tv = (TextView) findViewById(R.id.setting_textView);
-                tv.setText(c.getID() + "");
+        if (view.getId() == R.id.setting_btn) rc.login(email, password, new RestListener<User>() {
+            @Override
+            public void onSuccess(User user) {
+
             }
+
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
+        if (view.getId() == R.id.setting_btn2) {
+            rc.createCategory("BLURAY", new RestListener<Category>() {
+                @Override
+                public void onSuccess(Category category) {
+                    if (category != null) {
+                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+                        tv.setText(category.getID() + "");
+                    }
+                }
+
+                @Override
+                public void onFailure(int status) {
+
+                }
+            });
+        }
+        if (view.getId() == R.id.get_all_cat) {
+            rc.getAllCategory(new RestListener<List<Category>>() {
+                @Override
+                public void onSuccess(List<Category> categories) {
+                    if (categories != null) {
+                        String s = "";
+                        for (Category c : categories) {
+                            s += c.getID() + " " + c.getName() + " ";
+                        }
+                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+                        tv.setText(" " + categories.size() + " " + s);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(int status) {
+
+                }
+            });
         }
 
+        if (view.getId() == R.id.getACat_btn) {
+            EditText et = (EditText) findViewById(R.id.editText);
+            String content = et.getText().toString();
+            rc.getCategory(Integer.parseInt(content), new RestListener<Category>() {
+
+                @Override
+                public void onSuccess(Category category) {
+                    TextView tv = (TextView) findViewById(R.id.setting_textView);
+                    tv.setText(" " + category.getName());
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    if (status == 3) {
+                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+                        tv.setText("Invalid");
+                    }
+                }
+            });
+        }
+        if (view.getId() == R.id.updateCat_btn) {
+            EditText et1 = (EditText) findViewById(R.id.editText);
+            String number = et1.getText().toString();
+            EditText et2 = (EditText) findViewById(R.id.editText2);
+            String content = et2.getText().toString();
+
+            rc.updateCategory(Integer.parseInt(number), content, new RestListener<Category>() {
+
+                @Override
+                public void onSuccess(Category category) {
+                    TextView tv = (TextView) findViewById(R.id.setting_textView);
+                    tv.setText(" " + category.getName());
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    if (status == 3) {
+                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+                        tv.setText("update unsucessful");
+                    }
+
+                }
+            });
+        }
     }
 }

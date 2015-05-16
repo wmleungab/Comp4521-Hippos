@@ -1,7 +1,5 @@
 package com.hkust.comp4521.hippos.datastructures;
 
-import java.security.Timestamp;
-
 /**
  * Created by Yman on 15/5/2015.
  */
@@ -11,6 +9,21 @@ public class NetInventory {
     double price;
     int stock;
     int status;
-    Timestamp timestamp;
+    String timestamp;
     int category;
+
+    public NetInventory(int id, String name, double price, int stock, int status, String timestamp, int category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.status = status;
+        this.timestamp = timestamp;
+        this.category = category;
+
+    }
+
+    public int getID() {
+        return id;
+    }
 }

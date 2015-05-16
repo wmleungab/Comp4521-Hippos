@@ -10,5 +10,9 @@ import java.util.List;
 public class Response_CategoryList {
     public boolean error;
     public String message;
-    public List<Category> category;
+    List<Category> category;
+
+    public List<Category> getCategoryList() {
+        return this.category;
+    }
 }

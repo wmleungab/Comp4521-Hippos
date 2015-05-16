@@ -8,4 +8,12 @@ import com.hkust.comp4521.hippos.datastructures.Category;
 public class Response_Category extends Category {
     public boolean error;
     public String message;
+
+    public Response_Category(int id, String name) {
+        super(id, name);
+    }
+
+    public Category getCategory() {
+        return (Category) this;
+    }
 }
