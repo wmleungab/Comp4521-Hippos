@@ -26,4 +26,28 @@ public class NetInventory {
     public int getID() {
         return id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getTimeStamp() {
+        return timestamp;
+    }
+
+    public int getCategory() {
+        return category;
+    }
 }

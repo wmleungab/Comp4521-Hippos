@@ -67,7 +67,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 i = new Intent(this, InventoryListActivity.class);
                 break;
             case R.id.btn_debug_nfctransfer:
-                //i = new Intent(this, WiFiTransferActivity.class);
+                i = new Intent(this, InventoryTestActivity.class);
                 break;
             case R.id.btn_debug_setting:
                 i = new Intent(this, SettingActivity.class);

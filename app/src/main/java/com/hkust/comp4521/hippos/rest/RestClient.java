@@ -135,7 +135,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse().getStatus() == 404) restListener.onFailure(3);
+                if (error.getResponse().getStatus() == 404)
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
             }
         });
     }
@@ -180,7 +181,7 @@ public class RestClient {
             @Override
             public void success(Response_Inventory response_inventory, Response response) {
                 if (!response_inventory.error) {
-
+                    // Log.i("RestClient","response_inventory.id= "+response_inventory.getID());
                     getInventory(response_inventory.getID(), new RestListener<NetInventory>() {
                         @Override
                         public void onSuccess(NetInventory netInventory) {
@@ -224,7 +225,71 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse().getStatus() == 404) restListener.onFailure(3);
+                if (error.getResponse().getStatus() == 404)
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+            }
+        });
+    }
+
+    public void getAllInventory(final RestListener<List<NetInventory>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
+        serverAPI.getAllInventory(authorization, new Callback<Response_InventoryList>() {
+
+            @Override
+            public void success(Response_InventoryList response_inventoryList, Response response) {
+                if (!response_inventoryList.error) {
+                    restListener.onSuccess(response_inventoryList.getInventoryList());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public void updateInventory(final int id, final String updatedName
+            , final double updatedPrice, final int updatedStock, final int updatedStatus, final int updatedCategory
+            , final RestListener<NetInventory> restListener) {
+
+
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (updatedName.equals("") || updatedName == null || id < 0
+                || updatedPrice < 0 || updatedStock < 0 || updatedStatus < 0 || updatedCategory < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock,
+                updatedStatus, updatedCategory, new Callback<Response_Inventory>() {
+
+                    @Override
+                    public void success(Response_Inventory response_inventory, Response response) {
+                        if (!response_inventory.error) {
+                            getInventory(id, new RestListener<NetInventory>() {
+                                @Override
+                                public void onSuccess(NetInventory netInventory) {
+                                    restListener.onSuccess(netInventory);
+                                }
+
+                                @Override
+                                public void onFailure(int status) {
+                                    //impossible
+                                }
+                            });
+                        } else {
+                            restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
             }
         });
     }

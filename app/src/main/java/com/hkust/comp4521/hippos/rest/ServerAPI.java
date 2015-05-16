@@ -38,4 +38,13 @@ public interface ServerAPI {
 
     @GET("/inventory/{id}")
     void getInventory(@Header("Authorization") String authorization, @Path("id") int id, Callback<Response_Inventory> callback);
+
+    @GET("/inventory/")
+    void getAllInventory(@Header("Authorization") String authorization, Callback<Response_InventoryList> callback);
+
+    @FormUrlEncoded
+    @PUT("/inventory/{id}")
+    void updateInventory(@Header("Authorization") String authorization, @Path("id") int id, @Field("name") String name
+            , @Field("price") double price, @Field("stock") int stock, @Field("status") int status
+            , @Field("category") int category, Callback<Response_Inventory> callback);
 }
