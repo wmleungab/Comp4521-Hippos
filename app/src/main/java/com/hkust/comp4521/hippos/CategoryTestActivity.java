@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -179,6 +181,11 @@ public class CategoryTestActivity extends Activity implements View.OnClickListen
         if (view.getId() == R.id.upload_btn) {
             try {
                 InputStream is = getAssets().open("dog_doll.jpg");
+
+                AssetFileDescriptor descriptor = getAssets().openFd("dog_doll.jpg");
+                FileReader reader = new FileReader(descriptor.getFileDescriptor());
+
+
                 int l = is.available();
                 Toast.makeText(this, l + "", Toast.LENGTH_LONG);
                 Log.i("setting activity", "" + l);

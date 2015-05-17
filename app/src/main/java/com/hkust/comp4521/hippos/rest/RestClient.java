@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
@@ -9,8 +10,11 @@ import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import retrofit.Callback;
@@ -18,6 +22,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Yman on 15/5/2015.
@@ -488,37 +493,78 @@ public class RestClient {
             return;
         }
         // String content = new Scanner(fileIS).useDelimiter("\\Z").next();
-        String content = "";
-        byte[] buffer = null;
-        int size = 0;
-        try {
-            size = fileIS.available();
-            Log.i(" restClient", "" + size);
-            buffer = new byte[size];
-            int read = fileIS.read(buffer);
-            Log.i(" restClient", "read=" + read);
-            fileIS.close();
-            content = new String(buffer, "UTF-8");
-            Log.i(" restClient", "" + content.length());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String content = "";
+//        byte[] buffer = null;
+//        int size = 0;
+//        try {
+//            size = fileIS.available();
+//            Log.i(" restClient", "" + size);
+//            buffer = new byte[size];
+//            int read = fileIS.read(buffer);
+//            Log.i(" restClient", "read=" + read);
+//            fileIS.close();
+//            content = new String(buffer, "UTF-8");
+//            Log.i(" restClient", "" + content.length());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        serverAPI.uploadFile(authorization, name, exten, content, new Callback<Response_FileUpload>() {
+//            @Override
+//            public void success(Response_FileUpload response_fileUpload, Response response) {
+//                if (!response_fileUpload.error) {
+//                    restListener.onSuccess(response_fileUpload.path);
+//                } else {
+//                    restListener.onFailure(RestListener.UPLOAD_FAIL);
+//                }
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//                restListener.onFailure(RestListener.UPLOAD_FAIL);
+//            }
+//        });
 
-        serverAPI.uploadFile(authorization, name, exten, content, new Callback<Response_FileUpload>() {
+        File photo = createFileFromInputStream(fileIS);
+
+        TypedFile typedImage = new TypedFile("application/octet-stream", photo);
+
+        serverAPI.uploadImage(typedImage, new retrofit.Callback<ContactsContract.Contacts.Photo>() {
+
             @Override
-            public void success(Response_FileUpload response_fileUpload, Response response) {
-                if (!response_fileUpload.error) {
-                    restListener.onSuccess(response_fileUpload.path);
-                } else {
-                    restListener.onFailure(RestListener.UPLOAD_FAIL);
-                }
+            public void success(ContactsContract.Contacts.Photo photo, Response response) {
+                Log.d("SUCCESS ", "SUCCESS RETURN " + response);
+                restListener.onSuccess("success");
             }
 
             @Override
             public void failure(RetrofitError error) {
-                restListener.onFailure(RestListener.UPLOAD_FAIL);
+                restListener.onFailure(5);
             }
         });
+    }
 
+    private File createFileFromInputStream(InputStream inputStream) {
+
+        try {
+            File f = new File("dog_doll.jpg");
+            OutputStream outputStream = new FileOutputStream(f);
+            byte buffer[] = new byte[1024];
+            int length = 0;
+
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+            return f;
+        } catch (IOException e) {
+            Log.i("error", "create FIle error");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
