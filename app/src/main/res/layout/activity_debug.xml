@@ -72,11 +72,26 @@
             android:layout_gravity="center_horizontal"
             android:text="Transfer Activity" />
 
-        <Button
-            android:id="@+id/btn_debug_invoicetest"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Invoice Test Activity" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_debug_categorytest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Invoice Test Activity" />
+
+            <Button
+                android:id="@+id/btn_debug_invoicetest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Invoice Test Activity" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

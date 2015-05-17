@@ -1,204 +1,126 @@
 package com.hkust.comp4521.hippos;
 
-import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.hkust.comp4521.hippos.datastructures.Category;
-import com.hkust.comp4521.hippos.datastructures.User;
-import com.hkust.comp4521.hippos.rest.RestClient;
-import com.hkust.comp4521.hippos.rest.RestListener;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+public class SettingActivity extends PreferenceActivity {
 
-public class SettingActivity extends Activity implements View.OnClickListener {
-    User responseUser;
-    RestClient rc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
 
-        init();
+        // Display the fragment as the main content.
+        FragmentManager mFragmentManager = getFragmentManager();
+        FragmentTransaction mFragmentTransaction = mFragmentManager
+                .beginTransaction();
+        PrefsFragment mPrefsFragment = new PrefsFragment();
+        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
+        mFragmentTransaction.commit();
 
+
+//  We could have condensed the 5 lines into 1 line of code.
+//		getFragmentManager().beginTransaction()
+//				.replace(android.R.id.content, new PrefsFragment()).commit();
 
     }
 
-    private void init() {
-        rc = new RestClient();
-        findViewById(R.id.setting_btn).setOnClickListener(this);
-        findViewById(R.id.setting_btn2).setOnClickListener(this);
-        findViewById(R.id.get_all_cat).setOnClickListener(this);
-        findViewById(R.id.getACat_btn).setOnClickListener(this);
-        findViewById(R.id.updateCat_btn).setOnClickListener(this);
-        findViewById(R.id.upload_btn).setOnClickListener(this);
-    }
+    /*SharedPreferences preferences = getActivity().getSharedPreferences(
+            SettingActivity.PrefsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
+            Context.MODE_PRIVATE);
+            */
+    public static class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+        private final static String TAG = PrefsFragment.class.getName();
+        public final static String SETTINGS_SHARED_PREFERENCES_FILE_NAME = TAG + ".settings";
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            // Define the settings file to use by this settings fragment
+            getPreferenceManager().setSharedPreferencesName(SETTINGS_SHARED_PREFERENCES_FILE_NAME);
+            getPreferenceManager().setSharedPreferencesMode(MODE_PRIVATE);
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.preferences);
+
+            //Set the default values
+            SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+            String s;
+            String nth = "**Not set**";
+            s = sp.getString(getResources().getString(R.string.company_name_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.company_name_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.company_name_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.company_address_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.company_address_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.company_address_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.company_email_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.company_email_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.company_email_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.company_phone_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.company_phone_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.company_phone_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.user_email_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.user_email_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.user_email_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.user_password_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.user_password_prefs)).setSummary("******");
+            else
+                findPreference(getResources().getString(R.string.user_password_prefs)).setSummary(nth);
+
+            s = sp.getString(getResources().getString(R.string.server_location_prefs), "");
+            if (s != null && !s.equals(""))
+                findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(s);
+            else
+                findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(nth);
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_setting, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-    @Override
-    public void onClick(View view) {
-        String email = "wmleungab@gmail.com";
-        String password = "456123";
-//        RestClient.get().login(user.email, user.password, new Callback<Response>() {
-//            @Override
-//            public void success(Response response, Response response2) {
-//
-//                ((TextView)findViewById(R.id.setting_textView)).setText( response.getBody().toString()+"\n"+response2.getBody().toString());
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//            }
-//        });
-
-        if (view.getId() == R.id.setting_btn) rc.login(email, password, new RestListener<User>() {
-            @Override
-            public void onSuccess(User user) {
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-
-            }
-        });
-        if (view.getId() == R.id.setting_btn2) {
-            rc.createCategory("BLURAY", new RestListener<Category>() {
-                @Override
-                public void onSuccess(Category category) {
-                    if (category != null) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText(category.getID() + "");
-                    }
-                }
-
-                @Override
-                public void onFailure(int status) {
-
-                }
-            });
-        }
-        if (view.getId() == R.id.get_all_cat) {
-            rc.getAllCategory(new RestListener<List<Category>>() {
-                @Override
-                public void onSuccess(List<Category> categories) {
-                    if (categories != null) {
-                        String s = "";
-                        for (Category c : categories) {
-                            s += c.getID() + " " + c.getName() + " ";
-                        }
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText(" " + categories.size() + " " + s);
-
-                    }
-                }
-
-                @Override
-                public void onFailure(int status) {
-
-                }
-            });
         }
 
-        if (view.getId() == R.id.getACat_btn) {
-            EditText et = (EditText) findViewById(R.id.editText);
-            String content = et.getText().toString();
-            rc.getCategory(Integer.parseInt(content), new RestListener<Category>() {
-
-                @Override
-                public void onSuccess(Category category) {
-                    TextView tv = (TextView) findViewById(R.id.setting_textView);
-                    tv.setText(" " + category.getName());
-                }
-
-                @Override
-                public void onFailure(int status) {
-                    if (status == 3) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("Invalid");
-                    }
-                }
-            });
+        @Override
+        public void onPause() {
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            super.onPause();
         }
-        if (view.getId() == R.id.updateCat_btn) {
-            EditText et1 = (EditText) findViewById(R.id.editText);
-            String number = et1.getText().toString();
-            EditText et2 = (EditText) findViewById(R.id.editText2);
-            String content = et2.getText().toString();
 
-            rc.updateCategory(Integer.parseInt(number), content, new RestListener<Category>() {
-
-                @Override
-                public void onSuccess(Category category) {
-                    TextView tv = (TextView) findViewById(R.id.setting_textView);
-                    tv.setText(" " + category.getName());
-                }
-
-                @Override
-                public void onFailure(int status) {
-                    if (status == 3) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("update unsucessful");
-                    }
-
-                }
-            });
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+            Preference pref = findPreference(s);
+            Log.i("Perference Fragment", "onChanged");
+            if (pref instanceof EditTextPreference) {
+                EditTextPreference editTextPreferencePref = (EditTextPreference) pref;
+                pref.setSummary(editTextPreferencePref.getText());
         }
-        if (view.getId() == R.id.upload_btn) {
-            try {
-                InputStream is = getAssets().open("dog_doll.jpg");
-                int l = is.available();
-                Toast.makeText(this, l + "", Toast.LENGTH_LONG);
-                Log.i("setting activity", "" + l);
-                rc.fileUpload("dog", "jpg", is, new RestListener<String>() {
-
-                    @Override
-                    public void onSuccess(String s) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("upload sucess");
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("upload unsucessful");
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
     }
+
+
 }

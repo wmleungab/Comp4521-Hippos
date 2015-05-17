@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Server settings">
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the email:"
+            android:key="@string/user_email_prefs"
+            android:summary="Server log in account"
+            android:title="Account E-mail address" />
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the password:"
+            android:key="@string/user_password_prefs"
+            android:summary="Server log in password"
+            android:title="Password" />
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the server IP:"
+            android:key="@string/server_location_prefs"
+            android:summary=""
+            android:title="HiPPoS Server IP:" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Company details">
+        <EditTextPreference
+            android:dialogTitle="Please enter the name:"
+            android:key="@string/company_name_prefs"
+            android:summary="Company full name"
+            android:title="Company name" />
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the email:"
+            android:key="@string/company_email_prefs"
+            android:summary="Company contact email"
+            android:title="Contact E-mail address" />
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the phone number:"
+            android:key="@string/company_phone_prefs"
+            android:summary="Company contact number"
+            android:title="Contact phone number" />
+
+        <EditTextPreference
+            android:dialogTitle="Please enter the address:"
+            android:key="@string/company_address_prefs"
+            android:summary="Company physical address"
+            android:title="Contact address" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -24,7 +24,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.btn_debug_invlist).setOnClickListener(this);
         findViewById(R.id.btn_debug_setting).setOnClickListener(this);
         findViewById(R.id.btn_debug_nfctransfer).setOnClickListener(this);
-
+        findViewById(R.id.btn_debug_invoicetest).setOnClickListener(this);
+        findViewById(R.id.btn_debug_categorytest).setOnClickListener(this);
         RestClient.getInstance();
     }
 
@@ -75,6 +76,12 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_debug_setting:
                 i = new Intent(this, SettingActivity.class);
+                break;
+            case R.id.btn_debug_invoicetest:
+                i = new Intent(this, InvoiceTestActivity.class);
+                break;
+            case R.id.btn_debug_categorytest:
+                i = new Intent(this, CategoryTestActivity.class);
                 break;
         }
         if (i != null)

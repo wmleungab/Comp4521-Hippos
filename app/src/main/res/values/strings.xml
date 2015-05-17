@@ -21,5 +21,46 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_inventory_test">InventoryTestActivity</string>
     <string name="title_activity_invoice_test">InvoiceTestActivity</string>
+    <string name="title_activity_main_activity2">MainActivity2Activity</string>
+
+
+    <string name="title_edittext_preference">Edit text preference</string>
+    <string name="summary_edittext_preference">An example that uses an edit text dialog</string>
+    <string name="dialog_title_edittext_preference">Enter your favorite animal</string>
+    <string name="title_checkbox_preference">Checkbox preference</string>
+    <string name="summary_checkbox_preference">This is a checkbox</string>
+    <!-- From PerferenceFragment-->
+    <string name="user_email_prefs">user_email</string>
+    <string name="user_password_prefs">user_password</string>
+    <string name="company_email_prefs">company_email</string>
+    <string name="company_phone_prefs">company_phone</string>
+    <string name="company_name_prefs">company_name</string>
+    <string name="company_address_prefs">company_address</string>
+    <string name="server_location_prefs">server_location</string>
+
+    <string name="inline_preferences">In-line preferences</string>
+    <string name="dialog_based_preferences">Dialog-based preferences</string>
+    <string name="launch_preferences">Launch preferences</string>
+    <string name="preference_attributes">Preference attributes</string>
+    <string name="title_list_preference">List preference</string>
+    <string name="summary_list_preference">An example that uses a list dialog</string>
+    <string name="dialog_title_list_preference">Choose one</string>
+    <string name="title_screen_preference">Screen preference</string>
+    <string name="summary_screen_preference">Shows another screen of preferences</string>
+    <string name="title_fragment_preference">Fragment preference</string>
+    <string name="summary_fragment_preference">Shows another fragment of preferences</string>
+    <string name="title_next_screen_toggle_preference">Toggle preference</string>
+    <string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same hierarchy</string>
+    <string name="title_intent_preference">Intent preference</string>
+    <string name="summary_intent_preference">Launches an Activity from an Intent</string>
+    <string name="title_my_preference">My preference</string>
+    <string name="summary_my_preference">This is a custom counter preference</string>
+    <string name="title_advanced_toggle_preference">Haunted preference</string>
+    <string name="summary_on_advanced_toggle_preference">I\'m on! :)</string>
+    <string name="summary_off_advanced_toggle_preference">I\'m off! :(</string>
+    <string name="title_parent_preference">Parent checkbox preference</string>
+    <string name="summary_parent_preference">This is visually a parent</string>
+    <string name="title_child_preference">Child checkbox preference</string>
+    <string name="summary_child_preference">This is visually a child</string>
 
 </resources>

@@ -43,14 +43,20 @@
             android:name=".SalesDetailsActivity"
             android:label="@string/title_activity_sales_details" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".CategoryTestActivity"
             android:label="@string/title_activity_setting" />
         <activity
             android:name=".InventoryTestActivity"
             android:label="@string/title_activity_inventory_test" />
         <activity
             android:name=".InvoiceTestActivity"
-            android:label="@string/title_activity_invoice_test"></activity>
+            android:label="@string/title_activity_invoice_test" />
+        <activity
+            android:name=".MainActivity2Activity"
+            android:label="@string/title_activity_main_activity2"></activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/title_activity_setting"></activity>
     </application>
 
 </manifest>
