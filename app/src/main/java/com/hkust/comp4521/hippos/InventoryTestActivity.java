@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -79,7 +78,7 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 int category = 5;
 
 
-                rc.createInventory(name, price, stock, category, new RestListener<Inventory>() {
+                rc.createInventory(name, price, stock, RestClient.file, category, new RestListener<Inventory>() {
 
                     @Override
                     public void onSuccess(Inventory inventory) {
@@ -87,6 +86,7 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                         tv.setText("name: " + inventory.getName() + "\n" +
                                 "Price: " + inventory.getPrice() + "\n" +
                                 "Stock: " + inventory.getStock() + "\n" +
+                                "Image:" + inventory.getImage() + "\n" +
                                 "Status: " + inventory.getStatus() + "\n" +
                                 "TimeStamp: " + inventory.getTimeStamp() + "\n" +
                                 "Category: " + inventory.getCategory() + "\n");
@@ -109,6 +109,7 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                         tv.setText("name: " + inventory.getName() + "\n" +
                                 "Price: " + inventory.getPrice() + "\n" +
                                 "Stock: " + inventory.getStock() + "\n" +
+                                "Image:" + inventory.getImage() + "\n" +
                                 "Status: " + inventory.getStatus() + "\n" +
                                 "TimeStamp: " + inventory.getTimeStamp() + "\n" +
                                 "Category: " + inventory.getCategory() + "\n");
@@ -146,13 +147,14 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 int stock = 10;
                 double price = 60.5;
                 int category = 5;
-                rc.updateInventory(num, name, price, stock, 1, category, new RestListener<Inventory>() {
+                rc.updateInventory(num, name, price, stock, RestClient.file, 1, category, new RestListener<Inventory>() {
                     @Override
                     public void onSuccess(Inventory inventory) {
                         TextView tv = (TextView) findViewById(R.id.textView333);
                         tv.setText("name: " + inventory.getName() + "\n" +
                                 "Price: " + inventory.getPrice() + "\n" +
                                 "Stock: " + inventory.getStock() + "\n" +
+                                "Image:" + inventory.getImage() + "\n" +
                                 "Status: " + inventory.getStatus() + "\n" +
                                 "TimeStamp: " + inventory.getTimeStamp() + "\n" +
                                 "Category: " + inventory.getCategory() + "\n");

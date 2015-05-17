@@ -25,6 +25,8 @@ import retrofit.mime.TypedFile;
 public class RestClient {
     public static final String SERVER_ID = "ec2-54-92-12-108.ap-northeast-1.compute.amazonaws.com/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
+    public static final String DEFAULF_INVEN_PIC = "./uploads/default.jpg";
+
     public static File file;
 
     private static RestClient instance;
@@ -44,7 +46,7 @@ public class RestClient {
     }
 
     public static RestClient getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new RestClient();
 
             String email = "wmleungab@gmail.com";
@@ -180,7 +182,7 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        final String cap_updatedName = updatedName.toUpperCase();
+        final String cap_updatedName = updatedName;
         serverAPI.updateCategory(authorization, id, cap_updatedName, new Callback<Response_Category>() {
 
             @Override
@@ -198,6 +200,74 @@ public class RestClient {
 
             }
         });
+    }
+
+    public void createInventory(final String name, final double price, final int stock, final File imageFile, final int category, final RestListener<Inventory> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (name.equals("") || name == null || price < 0 || stock < 0 || category < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+
+        createInventory(name, price, stock, this.DEFAULF_INVEN_PIC, category, new RestListener<Inventory>() {
+            @Override
+            public void onSuccess(Inventory inventory) {
+                if (imageFile == null) {
+                    restListener.onSuccess(inventory);
+                    return;
+                } else {
+                    final int inven_id = inventory.getId();
+                    fileUpload(inven_id, imageFile, new RestListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            final String loc = s;
+                            serverAPI.updateInventoryImage(authorization, inven_id, s, new Callback<Response_Inventory>() {
+                                @Override
+                                public void success(Response_Inventory response_inventory, Response response) {
+                                    if (!response_inventory.error) {
+                                        getInventory(inven_id, new RestListener<Inventory>() {
+                                            @Override
+                                            public void onSuccess(Inventory Inventory) {
+                                                restListener.onSuccess(Inventory);
+                                                return;
+                                            }
+
+                                            @Override
+                                            public void onFailure(int status) {
+                                                //impossible
+                                            }
+                                        });
+                                    } else {
+                                        restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                                        return;
+                                    }
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(int status) {
+                            restListener.onFailure(status);
+                            return;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                restListener.onFailure(status);
+                return;
+            }
+        });
+        return;
     }
 
     public void fileUpload(int inventory_ID, File photo, final RestListener<String> restListener) {
@@ -223,15 +293,15 @@ public class RestClient {
         });
     }
 
-    public void createInventory(final String name, final double price, final int stock, final int category, final RestListener<Inventory> restListener) {
+    private void createInventory(final String name, final double price, final int stock, final String image, final int category, final RestListener<Inventory> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
-        } else if (name.equals("") || name == null || price < 0 || stock < 0 || category < 0) {
+        } else if (name.equals("") || name == null || image.equals("") || image == null || price < 0 || stock < 0 || category < 0) {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.createInventory(authorization, name, price, stock, category, new Callback<Response_Inventory>() {
+        serverAPI.createInventory(authorization, name, price, stock, image, category, new Callback<Response_Inventory>() {
             @Override
             public void success(Response_Inventory response_inventory, Response response) {
                 if (!response_inventory.error) {
@@ -307,10 +377,8 @@ public class RestClient {
     }
 
     public void updateInventory(final int id, final String updatedName
-            , final double updatedPrice, final int updatedStock, final int updatedStatus, final int updatedCategory
-            , final RestListener<Inventory> restListener) {
-
-
+            , final double updatedPrice, final int updatedStock, final File updatedImage, final int updatedStatus,
+                                final int updatedCategory, final RestListener<Inventory> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
@@ -319,7 +387,63 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock,
+
+        if (updatedImage == null) {
+            updateInventory(id, updatedName, updatedPrice, updatedStock, RestClient.DEFAULF_INVEN_PIC, updatedStatus, updatedCategory, new RestListener<Inventory>() {
+                @Override
+                public void onSuccess(Inventory inventory) {
+                    restListener.onSuccess(inventory);
+                    return;
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    restListener.onFailure(status);
+                    return;
+                }
+            });
+        } else {
+            fileUpload(id, updatedImage, new RestListener<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    updateInventory(id, updatedName, updatedPrice, updatedStock, s, updatedStatus, updatedCategory, new RestListener<Inventory>() {
+                        @Override
+                        public void onSuccess(Inventory inventory) {
+                            restListener.onSuccess(inventory);
+                            return;
+                        }
+
+                        @Override
+                        public void onFailure(int status) {
+                            restListener.onFailure(status);
+                            return;
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    restListener.onFailure(status);
+                    return;
+                }
+            });
+        }
+    }
+
+    private void updateInventory(final int id, final String updatedName
+            , final double updatedPrice, final int updatedStock, final String updatedImage, final int updatedStatus,
+                                 final int updatedCategory, final RestListener<Inventory> restListener) {
+
+
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (updatedName.equals("") || updatedName == null || updatedImage.equals("") || updatedImage == null || id < 0
+                || updatedPrice < 0 || updatedStock < 0 || updatedCategory < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock, updatedImage,
                 updatedStatus, updatedCategory, new Callback<Response_Inventory>() {
 
                     @Override

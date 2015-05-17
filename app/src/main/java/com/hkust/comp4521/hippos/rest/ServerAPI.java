@@ -37,7 +37,7 @@ public interface ServerAPI {
     @FormUrlEncoded
     @POST("/inventory")
     void createInventory(@Header("Authorization") String authorization, @Field("name") String name, @Field("price") double price
-            , @Field("stock") int stock, @Field("category") int category, Callback<Response_Inventory> callback);
+            , @Field("stock") int stock, @Field("image") String image, @Field("category") int category, Callback<Response_Inventory> callback);
 
     @GET("/inventory/{id}")
     void getInventory(@Header("Authorization") String authorization, @Path("id") int id, Callback<Response_Inventory> callback);
@@ -48,8 +48,12 @@ public interface ServerAPI {
     @FormUrlEncoded
     @PUT("/inventory/{id}")
     void updateInventory(@Header("Authorization") String authorization, @Path("id") int id, @Field("name") String name
-            , @Field("price") double price, @Field("stock") int stock, @Field("status") int status
+            , @Field("price") double price, @Field("stock") int stock, @Field(("image")) String image, @Field("status") int status
             , @Field("category") int category, Callback<Response_Inventory> callback);
+
+    @FormUrlEncoded
+    @PUT("/inventory/{id}")
+    void updateInventoryImage(@Header("Authorization") String authorization, @Path("id") int id, @Field(("image")) String image, Callback<Response_Inventory> callback);
 
     @GET("/invoice/{id}")
     void getInvoice(@Header("Authorization") String authorization, @Path("id") int id, Callback<Response_Invoice> callback);
@@ -72,11 +76,6 @@ public interface ServerAPI {
     @PUT("/invoice/{id}")
     void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price
             , @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
-
-    @FormUrlEncoded
-    @POST("/upload")
-    void uploadFile(@Header("Authorization") String authorization, @Field("name") String fileName, @Field("extension") String fileExten, @Field("content") String fileContent, Callback<Response_FileUpload> callback);
-
 
     @Multipart
     @POST("/upload/{id}")
