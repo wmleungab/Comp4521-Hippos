@@ -48,6 +48,12 @@ public class Commons {
         return categoryList.get(cIndex);
     }
 
+    public static List<Category> getCategoryList() {
+        if(categoryList == null)
+            return null;
+        return categoryList;
+    }
+
     public static Inventory getInventoryFromIndex(int cId, int iIndex) {
         if(categorizedinventoryHMList == null)
             return null;

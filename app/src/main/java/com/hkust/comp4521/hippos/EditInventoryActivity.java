@@ -13,12 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -41,6 +44,7 @@ public class EditInventoryActivity extends AppCompatActivity {
 
     // Views
     private RelativeLayout mActionBar;
+    private Spinner categorySpinner;
     private ImageView ivHeroImage;
     private EditText etItemName;
     private ImageButton btnFinish;
@@ -70,6 +74,15 @@ public class EditInventoryActivity extends AppCompatActivity {
                     Toast.makeText(EditInventoryActivity.this, selectedFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
             }
         });
+        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+            @Override
+            public void onInitialized() {
+                categorySpinner = (Spinner) findViewById(R.id.spinner);
+                ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
+                categorySpinner.setAdapter(spinnerAdapter);
+            }
+        });
+
 
         // get information from previous activity
         Bundle bundle = this.getIntent().getExtras();

@@ -62,24 +62,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Name"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/green_primary_dark"
             app:met_iconLeft="@mipmap/tag"
             app:met_iconPadding="16dp" />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Item Description"
-            app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/green_primary_dark"
-            app:met_iconLeft="@mipmap/information"
-            app:met_iconPadding="16dp" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="6dp"
+                android:id="@+id/iv_edit_inventory_category"
+                android:src="@mipmap/information"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="16dp"
+                android:layout_toRightOf="@id/iv_edit_inventory_category"
+                android:id="@+id/spinner" />
+        </RelativeLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Price"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/green_primary_dark"
             app:met_iconLeft="@mipmap/price"
@@ -90,6 +106,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Stock"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/green_primary_dark"
             app:met_iconLeft="@mipmap/stock"
