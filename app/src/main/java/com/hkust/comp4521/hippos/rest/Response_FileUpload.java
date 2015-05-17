@@ -7,5 +7,5 @@ public class Response_FileUpload {
     public boolean error;
     public String message;
     public String path;
-    public int length;
+
 }

@@ -1,6 +1,5 @@
 package com.hkust.comp4521.hippos.rest;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
@@ -11,7 +10,6 @@ import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 import retrofit.Callback;
@@ -27,7 +25,6 @@ import retrofit.mime.TypedFile;
 public class RestClient {
     public static final String SERVER_ID = "ec2-54-92-12-108.ap-northeast-1.compute.amazonaws.com/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
-
     public static File file;
 
     private static RestClient instance;
@@ -199,6 +196,29 @@ public class RestClient {
             @Override
             public void failure(RetrofitError error) {
 
+            }
+        });
+    }
+
+    public void fileUpload(int inventory_ID, File photo, final RestListener<String> restListener) {
+        if (photo == null || inventory_ID < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        TypedFile typedImage = new TypedFile("application/octet-stream", photo);
+
+        serverAPI.uploadImage(authorization, inventory_ID, typedImage, new retrofit.Callback<Response_FileUpload>() {
+
+            @Override
+            public void success(Response_FileUpload response_fileUpload, Response response) {
+                Log.d("RestClient", "UPLOAD SUCCESS RETURN " + response);
+                Log.d("RestClient", "uploaded to path: " + response_fileUpload.path);
+                restListener.onSuccess(response_fileUpload.path);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                restListener.onFailure(RestListener.UPLOAD_FAIL);
             }
         });
     }
@@ -484,63 +504,6 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 400)
                     restListener.onFailure(RestListener.INVALID_EMAIL);
-            }
-        });
-    }
-
-    public void fileUpload(String name, String exten, InputStream fileIS, final RestListener<String> restListener) {
-        if (fileIS == null) {
-            restListener.onFailure(RestListener.INVALID_PARA);
-            return;
-        }
-//        // String content = new Scanner(fileIS).useDelimiter("\\Z").next();
-//        String content = "";
-//        byte[] buffer = null;
-//        int size = 0;
-//        try {
-//            size = fileIS.available();
-//            Log.i(" restClient", "" + size);
-//            buffer = new byte[size];
-//            int read = fileIS.read(buffer);
-//            Log.i(" restClient", "read=" + read);
-//            fileIS.close();
-//            content = new String(buffer, "UTF-8");
-//            Log.i(" restClient", "" + content.length());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        serverAPI.uploadFile(authorization, name, exten, content, new Callback<Response_FileUpload>() {
-//            @Override
-//            public void success(Response_FileUpload response_fileUpload, Response response) {
-//                if (!response_fileUpload.error) {
-//                    restListener.onSuccess(response_fileUpload.path);
-//                } else {
-//                    restListener.onFailure(RestListener.UPLOAD_FAIL);
-//                }
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                restListener.onFailure(RestListener.UPLOAD_FAIL);
-//            }
-//        });
-        File photo = this.file;
-        if (photo == null) restListener.onFailure(5);
-        TypedFile typedImage = new TypedFile("application/octet-stream", photo);
-
-        serverAPI.uploadImage(typedImage, new retrofit.Callback<ContactsContract.CommonDataKinds.Photo>() {
-
-            @Override
-            public void success(ContactsContract.CommonDataKinds.Photo photo, Response response) {
-                Log.d("SUCCESS ", "SUCCESS RETURN " + response);
-                restListener.onSuccess("Sucess");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                restListener.onFailure(5);
             }
         });
     }

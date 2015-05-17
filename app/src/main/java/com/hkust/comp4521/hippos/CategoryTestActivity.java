@@ -2,21 +2,17 @@ package com.hkust.comp4521.hippos;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class CategoryTestActivity extends Activity implements View.OnClickListener {
@@ -177,12 +173,9 @@ public class CategoryTestActivity extends Activity implements View.OnClickListen
             });
         }
         if (view.getId() == R.id.upload_btn) {
-            try {
-                InputStream is = getAssets().open("dog_doll.jpg");
-                int l = is.available();
-                Toast.makeText(this, l + "", Toast.LENGTH_LONG);
-                Log.i("setting activity", "" + l);
-                rc.fileUpload("dog", "jpg", is, new RestListener<String>() {
+
+
+            rc.fileUpload(100, RestClient.file, new RestListener<String>() {
 
                     @Override
                     public void onSuccess(String s) {
@@ -196,9 +189,6 @@ public class CategoryTestActivity extends Activity implements View.OnClickListen
                         tv.setText("upload unsucessful");
                     }
                 });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         }
     }
