@@ -46,10 +46,11 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/ll_edit_inventory"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/actionBar"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -57,6 +58,7 @@
         android:layout_centerHorizontal="true">
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_edit_inventory_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Name"
@@ -93,7 +95,18 @@
             app:met_iconLeft="@mipmap/stock"
             android:inputType="numberDecimal"
             app:met_iconPadding="16dp" />
-
     </LinearLayout>
+
+    <com.hkust.comp4521.hippos.views.ScaleImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_edit_inventory_hero_image"
+        android:src="@mipmap/placeholder"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:scaleType="fitCenter"
+        android:layout_below="@id/actionBar"
+        android:layout_above="@id/ll_edit_inventory"
+        android:layout_gravity="center_horizontal" />
 
 </RelativeLayout>
