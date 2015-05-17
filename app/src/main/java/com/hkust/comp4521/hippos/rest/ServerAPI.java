@@ -1,13 +1,18 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.provider.ContactsContract;
+
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Yman on 15/5/2015.
@@ -73,4 +78,8 @@ public interface ServerAPI {
     @FormUrlEncoded
     @POST("/upload")
     void uploadFile(@Header("Authorization") String authorization, @Field("name") String fileName, @Field("extension") String fileExten, @Field("content") String fileContent, Callback<Response_FileUpload> callback);
+
+    @Multipart
+    @POST("/upload")
+    void uploadImage(@Part("file") TypedFile file, Callback<ContactsContract.CommonDataKinds.Photo> callback);
 }

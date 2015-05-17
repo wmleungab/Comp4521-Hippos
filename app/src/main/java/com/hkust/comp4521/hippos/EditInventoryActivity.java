@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
@@ -205,4 +206,11 @@ public class EditInventoryActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+
+        super.onPause();
+
+        RestClient.file = selectedFile;
+    }
 }
