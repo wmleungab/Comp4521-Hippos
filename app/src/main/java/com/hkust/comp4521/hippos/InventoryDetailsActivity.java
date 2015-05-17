@@ -3,32 +3,23 @@ package com.hkust.comp4521.hippos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.NFCService;
@@ -37,12 +28,6 @@ import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class InventoryDetailsActivity extends ActionBarActivity {
@@ -65,17 +50,13 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     // Activity-related
     private Activity mActivity;
     private Context mContext;
-    final MaterialDialog mMaterialDialog;
+    MaterialDialog mNFCDialog;
 
     // Data structure
     private Inventory mItem;
 
     // Services
     private NFCService mNFC;
-
-    {
-         mMaterialDialog = new MaterialDialog(InventoryDetailsActivity.this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,18 +119,19 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // inflate view for dialog
-                LayoutInflater mInflater = getLayoutInflater().from(InventoryDetailsActivity.this);
+                LayoutInflater mInflater = getLayoutInflater().from(mContext);
                 View vv = mInflater.inflate(R.layout.dialog_nfc_assign, null);
-                mMaterialDialog.setContentView(vv);
-                mMaterialDialog.setNegativeButton("Cancel", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mNFC.WriteModeOff();
-                        mMaterialDialog.dismiss();
-                    }
-                });
+                mNFCDialog =  new MaterialDialog.Builder(InventoryDetailsActivity.this)
+                                .customView(vv, false)
+                                .negativeText("Cancel")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        mNFC.WriteModeOff();
+                                    }
+                                })
+                                .show();
                 mNFC.WriteModeOn();
-                mMaterialDialog.show();
                 // start ripple animation
                 final RippleBackground rippleBackground=(RippleBackground) vv.findViewById(R.id.content);
                 rippleBackground.startRippleAnimation();
@@ -206,7 +188,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
                 public void onTagWrite(String writeStr) {
                     Toast.makeText(mContext, "NFC write successfully", Toast.LENGTH_SHORT).show();
                     //mNFC.WriteModeOff();
-                    mMaterialDialog.dismiss();
+                    mNFCDialog.dismiss();
                 }
             });
         }

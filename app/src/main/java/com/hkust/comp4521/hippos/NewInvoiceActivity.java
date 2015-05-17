@@ -8,16 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
@@ -25,9 +27,6 @@ import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NewInvoiceActivity extends AppCompatActivity {
 
@@ -38,10 +37,14 @@ public class NewInvoiceActivity extends AppCompatActivity {
 
     // Views
     private RelativeLayout mActionBar;
-    private ImageButton btnAddFromInventoryList;
+    private ImageButton btnAddFromInventoryList, btnCompleteSales;
+    MaterialDialog mSalesConfirmDialog;
 
     // Services
     private NFCService mNFC;
+
+    // Data
+    private Invoice mInvoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +53,11 @@ public class NewInvoiceActivity extends AppCompatActivity {
 
         mActivity = this;
         mContext = this;
-
         mNFC = new NFCService(mActivity, mContext);
 
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         btnAddFromInventoryList = (ImageButton) findViewById(R.id.ib_new_invoice_add_from_inv_list);
+        btnCompleteSales = (ImageButton) findViewById(R.id.ib_new_invoice_complete);
         TintedStatusBar.changeStatusBarColor(mActivity, TintedStatusBar.getColorFromTag(mActionBar));
 
         RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
@@ -73,6 +76,27 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 Intent i = new Intent(mContext, InventoryListActivity.class);
                 i.putExtra("selection_mode", true);
                 startActivityForResult(i, InventoryListActivity.MODE_SELECT_INVENTORY);
+            }
+        });
+        btnCompleteSales.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // inflate view for dialog
+                LayoutInflater mInflater = getLayoutInflater().from(mContext);
+                View vv = mInflater.inflate(R.layout.dialog_sales_confirm, null);
+                mSalesConfirmDialog =  new MaterialDialog.Builder(mActivity)
+                                        .customView(vv, false)
+                                        .positiveText("Confirm")
+                                        .negativeText("Cancel")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                            }
+                                            @Override
+                                            public void onNegative(MaterialDialog dialog) {
+                                            }
+                                        })
+                                        .show();
             }
         });
     }

@@ -21,6 +21,7 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_inventory_test">InventoryTestActivity</string>
     <string name="title_activity_invoice_test">InvoiceTestActivity</string>
+    <string name="title_activity_edit_inventory">EditInventoryActivity</string>
     <string name="title_activity_main_activity2">MainActivity2Activity</string>
 
 

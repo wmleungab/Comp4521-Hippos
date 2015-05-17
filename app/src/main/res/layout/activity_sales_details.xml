@@ -54,7 +54,7 @@
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textColor="@color/text_description"
                             android:paddingLeft="@dimen/activity_horizontal_margin"
-                            android:text="Sub-total"/>
+                            android:text="Item Totals"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textColor="@color/text_description"
                             android:paddingLeft="@dimen/activity_horizontal_margin"
-                            android:text="Discount"/>
+                            android:text="Adjustment"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -89,15 +89,34 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/text_description"
                             android:paddingLeft="@dimen/activity_horizontal_margin"
                             android:text="Grand Total"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/text_description"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
+                            android:text="$20.0"/>
+                    </TableRow>
+                    <TableRow
+                        android:paddingBottom="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/purple_primary_highlighted"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:text="Charge"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/purple_primary_highlighted"
                             android:paddingRight="@dimen/activity_horizontal_margin"
                             android:text="$20.0"/>
                     </TableRow>

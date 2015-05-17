@@ -9,27 +9,24 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.RelativeLayout;
+
+import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
 
 public class SettingActivity extends PreferenceActivity {
 
+    // Views
+    private RelativeLayout mActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setting);
 
-        // Display the fragment as the main content.
-        FragmentManager mFragmentManager = getFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager
-                .beginTransaction();
-        PrefsFragment mPrefsFragment = new PrefsFragment();
-        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
-        mFragmentTransaction.commit();
-
-
-//  We could have condensed the 5 lines into 1 line of code.
-//		getFragmentManager().beginTransaction()
-//				.replace(android.R.id.content, new PrefsFragment()).commit();
-
+        // Change action bar theme
+        mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
+        TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
     }
 
     /*SharedPreferences preferences = getActivity().getSharedPreferences(

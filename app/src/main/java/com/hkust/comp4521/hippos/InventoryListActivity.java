@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class InventoryListActivity extends AppCompatActivity {
     // Views
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
+    private ImageButton btnAddInventory;
     List<View> viewList;
 
     @Override
@@ -57,6 +59,16 @@ public class InventoryListActivity extends AppCompatActivity {
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
+
+        // Add inventory button
+        btnAddInventory = (ImageButton) findViewById(R.id.ib_inventory_list_add_item);
+        btnAddInventory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InventoryListActivity.this, EditInventoryActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize Inventory List
         Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {

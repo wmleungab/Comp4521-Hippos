@@ -155,6 +155,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
         chartBottom.setValueSelectionEnabled(true);
 
         chartBottom.setZoomType(ZoomType.HORIZONTAL);
+        chartBottom.setZoomEnabled(false);
 
         // chartBottom.setOnClickListener(new View.OnClickListener() {
         //
@@ -205,6 +206,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
         chartTop.setCurrentViewport(v);
 
         chartTop.setZoomType(ZoomType.HORIZONTAL);
+        chartTop.setZoomEnabled(false);
     }
 
     private void generateLineData(int color, float range) {

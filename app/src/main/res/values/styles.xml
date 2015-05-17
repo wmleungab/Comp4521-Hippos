@@ -8,9 +8,7 @@
     <style name="InventoryListAppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/green_primary</item>
         <item name="colorPrimaryDark">@color/green_primary_dark</item>
-        <item name="colorAccent">@color/color_set_2_accent</item>
 
-        <item name="android:navigationBarColor">@color/color_set_2_primary</item>
         <item name="android:logo">@mipmap/inventory_badge_icon</item>
     </style>
 </resources>

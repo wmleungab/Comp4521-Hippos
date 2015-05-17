@@ -1,9 +1,13 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import java.util.List;
+
 /**
  * Created by Yman on 15/5/2015.
  */
 public class Invoice {
+
+    // Attributes
     int id;
     double total_price;
     double final_price;
@@ -12,6 +16,8 @@ public class Invoice {
     String content;
     String email;
     int status;
+
+    List<InvoiceInventory> invoiceInventories;
 
     public int getID() {
         return id;
@@ -43,5 +49,13 @@ public class Invoice {
 
     public int getStatus() {
         return status;
+    }
+
+    public List<InvoiceInventory> getInvoiceInventories() {
+        return invoiceInventories;
+    }
+
+    public void setInvoiceInventories(List<InvoiceInventory> invoiceInventories) {
+        this.invoiceInventories = invoiceInventories;
     }
 }
