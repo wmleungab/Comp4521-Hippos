@@ -136,6 +136,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@mipmap/stock"
+                android:layout_weight="1"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_gravity="center_vertical"
@@ -146,11 +147,22 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Item Stock"
+                android:layout_weight="150"
                 android:id="@+id/tv_inventory_item_stock"
                 android:textColor="@color/text_primary"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"/>
+
+            <ImageButton
+                android:id="@+id/ib_inventory_add_stock"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/plus_dark" />
 
         </LinearLayout>
 

@@ -1,13 +1,12 @@
 package com.hkust.comp4521.hippos;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -116,14 +115,13 @@ public class InventoryListActivity extends AppCompatActivity {
             InventoryListAdapter adapter = new InventoryListAdapter(this, cId);
             adapter.setOnClickListener(new InventoryListAdapter.OnInventoryClickListener() {
                 @Override
-                public void onClick(View v, int catId, int invId) {
+                public void onClick(View v, int catId, int invIndex) {
                     // get position of the card
-                    Inventory item = Commons.getInventory(catId, invId);
+                    Inventory item = Commons.getInventoryFromIndex(catId, invIndex);
                     if(currentMode == MODE_NORMAL) {
                         Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putInt(Inventory.INVENTORY_CAT_ID, catId);
-                        bundle.putInt(Inventory.INVENTORY_INV_ID, invId);
+                        bundle.putInt(Inventory.INVENTORY_INV_ID, item.getId());
                         intent.putExtras(bundle);
                         ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
                                 InventoryListActivity.this,
@@ -135,8 +133,7 @@ public class InventoryListActivity extends AppCompatActivity {
                     } else if(currentMode == MODE_SELECT_INVENTORY) {
                         Intent i=new Intent();
                         Bundle b=new Bundle();
-                        b.putInt("category_id", catId);
-                        b.putInt("inventory_id", invId);
+                        b.putInt(Inventory.INVENTORY_INV_ID, item.getId());
                         i.putExtras(b);
                         setResult(RESULT_OK, i);
                         finish();

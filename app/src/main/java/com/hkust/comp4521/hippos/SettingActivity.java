@@ -29,6 +29,12 @@ public class SettingActivity extends PreferenceActivity {
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+    }
+
     /*SharedPreferences preferences = getActivity().getSharedPreferences(
             SettingActivity.PrefsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
             Context.MODE_PRIVATE);
@@ -115,8 +121,9 @@ public class SettingActivity extends PreferenceActivity {
             if (pref instanceof EditTextPreference) {
                 EditTextPreference editTextPreferencePref = (EditTextPreference) pref;
                 pref.setSummary(editTextPreferencePref.getText());
+            }
         }
-        }
+
     }
 
 

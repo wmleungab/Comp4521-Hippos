@@ -49,6 +49,10 @@ public class Inventory {
         return price;
     }
 
+    public String getFormattedPrice() {
+        return "$" + String.format("%.1f", price);
+    }
+
     public int getStock() {
         return stock;
     }

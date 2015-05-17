@@ -1,7 +1,6 @@
 package com.hkust.comp4521.hippos.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 
-import java.io.IOException;
 import java.util.List;
 
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.InventoryViewHolder>{
@@ -38,7 +36,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i);
              contactViewHolder.itemName.setText(ci.getName());
-             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
+             contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
              contactViewHolder.itemStock.setText("Stock: 12");
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
@@ -64,7 +62,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     // Interface for onClick function in the adapter
     public interface OnInventoryClickListener {
-        public void onClick(View v, int cId, int iId);
+        public void onClick(View v, int cId, int invIndex);
     }
 
     public static class InventoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

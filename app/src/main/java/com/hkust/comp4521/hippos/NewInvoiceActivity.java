@@ -108,7 +108,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
-                Inventory inv = Commons.getInventory(b.getInt("category_id"), b.getInt("inventory_id"));
+                Inventory inv = Commons.getInventory(b.getInt(Inventory.INVENTORY_INV_ID));
                 adapter.addItem(new InvoiceInventory(inv, 1));
             }
         }
@@ -144,12 +144,10 @@ public class NewInvoiceActivity extends AppCompatActivity {
             mNFC.readTag(new NFCService.NFCReadTagListener() {
                 @Override
                 public void onTagRead(String readStr) {
-                    //Toast.makeText(mContext, "str: " + readStr , Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject nfcJSON = new JSONObject(readStr);
-                        //Container retrievedContainer = containerHM.get(nfcJSON.getInt("container_id"));
                         Toast.makeText(mContext, readStr, Toast.LENGTH_SHORT).show();
-                        Inventory inv = Commons.getInventory(nfcJSON.getInt("category_id"), nfcJSON.getInt("inventory_id"));
+                        Inventory inv = Commons.getInventory(nfcJSON.getInt(Inventory.INVENTORY_INV_ID));
                         adapter.addItem(new InvoiceInventory(inv, 1));
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block

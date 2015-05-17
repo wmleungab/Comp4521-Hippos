@@ -66,11 +66,11 @@
             android:text="Setting Activity" />
 
         <Button
-            android:id="@+id/btn_debug_nfctransfer"
+            android:id="@+id/btn_debug_newinventory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Transfer Activity" />
+            android:text="New Inventory Activity" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -32,9 +32,6 @@ import org.json.JSONObject;
 
 public class InventoryDetailsActivity extends ActionBarActivity {
 
-    // Extra name for the ID parameter
-    public static final String EXTRA_PARAM_ID = "detail:_id";
-
     // View name of the header image. Used for activity scene transitions
     public static final String VIEW_NAME_HEADER_IMAGE = "detail:header:image";
 
@@ -43,8 +40,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
 
     // Views
     private ImageView mHeaderImageView;
-    private TextView mHeaderTitle;
-    private ImageButton btnBack, btnCamera;
+    private TextView mHeaderTitle, tvItemDesc, tvItemPrice, tvItemStock;
+    private ImageButton btnBack, btnEdit;
     private LinearLayout btnNFCAssign;
 
     // Activity-related
@@ -71,9 +68,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         // get information from previous activity
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
-            int catId = bundle.getInt(Inventory.INVENTORY_CAT_ID);
             int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
-            mItem = Commons.getInventory(catId, invId);
+            mItem = Commons.getInventory(invId);
         }
 
         initViews();
@@ -107,12 +103,35 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        // Item name
+        // setup textviews
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());
+        tvItemDesc = (TextView) findViewById(R.id.tv_inventory_item_desc);
+        tvItemDesc.setText(mItem.getTimeStamp());
+        tvItemPrice = (TextView) findViewById(R.id.tv_inventory_item_price);
+        tvItemPrice.setText(mItem.getFormattedPrice());
+        tvItemStock = (TextView) findViewById(R.id.tv_inventory_item_stock);
+        tvItemStock.setText(mItem.getStock() + " remaining");
         // actionBar buttons
         btnBack = (ImageButton) findViewById(R.id.ib_actionBar_back);
-        btnCamera = (ImageButton) findViewById(R.id.ib_actionBar_pencil);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.onBackPressed();
+            }
+        });
+        btnEdit = (ImageButton) findViewById(R.id.ib_actionBar_pencil);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, EditInventoryActivity.class);
+                Bundle b=new Bundle();
+                b.putInt(Inventory.INVENTORY_CAT_ID, mItem.getCategory());
+                b.putInt(Inventory.INVENTORY_INV_ID, mItem.getId());
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
         // NFC assign button and its dialog
         btnNFCAssign = (LinearLayout) findViewById(R.id.ll_inventory_details_nfc_assign);
         btnNFCAssign.setOnClickListener(new View.OnClickListener() {
@@ -177,8 +196,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             String jsonStr = "";
             JSONObject jsonObj = new JSONObject();
             try {
-                jsonObj.put("inventory_id", mItem.getId());
-                jsonObj.put("category_id", mItem.getCategory());
+                jsonObj.put(Inventory.INVENTORY_INV_ID, mItem.getId());
                 jsonStr = jsonObj.toString();
             } catch (JSONException e) {
                 e.printStackTrace();

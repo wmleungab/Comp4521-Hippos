@@ -92,6 +92,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         case R.id.btn_main_saleshistory:
                             i = new Intent(mContext, SalesHistoryActivity.class);
                             break;
+                        case R.id.btn_main_settings:
+                            i = new Intent(mContext, SettingActivity.class);
+                            break;
                         default:
                             break;
                     }

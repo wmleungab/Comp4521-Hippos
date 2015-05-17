@@ -45,7 +45,7 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
         public void onBindViewHolder(InvoiceInventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i).getInventory();
              contactViewHolder.itemName.setText(ci.getName());
-             contactViewHolder.itemPrice.setText("$" + ci.getPrice());
+             contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
              contactViewHolder.itemStock.setText("x1");
              contactViewHolder.invId = i;
             /*

@@ -34,7 +34,7 @@ public class CategoryTestActivity extends Activity implements View.OnClickListen
     }
 
     private void init() {
-        rc = new RestClient();
+        rc = RestClient.getInstance();
         findViewById(R.id.setting_btn).setOnClickListener(this);
         findViewById(R.id.setting_btn2).setOnClickListener(this);
         findViewById(R.id.get_all_cat).setOnClickListener(this);

@@ -23,7 +23,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.btn_debug_saleshistory).setOnClickListener(this);
         findViewById(R.id.btn_debug_invlist).setOnClickListener(this);
         findViewById(R.id.btn_debug_setting).setOnClickListener(this);
-        findViewById(R.id.btn_debug_nfctransfer).setOnClickListener(this);
+        findViewById(R.id.btn_debug_newinventory).setOnClickListener(this);
         findViewById(R.id.btn_debug_invoicetest).setOnClickListener(this);
         findViewById(R.id.btn_debug_categorytest).setOnClickListener(this);
         RestClient.getInstance();
@@ -71,8 +71,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_debug_invlist:
                 i = new Intent(this, InventoryListActivity.class);
                 break;
-            case R.id.btn_debug_nfctransfer:
-                i = new Intent(this, InventoryTestActivity.class);
+            case R.id.btn_debug_newinventory:
+                i = new Intent(this, EditInventoryActivity.class);
                 break;
             case R.id.btn_debug_setting:
                 i = new Intent(this, SettingActivity.class);

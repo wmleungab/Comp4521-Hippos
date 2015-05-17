@@ -1,9 +1,7 @@
 package com.hkust.comp4521.hippos.datastructures;
 
 import android.util.Log;
-import android.widget.TextView;
 
-import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
@@ -16,6 +14,8 @@ import java.util.List;
  */
 public class Commons {
 
+    public static String appName = "hippos";
+
     private static User user = null;
 
     private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
@@ -26,7 +26,8 @@ public class Commons {
     public static int MODE_SALES_CONFIRM = 1;
 
     private static List<Category> categoryList = null;
-    private static HashMap<Integer, ArrayList<Inventory>> inventoryList = null;
+    private static HashMap<Integer, Inventory> inventoryHM = null;
+    private static HashMap<Integer, ArrayList<Inventory>> categorizedinventoryHMList = null;
     private static int lastUpdate = -1;
 
     public static int getCategoryCount() {
@@ -36,9 +37,9 @@ public class Commons {
     }
 
     public static ArrayList<Inventory> getInventoryList(int index) {
-        if(inventoryList == null)
+        if(categorizedinventoryHMList == null)
             return null;
-        return inventoryList.get(index);
+        return categorizedinventoryHMList.get(index);
     }
 
     public static Category getCategory(int cIndex) {
@@ -47,10 +48,16 @@ public class Commons {
         return categoryList.get(cIndex);
     }
 
-    public static Inventory getInventory(int cIndex, int iIndex) {
-        if(inventoryList == null)
+    public static Inventory getInventoryFromIndex(int cId, int iIndex) {
+        if(categorizedinventoryHMList == null)
             return null;
-        return inventoryList.get(cIndex).get(iIndex);
+        return categorizedinventoryHMList.get(cId).get(iIndex);
+    }
+
+    public static Inventory getInventory(int iIndex) {
+        if(inventoryHM == null)
+            return null;
+        return inventoryHM.get(iIndex);
     }
 
     public static String[] getCategoryTabs() {
@@ -61,7 +68,7 @@ public class Commons {
 
     public static Inventory getRandomInventory() {
         int catId = (int) (Math.random() * getCategoryCount());
-        ArrayList<Inventory> list = inventoryList.get(catId);
+        ArrayList<Inventory> list = categorizedinventoryHMList.get(catId);
         int invId = (int) (Math.random() * list.size());
         Inventory toReturn = list.get(invId);
         return toReturn;
@@ -73,11 +80,12 @@ public class Commons {
 
     public static void initializeInventoryList(final onInventoryListInitializedListener mListener) {
         // TODO: fetch list from server instead
-        if(inventoryList != null) {
+        if(categorizedinventoryHMList != null) {
             if(mListener != null)
                 mListener.onInitialized();
         }
-        inventoryList = new HashMap<Integer, ArrayList<Inventory>>();
+        categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
+        inventoryHM = new HashMap<Integer, Inventory>();
         final RestClient rc = RestClient.getInstance();
         // Init Category information
         rc.getAllCategory(new RestListener<List<Category>>() {
@@ -88,7 +96,7 @@ public class Commons {
                     categoryList = categories;
                     INVENTORY_CATEGORY = new String[categories.size()];
                     for (Category c : categories) {
-                        inventoryList.put(c.getID(), new ArrayList<Inventory>());
+                        categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
                     }
                     for(int i = 0; i < categories.size(); i++) {
                         INVENTORY_CATEGORY[i] = categories.get(i).getName();
@@ -99,9 +107,9 @@ public class Commons {
                         public void onSuccess(List<Inventory> netInventories) {
                             Log.i("Commons", "Get Inventory list");
                             for (Inventory inv : netInventories) {
-                                //inventoryList.put(c.getID(), new ArrayList<Inventory>());
-                                ArrayList<Inventory> list = inventoryList.get(inv.getCategory());
+                                ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
                                 list.add(inv);
+                                inventoryHM.put(inv.getId(), inv);
                             }
                             if(mListener != null)
                                 mListener.onInitialized();
