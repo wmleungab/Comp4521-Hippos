@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.view.LayoutInflater;
@@ -111,7 +111,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         tvItemPrice = (TextView) findViewById(R.id.tv_inventory_item_price);
         tvItemPrice.setText(mItem.getFormattedPrice());
         tvItemStock = (TextView) findViewById(R.id.tv_inventory_item_stock);
-        tvItemStock.setText(mItem.getStock() + " remaining");
+        tvItemStock.setText("Stock: " + mItem.getStock());
         // actionBar buttons
         btnBack = (ImageButton) findViewById(R.id.ib_actionBar_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -125,8 +125,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mActivity, EditInventoryActivity.class);
-                Bundle b=new Bundle();
-                b.putInt(Inventory.INVENTORY_CAT_ID, mItem.getCategory());
+                Bundle b = new Bundle();
                 b.putInt(Inventory.INVENTORY_INV_ID, mItem.getId());
                 intent.putExtras(b);
                 startActivity(intent);

@@ -46,7 +46,7 @@ public class EditInventoryActivity extends AppCompatActivity {
     private RelativeLayout mActionBar;
     private Spinner categorySpinner;
     private ImageView ivHeroImage;
-    private EditText etItemName;
+    private EditText etItemName, etItemPrice, etItemStock;
     private ImageButton btnFinish;
 
     // Data
@@ -66,6 +66,8 @@ public class EditInventoryActivity extends AppCompatActivity {
         // Init views
         ivHeroImage = (ImageView) findViewById(R.id.iv_edit_inventory_hero_image);
         etItemName = (EditText) findViewById(R.id.et_edit_inventory_item_name);
+        etItemPrice = (EditText) findViewById(R.id.et_edit_inventory_item_price);
+        etItemStock = (EditText) findViewById(R.id.et_edit_inventory_item_stock);
         btnFinish = (ImageButton) findViewById(R.id.ib_edit_inventory_complete_item);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +85,6 @@ public class EditInventoryActivity extends AppCompatActivity {
             }
         });
 
-
         // get information from previous activity
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
@@ -92,6 +93,9 @@ public class EditInventoryActivity extends AppCompatActivity {
 
             // setup info to edit text
             etItemName.setText(mItem.getName());
+            etItemPrice.setText(mItem.getPrice()+"");
+            etItemStock.setText(mItem.getStock()+"");
+            categorySpinner.setSelection(Commons.getCategoryIndex(mItem.getCategory()));
         }
 
         ivHeroImage.setScaleType(ImageView.ScaleType.CENTER);

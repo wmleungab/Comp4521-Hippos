@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
@@ -73,7 +72,6 @@ public class InventoryListActivity extends AppCompatActivity {
         Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
             @Override
             public void onInitialized() {
-                Toast.makeText(InventoryListActivity.this, "Loaded List", Toast.LENGTH_SHORT).show();
                 setupList();
             }
         });
@@ -81,7 +79,6 @@ public class InventoryListActivity extends AppCompatActivity {
     }
 
     private void setupList() {
-        Toast.makeText(InventoryListActivity.this, "setupList", Toast.LENGTH_SHORT).show();
         // Setup pages of inventories
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();

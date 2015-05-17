@@ -37,7 +37,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              Inventory ci = invList.get(i);
              contactViewHolder.itemName.setText(ci.getName());
              contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
-             contactViewHolder.itemStock.setText("Stock: 12");
+             contactViewHolder.itemStock.setText("Stock: " + ci.getStock());
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;

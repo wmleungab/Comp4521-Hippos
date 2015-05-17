@@ -91,6 +91,7 @@
         </RelativeLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_edit_inventory_item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Price"
@@ -103,6 +104,7 @@
             app:met_iconPadding="16dp" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_edit_inventory_item_stock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Item Stock"
