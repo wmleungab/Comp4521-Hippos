@@ -18,7 +18,7 @@ public class Commons {
 
     private static User user = null;
 
-    private static String[] INVENTORY_CATEGORY = {"Unsorted", "Books", "Confectionery", "Toys", "Stationery"};
+    private static String[] INVENTORY_CATEGORY = {};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
 
     // Adapter modes
@@ -48,6 +48,17 @@ public class Commons {
         return categoryList.get(cIndex);
     }
 
+    public static int getCategoryIndex(int cId) {
+        if(categoryList == null)
+            return -1;
+        int toReturn = -1;
+        for(int i=0; i<categoryList.size(); i++) {
+            if(categoryList.get(i).getID() == cId)
+                toReturn = i;
+        }
+        return toReturn;
+    }
+
     public static List<Category> getCategoryList() {
         if(categoryList == null)
             return null;
@@ -60,10 +71,10 @@ public class Commons {
         return categorizedinventoryHMList.get(cId).get(iIndex);
     }
 
-    public static Inventory getInventory(int iIndex) {
+    public static Inventory getInventory(int iId) {
         if(inventoryHM == null)
             return null;
-        return inventoryHM.get(iIndex);
+        return inventoryHM.get(iId);
     }
 
     public static String[] getCategoryTabs() {
@@ -74,7 +85,7 @@ public class Commons {
 
     public static Inventory getRandomInventory() {
         int catId = (int) (Math.random() * getCategoryCount());
-        ArrayList<Inventory> list = categorizedinventoryHMList.get(catId);
+        ArrayList<Inventory> list = categorizedinventoryHMList.get(categoryList.get(catId).getID());
         int invId = (int) (Math.random() * list.size());
         Inventory toReturn = list.get(invId);
         return toReturn;
@@ -87,8 +98,10 @@ public class Commons {
     public static void initializeInventoryList(final onInventoryListInitializedListener mListener) {
         // TODO: fetch list from server instead
         if(categorizedinventoryHMList != null) {
-            if(mListener != null)
+            if(mListener != null) {
                 mListener.onInitialized();
+                return;
+            }
         }
         categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
         inventoryHM = new HashMap<Integer, Inventory>();
