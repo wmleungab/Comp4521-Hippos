@@ -430,7 +430,7 @@ public class RestClient {
         }
     }
 
-    private void updateInventory(final int id, final String updatedName
+    public void updateInventory(final int id, final String updatedName
             , final double updatedPrice, final int updatedStock, final String updatedImage, final int updatedStatus,
                                  final int updatedCategory, final RestListener<Inventory> restListener) {
 
