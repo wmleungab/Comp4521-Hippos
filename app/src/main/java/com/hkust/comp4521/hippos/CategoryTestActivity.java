@@ -13,6 +13,8 @@ import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CategoryTestActivity extends Activity implements View.OnClickListener {
@@ -175,20 +177,40 @@ public class CategoryTestActivity extends Activity implements View.OnClickListen
         if (view.getId() == R.id.upload_btn) {
 
 
-            rc.fileUpload(100, RestClient.file, new RestListener<String>() {
+//            rc.fileUpload(100, RestClient.file, new RestListener<String>() {
+//
+//                    @Override
+//                    public void onSuccess(String s) {
+//                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+//                        tv.setText("upload sucess");
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int status) {
+//                        TextView tv = (TextView) findViewById(R.id.setting_textView);
+//                        tv.setText("upload unsucessful");
+//                    }
+//                });
+            String url = "./uploads/default.jpg";
 
-                    @Override
-                    public void onSuccess(String s) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("upload sucess");
-                    }
 
-                    @Override
-                    public void onFailure(int status) {
-                        TextView tv = (TextView) findViewById(R.id.setting_textView);
-                        tv.setText("upload unsucessful");
+            rc.downloadFile(url, new RestListener<InputStream>() {
+                @Override
+                public void onSuccess(InputStream inputStream) {
+                    TextView tv = (TextView) findViewById(R.id.setting_textView);
+                    try {
+                        tv.setText("download sucess" + inputStream.available());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    TextView tv = (TextView) findViewById(R.id.setting_textView);
+                    tv.setText("download unsucessful");
+                }
+            });
 
         }
     }

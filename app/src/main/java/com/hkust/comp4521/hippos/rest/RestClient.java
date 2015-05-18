@@ -10,6 +10,8 @@ import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import retrofit.Callback;
@@ -18,6 +20,7 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
+import retrofit.mime.TypedInput;
 
 /**
  * Created by Yman on 15/5/2015.
@@ -628,6 +631,37 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 400)
                     restListener.onFailure(RestListener.INVALID_EMAIL);
+            }
+        });
+    }
+
+    public void downloadFile(String filePath, final RestListener<InputStream> restListener) {
+        if (filePath == null || filePath.equals("")) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        } else if (filePath.indexOf("./uploads/") < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        } else {
+            filePath = filePath.substring("./uploads/".length(), filePath.length());
+        }
+        serverAPI.downloadAt_uploads(filePath, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                TypedInput tI = response.getBody();
+                try {
+                    InputStream iS = tI.in();
+                    restListener.onSuccess(iS);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    restListener.onFailure(RestListener.DOWNLOAD_FAIL);
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                restListener.onFailure(RestListener.DOWNLOAD_FAIL);
             }
         });
     }

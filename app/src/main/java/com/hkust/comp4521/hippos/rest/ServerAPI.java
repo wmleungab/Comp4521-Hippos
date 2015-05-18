@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos.rest;
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -80,4 +81,7 @@ public interface ServerAPI {
     @Multipart
     @POST("/upload/{id}")
     void uploadImage(@Header("Authorization") String authorization, @Path("id") int inven_id, @Part("file") TypedFile file, Callback<Response_FileUpload> callback);
+
+    @GET("/uploads/{name}")
+    void downloadAt_uploads(@Path("name") String fileName, Callback<Response> callback);
 }
