@@ -28,7 +28,7 @@ import retrofit.mime.TypedInput;
 public class RestClient {
     public static final String SERVER_ID = "ec2-54-92-12-108.ap-northeast-1.compute.amazonaws.com/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
-    public static final String DEFAULF_INVEN_PIC = "./uploads/default.jpg";
+    public static final String DEFAULF_INVEN_PIC = "null";//"./uploads/default.jpg";
 
     public static File file;
 
