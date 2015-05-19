@@ -1,7 +1,6 @@
 package com.hkust.comp4521.hippos.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.R;
-import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +46,7 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
              contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
              contactViewHolder.itemStock.setText("x1");
              contactViewHolder.invId = i;
-            /*
-            try {
-                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+             new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
         }
 
         @Override

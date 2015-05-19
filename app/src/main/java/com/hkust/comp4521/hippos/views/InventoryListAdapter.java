@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
 import java.util.List;
 
@@ -41,12 +42,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
-            /*
-            try {
-                contactViewHolder.heroImage.setImageDrawable(Drawable.createFromStream(mContext.getAssets().open(ci.getFileName() + ".jpg"), null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+            new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {

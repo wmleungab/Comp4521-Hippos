@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -10,8 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -25,6 +24,7 @@ import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
@@ -37,7 +37,11 @@ import java.util.List;
 
 public class EditInventoryActivity extends AppCompatActivity {
 
+    // activity
+    private Context mContext;
+
     // Mode Flags
+    private int currentMode = -1;
     public static int MODE_NEW_INVENTORY = 0;
     public static int MODE_EDIT_INVENTORY = 1;
     public static int MODE_SELECT_PICTURE = 2;
@@ -59,23 +63,15 @@ public class EditInventoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory);
 
+        mContext = this;
+        currentMode = MODE_NEW_INVENTORY;
+
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
 
-        // Init views
-        ivHeroImage = (ImageView) findViewById(R.id.iv_edit_inventory_hero_image);
-        etItemName = (EditText) findViewById(R.id.et_edit_inventory_item_name);
-        etItemPrice = (EditText) findViewById(R.id.et_edit_inventory_item_price);
-        etItemStock = (EditText) findViewById(R.id.et_edit_inventory_item_stock);
-        btnFinish = (ImageButton) findViewById(R.id.ib_edit_inventory_complete_item);
-        btnFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(selectedFile != null)
-                    Toast.makeText(EditInventoryActivity.this, selectedFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        initViews();
+
         Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
             @Override
             public void onInitialized() {
@@ -85,7 +81,7 @@ public class EditInventoryActivity extends AppCompatActivity {
             }
         });
 
-        // get information from previous activity
+        // get information from previous activity (for editing inventory)
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
@@ -96,8 +92,31 @@ public class EditInventoryActivity extends AppCompatActivity {
             etItemPrice.setText(mItem.getPrice()+"");
             etItemStock.setText(mItem.getStock()+"");
             categorySpinner.setSelection(Commons.getCategoryIndex(mItem.getCategory()));
+
+            // setup mode flag
+            currentMode = MODE_EDIT_INVENTORY;
         }
 
+    }
+
+    private void initViews() {
+        ivHeroImage = (ImageView) findViewById(R.id.iv_edit_inventory_hero_image);
+        etItemName = (EditText) findViewById(R.id.et_edit_inventory_item_name);
+        etItemPrice = (EditText) findViewById(R.id.et_edit_inventory_item_price);
+        etItemStock = (EditText) findViewById(R.id.et_edit_inventory_item_stock);
+        btnFinish = (ImageButton) findViewById(R.id.ib_edit_inventory_complete_item);
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentMode == MODE_NEW_INVENTORY) {
+                    createNewInventory();
+                } else if(currentMode == MODE_EDIT_INVENTORY) {
+
+                }
+            }
+        });
+
+        // preview image
         ivHeroImage.setScaleType(ImageView.ScaleType.CENTER);
         ivHeroImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,33 +126,33 @@ public class EditInventoryActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit_inventory, menu);
-        return true;
-    }
+    private void createNewInventory() {
+        // get values from view
+        String name = etItemName.getText().toString();
+        Double price = Double.parseDouble(etItemPrice.getText().toString());
+        int stock = Integer.parseInt(etItemStock.getText().toString());
+        int category = ((Category) categorySpinner.getSelectedItem()).getID();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        RestClient.getInstance().createInventory(name, price, stock, selectedFile, category, new RestListener<Inventory>() {
+            @Override
+            public void onSuccess(Inventory inventory) {
+                Toast.makeText(mContext, "Inventory " + inventory.getName() + " created!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+            @Override
+            public void onFailure(int status) {
+                Toast.makeText(mContext, "Failed: status code=" + status, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     // For selecting image from device
     // Solution suggested from: http://stackoverflow.com/questions/27873894/dialog-screen-like-whatsapp-profile-photo-dialog-screen
     private void openImageIntent() {
         // Determine Uri of camera image to save.
-        final File root = new File(ImageUtils.IMAGE_ROOT_PATH);
+        final File root = new File(Commons.APP_ROOT_PATH);
         root.mkdirs();
         final String fname = ImageUtils.getUniqueImageFilename(".jpg");
         final File sdImageMainDirectory = new File(root, fname);

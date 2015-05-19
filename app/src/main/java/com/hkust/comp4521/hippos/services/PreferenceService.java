@@ -1,8 +1,5 @@
 package com.hkust.comp4521.hippos.services;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -81,46 +78,4 @@ public class PreferenceService {
 		editor.commit();
 	}
 
-	
-	// JSON Object 
-	private static JSONObject currentDriverJSON = null;
-	private static JSONObject currentVehicleJSON = null;
-
-	public static void setCurrentDriverJSON(JSONObject jsonObj) {
-		currentDriverJSON = jsonObj;
-	}
-
-	public static JSONObject getCurrentDriverJSON() {
-		return currentDriverJSON;
-	}
-	
-	public static String getCurrentDriverJSONProperty(String key) {
-		if(currentDriverJSON == null)
-			return null;
-		try {
-			return currentDriverJSON.getString(key);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static void setCurrentVehicleJSON(JSONObject jsonObj) {
-		currentVehicleJSON = jsonObj;
-	}
-
-	public static JSONObject getCurrentVehicleJSON() {
-		return currentVehicleJSON;
-	}
-	
-	public static String getCurrentVehicleJSONProperty(String key) {
-		if(currentVehicleJSON == null)
-			return null;
-		try {
-			return currentVehicleJSON.getString(key);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 }

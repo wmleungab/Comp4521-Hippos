@@ -1,10 +1,12 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,14 @@ import java.util.List;
  */
 public class Commons {
 
+    // Trivial information
     public static String appName = "hippos";
+    public static String APP_ROOT_PATH = Environment.getExternalStorageDirectory() + File.separator + Commons.appName + File.separator;
 
+    // Server information
     private static User user = null;
 
+    // ViewPager Tabs
     private static String[] INVENTORY_CATEGORY = {};
     private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
 
@@ -25,10 +31,15 @@ public class Commons {
     public static int MODE_NEW_INVOICE = 0;
     public static int MODE_SALES_CONFIRM = 1;
 
+    // Data structure from DB
     private static List<Category> categoryList = null;
     private static HashMap<Integer, Inventory> inventoryHM = null;
     private static HashMap<Integer, ArrayList<Inventory>> categorizedinventoryHMList = null;
     private static int lastUpdate = -1;
+
+    {
+        RestClient.getInstance();
+    }
 
     public static int getCategoryCount() {
         if(categoryList == null)

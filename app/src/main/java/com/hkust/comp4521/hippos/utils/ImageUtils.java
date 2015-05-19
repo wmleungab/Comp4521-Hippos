@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
 
@@ -22,8 +21,8 @@ import java.util.Date;
  */
 public class ImageUtils {
 
-    public static String IMAGE_ROOT_PATH = Environment.getExternalStorageDirectory() + File.separator + Commons.appName + File.separator;
-    public static String UPLOAD_IMAGE_PATH = Environment.getExternalStorageDirectory() + File.separator + Commons.appName + File.separator + "to_upload.jpg";
+    public static String IMAGE_CACHE_PATH = Commons.APP_ROOT_PATH + "cache" + File.separator;
+    public static String UPLOAD_IMAGE_PATH = Commons.APP_ROOT_PATH + "to_upload.jpg";
 
     public static String getUniqueImageFilename(String extension) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -63,5 +62,4 @@ public class ImageUtils {
         if (k == 0) return 1;
         else return k;
     }
-
 }
