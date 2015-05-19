@@ -94,8 +94,6 @@ public class SettingActivity extends PreferenceActivity {
                 findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(s);
             else
                 findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(nth);
-
-
         }
 
         @Override

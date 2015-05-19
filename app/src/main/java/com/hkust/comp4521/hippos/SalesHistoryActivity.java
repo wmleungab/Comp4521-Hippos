@@ -1,17 +1,20 @@
 package com.hkust.comp4521.hippos;
 
-import android.support.v4.view.ViewPager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.views.InvoiceListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
     private ColumnChartData columnData;
 
     List<View> viewList;
+    RecyclerView recList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,40 +83,43 @@ public class SalesHistoryActivity extends AppCompatActivity {
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_sales_history);
         tabs.setViewPager(mViewPager);
 
+        // setup invoice records
+        View view = viewList.get(0);
+        recList = (RecyclerView) view.findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+        setupInvoice();
+
         // setup charts for statistics view
-        View view = viewList.get(1);
+        view = viewList.get(1);
 
         // Generate and set data for line chart
         chartTop = (LineChartView) view.findViewById(R.id.chart_top);
         generateInitialLineData();
         chartBottom = (ColumnChartView) view.findViewById(R.id.chart_bottom);
         generateColumnData();
-
-
-
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sales_history, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private void setupInvoice() {
+        Commons.initializeInvoiceList(new Commons.onInitializedListener() {
+            @Override
+            public void onInitialized() {
+                InvoiceListAdapter adapter = new InvoiceListAdapter(SalesHistoryActivity.this);
+                adapter.setOnClickListener(new InvoiceListAdapter.OnInvoiceClickListener() {
+                    @Override
+                    public void onClick(View v, int invIndex) {
+                        Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
+                        Bundle b=new Bundle();
+                        b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
+                        i.putExtras(b);
+                        startActivity(i);
+                    }
+                });
+                recList.setAdapter(adapter);
+            }
+        });
     }
 
     @Override
@@ -156,19 +163,6 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         chartBottom.setZoomType(ZoomType.HORIZONTAL);
         chartBottom.setZoomEnabled(false);
-
-        // chartBottom.setOnClickListener(new View.OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // SelectedValue sv = chartBottom.getSelectedValue();
-        // if (!sv.isSet()) {
-        // generateInitialLineData();
-        // }
-        //
-        // }
-        // });
-
     }
 
     /**

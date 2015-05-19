@@ -71,10 +71,6 @@ public class EditInventoryActivity extends AppCompatActivity {
 
         initViews();
 
-        categorySpinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
-        categorySpinner.setAdapter(spinnerAdapter);
-
         // get information from previous activity (for editing inventory)
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
@@ -105,7 +101,7 @@ public class EditInventoryActivity extends AppCompatActivity {
                 if(currentMode == MODE_NEW_INVENTORY) {
                     createNewInventory();
                 } else if(currentMode == MODE_EDIT_INVENTORY) {
-
+                    
                 }
             }
         });
@@ -118,6 +114,11 @@ public class EditInventoryActivity extends AppCompatActivity {
                 openImageIntent();
             }
         });
+
+        // category spinner
+        categorySpinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
+        categorySpinner.setAdapter(spinnerAdapter);
     }
 
     private void createNewInventory() {
@@ -217,6 +218,8 @@ public class EditInventoryActivity extends AppCompatActivity {
                 try {
                     mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileUri);
                     ImageUtils.writeBitmapToFile(mBitmap, ImageUtils.UPLOAD_IMAGE_PATH);
+                    
+                    uploadImageToServer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -224,11 +227,12 @@ public class EditInventoryActivity extends AppCompatActivity {
         }
     }
 
+    private void uploadImageToServer() {
+
+    }
+
     @Override
     public void onPause() {
-
         super.onPause();
-
-        RestClient.file = selectedFile;
     }
 }

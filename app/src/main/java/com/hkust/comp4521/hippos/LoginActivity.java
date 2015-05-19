@@ -34,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText serverAddr, userName, password;
     private ImageButton btnLogin;
 
+    // Position data
+    private int xShift, yShift;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +81,10 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void preLoginAnimation()
-    {
-        // Move logo to center
+    private void calculateLogoPlacement() {
         RelativeLayout root = (RelativeLayout) findViewById( R.id.rl_login_layout );
         DisplayMetrics dm = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics( dm );
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int statusBarOffset = dm.heightPixels - root.getMeasuredHeight();
 
         int originalPos[] = new int[2];
@@ -93,7 +94,15 @@ public class LoginActivity extends AppCompatActivity {
         xDest -= (logoView.getMeasuredWidth()/2);
         int yDest = dm.heightPixels/2 - (logoView.getMeasuredHeight()/2) - statusBarOffset;
 
-        TranslateAnimation anim = new TranslateAnimation( 0, xDest - originalPos[0] , 0, yDest - originalPos[1] );
+        xShift = xDest - originalPos[0];
+        yShift = yDest - originalPos[1];
+    }
+
+    private void preLoginAnimation()
+    {
+        // Move logo to center
+        calculateLogoPlacement();
+        TranslateAnimation anim = new TranslateAnimation( 0, xShift , 0, yShift );
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -140,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_USERNAME, email);
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_PASSWORD, pw);
                 // Initialize Inventory List
-                Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+                Commons.initializeInventoryList(new Commons.onInitializedListener() {
                     @Override
                     public void onInitialized() {
                         Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
@@ -154,9 +163,22 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int status) {
-
+                Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_SHORT).show();
+                recoverLoginLayout();
             }
         });
+    }
+
+    private void recoverLoginLayout() {
+        // Move logo back up
+        TranslateAnimation anim = new TranslateAnimation( xShift, 0 , yShift, 0 );
+        anim.setDuration(600);
+        anim.setFillAfter(true);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+        logoView.startAnimation(anim);
+
+        // Show other layouts
+        applyFadeAnimation(loginLayout, 1);
     }
 
     public void applyFadeAnimation(View view, float fade) {

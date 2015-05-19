@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="56dp"
-            android:text="New Item"
+            android:text="@string/title_activity_edit_inventory"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 

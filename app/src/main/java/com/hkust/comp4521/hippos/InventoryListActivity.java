@@ -69,7 +69,7 @@ public class InventoryListActivity extends AppCompatActivity {
         });
 
         // Initialize Inventory List
-        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+        Commons.initializeInventoryList(new Commons.onInitializedListener() {
             @Override
             public void onInitialized() {
                 setupList();

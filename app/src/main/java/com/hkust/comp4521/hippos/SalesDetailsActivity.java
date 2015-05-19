@@ -1,13 +1,8 @@
 package com.hkust.comp4521.hippos;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +17,9 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
+import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
-import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
 import com.nineoldandroids.view.ViewHelper;
-
-import java.io.IOException;
 
 
 public class SalesDetailsActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
@@ -37,6 +29,8 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
     private TextView mTitleView, mSubTitleView;
     private int mFlexibleSpaceHeight;
 
+    private Invoice currentInvoice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +39,27 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Init views
         mFlexibleSpaceView = findViewById(R.id.flexible_space);
         mTitleView = (TextView) findViewById(R.id.tv_sales_details_title);
         mSubTitleView = (TextView) findViewById(R.id.tv_sales_details_subtitle);
-        mTitleView.setText("Invoice #001");
-        mSubTitleView.setText("Date: May 26th, 2015\nHandled by: Wyman Leung");
+
+        // get information from previous activity (for retrieving sales info)
+        Bundle bundle = this.getIntent().getExtras();
+        if(bundle != null) {
+            int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
+            currentInvoice = Commons.getInvoice(invId);
+
+            // Setup views
+            mTitleView.setText("Invoice #" + currentInvoice.getID());
+            mSubTitleView.setText("Date: " + currentInvoice.getDateTime() + "\nHandled by: " + currentInvoice.getUser());
+        }
+
+        //mTitleView.setText("Invoice #001");
+        //mSubTitleView.setText("Date: May 26th, 2015\nHandled by: Wyman Leung");
         setTitle(null);
+
+        // Change status bar color
         mToolbarView = findViewById(R.id.toolbar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mToolbarView));
 

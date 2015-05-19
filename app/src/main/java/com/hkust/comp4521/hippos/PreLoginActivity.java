@@ -34,7 +34,7 @@ public class PreLoginActivity extends AppCompatActivity {
                 public void onSuccess(User user) {
                     Commons.setUser(user);
                     // Initialize Inventory List
-                    Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
+                    Commons.initializeInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {
                             Intent i = new Intent(PreLoginActivity.this, MainActivity.class);

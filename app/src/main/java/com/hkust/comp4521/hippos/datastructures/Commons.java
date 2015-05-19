@@ -31,15 +31,14 @@ public class Commons {
     public static int MODE_NEW_INVOICE = 0;
     public static int MODE_SALES_CONFIRM = 1;
 
-    // Data structure from DB
+    // Data structure for inventory
     private static List<Category> categoryList = null;
     private static HashMap<Integer, Inventory> inventoryHM = null;
     private static HashMap<Integer, ArrayList<Inventory>> categorizedinventoryHMList = null;
     private static int lastUpdate = -1;
 
-    {
-        RestClient.getInstance();
-    }
+    // Data structure for invoices
+    private static List<Invoice> invoiceList = null;
 
     public static int getCategoryCount() {
         if(categoryList == null)
@@ -106,8 +105,8 @@ public class Commons {
         return SALESHISTORY_CATEGORY;
     }
 
-    public static void initializeInventoryList(final onInventoryListInitializedListener mListener) {
-        // TODO: fetch list from server instead
+    public static void initializeInventoryList(final onInitializedListener mListener) {
+        // TODO: fetch list from local DB first, go to remote server if local DB does not exist
         if(categorizedinventoryHMList != null) {
             if(mListener != null) {
                 mListener.onInitialized();
@@ -159,7 +158,33 @@ public class Commons {
         });
     }
 
-    public interface onInventoryListInitializedListener {
+
+    public static void initializeInvoiceList(final onInitializedListener mListener) {
+        RestClient.getInstance().getAllInvoice(new RestListener<List<Invoice>>() {
+            @Override
+            public void onSuccess(List<Invoice> invoices) {
+                invoiceList = invoices;
+                mListener.onInitialized();
+            }
+
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
+    }
+
+    public static List<Invoice> getInvoiceList() {
+        return invoiceList;
+    }
+
+    public static Invoice getInvoice(int invoiceIdx) {
+        if(invoiceList == null)
+            return null;
+        return invoiceList.get(invoiceIdx);
+    }
+
+    public interface onInitializedListener {
         public void onInitialized();
     }
 
