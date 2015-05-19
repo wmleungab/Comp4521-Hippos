@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.hkust.comp4521.hippos.LoginActivity"
+    android:id="@+id/rl_login_layout"
+    android:background="@color/icon_dark">
+
+    <ImageView
+        android:id="@+id/iv_login_icon"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:src="@mipmap/icon_outline"
+        android:layout_marginTop="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:id="@+id/ll_login_textfields"
+        android:orientation="vertical"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/iv_login_icon"
+        android:layout_marginTop="32dp"
+        android:layout_centerHorizontal="true">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_login_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Server Address"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:text="124.244.57.81:80/hippos/v1"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@android:color/white"
+            app:met_baseColor="@android:color/white"
+            app:met_singleLineEllipsis="true"
+            />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_login_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="User Name"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:text="wmleungab@gmail.com"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@android:color/white"
+            app:met_baseColor="@android:color/white"
+            app:met_singleLineEllipsis="true"
+            />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:text="456123"
+            android:inputType="textPassword"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="@android:color/white"
+            app:met_baseColor="@android:color/white"
+            app:met_singleLineEllipsis="true"
+            />
+
+        <ImageButton
+            android:id="@+id/ib_login_login"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"
+            android:src="@mipmap/invoice_confirm_tick" />
+    </LinearLayout>
+
+</RelativeLayout>

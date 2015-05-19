@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hkust.comp4521.hippos.InventoryDetailsActivity;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
@@ -42,7 +43,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
-            new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
+             new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {
@@ -86,6 +87,9 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             @Override
             public void onClick(View v) {
                 // trigger on click method from delegated listener
+                if(heroImage != null) {
+                    InventoryDetailsActivity.heroImageDrawable = heroImage.getDrawable();
+                }
                 mListener.onClick(v, catId, invId);
             }
     }

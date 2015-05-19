@@ -84,4 +84,7 @@ public interface ServerAPI {
 
     @GET("/uploads/{name}")
     void downloadAt_uploads(@Path("name") String fileName, Callback<Response> callback);
+
+    @GET("/uploads/{name}")
+    Response downloadAt_uploads(@Path("name") String fileName);
 }

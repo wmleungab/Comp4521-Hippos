@@ -8,6 +8,8 @@ import android.net.Uri;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -23,6 +25,17 @@ public class ImageUtils {
 
     public static String IMAGE_CACHE_PATH = Commons.APP_ROOT_PATH + "cache" + File.separator;
     public static String UPLOAD_IMAGE_PATH = Commons.APP_ROOT_PATH + "to_upload.jpg";
+
+    public static void checkAppFolderStructure() {
+        File file = new File(Commons.APP_ROOT_PATH);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        file = new File(IMAGE_CACHE_PATH);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     public static String getUniqueImageFilename(String extension) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -61,5 +74,26 @@ public class ImageUtils {
         int k = Integer.highestOneBit((int) Math.floor(ratio));
         if (k == 0) return 1;
         else return k;
+    }
+
+    public static File writeBitmapToFile(Bitmap inputBM, String filePath) {
+        FileOutputStream out = null;
+        File file = null;
+        try {
+            out = new FileOutputStream(filePath);
+            inputBM.compress(Bitmap.CompressFormat.JPEG, 90, out); // bmp is your Bitmap instance
+            file = new File(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
     }
 }

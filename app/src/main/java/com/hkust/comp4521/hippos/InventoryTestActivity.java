@@ -31,7 +31,7 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
         findViewById(R.id.update_inve).setOnClickListener(this);
         String email = "wmleungab@gmail.com";
         String password = "456123";
-        rc = new RestClient();
+        rc = RestClient.getInstance();
         rc.login(email, password, new RestListener<User>() {
             @Override
             public void onSuccess(User user) {

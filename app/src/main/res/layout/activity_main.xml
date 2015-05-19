@@ -72,4 +72,12 @@
         android:layout_marginBottom="32dp"
         android:layout_above="@+id/gl_main_buttons"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/iv_main_logo"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:src="@mipmap/ic_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

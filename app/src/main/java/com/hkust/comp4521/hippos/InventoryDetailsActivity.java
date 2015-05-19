@@ -3,6 +3,7 @@ package com.hkust.comp4521.hippos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -22,6 +23,7 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONException;
@@ -52,6 +54,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
 
     // Services
     private NFCService mNFC;
+
+    public static Drawable heroImageDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,18 +93,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private void initViews() {
         // Header image and tint status bar by extracting Palette
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
-        /*
-        try {
-            InputStream bmStream = getAssets().open(mItem.getFileName() + ".jpg");
-            Bitmap bm = BitmapFactory.decodeStream(bmStream);
-            Drawable drawable = Drawable.createFromStream(bmStream, null);
-            mHeaderImageView.setImageDrawable(drawable);
-            int newColor = Palette.generate(bm).getDarkVibrantColor(Color.parseColor("#696969"));
-            // Change action bar theme
-            TintedStatusBar.changeStatusBarColor(this, newColor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        if(mItem.getImage() != "")
+            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
         // setup textviews
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());

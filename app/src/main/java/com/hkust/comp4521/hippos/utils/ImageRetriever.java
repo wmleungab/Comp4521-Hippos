@@ -6,8 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
 import java.io.File;
@@ -40,30 +42,18 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
         // Check if file exists locally first
         Bitmap bitmap = null;
         File file = new File(ImageUtils.IMAGE_CACHE_PATH + fileUrl);
+        Log.i("ImageRetriever", "Loading: " + file.getAbsolutePath());
         if(file.exists()) {
             // load locally
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         } else {
             // download from remote server
-
+            bitmap = RestClient.getInstance().downloadAsBitmap(fileUrl);
         }
         // generate color for status bar if needed
         if(activity != null && bitmap != null) {
             sbColor = Palette.generate(bitmap).getDarkVibrantColor(Color.parseColor("#696969"));
         }
-    /*
-        RestClient.getInstance().downloadFile(fileUrl, new RestListener<InputStream>() {
-            @Override
-            public void onSuccess(InputStream inputStream) {
-                if (inputStream != null) {
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-            }
-        });*/
         return bitmap;
     }
 
@@ -78,6 +68,9 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
             ImageView imageView = imageViewReference.get();
             if (imageView != null) {
                 if (bitmap != null) {
+                    // cache to local storage
+                    ImageUtils.writeBitmapToFile(bitmap, ImageUtils.IMAGE_CACHE_PATH + fileUrl);
+                    // set as view
                     imageView.setImageBitmap(bitmap);
                 }
             }

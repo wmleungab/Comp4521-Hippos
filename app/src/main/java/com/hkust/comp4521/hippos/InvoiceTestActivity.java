@@ -34,7 +34,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
         String email = "wmleungab@gmail.com";
         String password = "456123";
 
-        rc = new RestClient();
+        rc = RestClient.getInstance();
         rc.login(email, password, new RestListener<User>() {
             @Override
             public void onSuccess(User user) {

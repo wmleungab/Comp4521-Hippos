@@ -1,9 +1,10 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
-import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.User;
@@ -37,40 +38,6 @@ public class RestClient {
     private String authorization;
 
     static {
-        setupRestClient();
-    }
-
-    //public static ServerAPI get() {
-    //return serverAPI;
-    // }
-    public RestClient() {
-        authorization = "";
-
-    }
-
-    public static RestClient getInstance() {
-        if (instance == null) {
-            instance = new RestClient();
-
-            String email = "wmleungab@gmail.com";
-            String password = "456123";
-
-            instance.login(email, password, new RestListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    Commons.setUser(user);
-                }
-
-                @Override
-                public void onFailure(int status) {
-
-                }
-            });
-        }
-        return instance;
-    }
-
-    private static void setupRestClient() {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(SERVER_URL)
                 .setErrorHandler(new RetrofitErrorHandler())
@@ -79,6 +46,20 @@ public class RestClient {
 
         RestAdapter restAdapter = builder.build();
         serverAPI = restAdapter.create(ServerAPI.class);
+    }
+
+    //public static ServerAPI get() {
+    //return serverAPI;
+    // }
+    private RestClient() {
+        authorization = "";
+    }
+
+    public static RestClient getInstance() {
+        if (instance == null) {
+            instance = new RestClient();
+        }
+        return instance;
     }
 
     public void login(final String email, final String password, final RestListener<User> rl) {
@@ -665,5 +646,25 @@ public class RestClient {
                 restListener.onFailure(RestListener.DOWNLOAD_FAIL);
             }
         });
+    }
+
+    public Bitmap downloadAsBitmap(String filePath) {
+        if (filePath == null || filePath.equals("")) {
+            return null;
+        }
+
+        Response response = serverAPI.downloadAt_uploads(filePath);
+        if(response.getStatus() == 200) {
+            // JPEG file sucessfully retrieved
+            TypedInput tI = response.getBody();
+            try {
+                InputStream iS = tI.in();
+                Bitmap bm = BitmapFactory.decodeStream(iS);
+                return bm;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

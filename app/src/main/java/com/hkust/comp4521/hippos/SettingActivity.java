@@ -1,7 +1,5 @@
 package com.hkust.comp4521.hippos;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -11,6 +9,7 @@ import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
 
@@ -40,14 +39,12 @@ public class SettingActivity extends PreferenceActivity {
             Context.MODE_PRIVATE);
             */
     public static class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-        private final static String TAG = PrefsFragment.class.getName();
-        public final static String SETTINGS_SHARED_PREFERENCES_FILE_NAME = TAG + ".settings";
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             // Define the settings file to use by this settings fragment
-            getPreferenceManager().setSharedPreferencesName(SETTINGS_SHARED_PREFERENCES_FILE_NAME);
+            getPreferenceManager().setSharedPreferencesName(PreferenceService.PREFERENCE_NAME);
             getPreferenceManager().setSharedPreferencesMode(MODE_PRIVATE);
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);

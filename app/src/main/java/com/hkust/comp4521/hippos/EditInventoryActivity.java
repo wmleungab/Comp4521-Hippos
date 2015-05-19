@@ -29,7 +29,6 @@ import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +71,9 @@ public class EditInventoryActivity extends AppCompatActivity {
 
         initViews();
 
-        Commons.initializeInventoryList(new Commons.onInventoryListInitializedListener() {
-            @Override
-            public void onInitialized() {
-                categorySpinner = (Spinner) findViewById(R.id.spinner);
-                ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
-                categorySpinner.setAdapter(spinnerAdapter);
-            }
-        });
+        categorySpinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
+        categorySpinner.setAdapter(spinnerAdapter);
 
         // get information from previous activity (for editing inventory)
         Bundle bundle = this.getIntent().getExtras();
@@ -219,24 +213,12 @@ public class EditInventoryActivity extends AppCompatActivity {
                 selectedFileUri = selectedImageUri;
 
                 // change image preview
-                FileOutputStream out = null;
+                Bitmap mBitmap = null;
                 try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileUri);
-                    // save to file for upload
-                    out = new FileOutputStream(ImageUtils.UPLOAD_IMAGE_PATH);
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
-                    ivHeroImage.setImageBitmap(mBitmap);
-                    selectedFile = new File(ImageUtils.UPLOAD_IMAGE_PATH);
+                    mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileUri);
+                    ImageUtils.writeBitmapToFile(mBitmap, ImageUtils.UPLOAD_IMAGE_PATH);
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }

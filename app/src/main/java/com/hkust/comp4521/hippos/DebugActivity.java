@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.hkust.comp4521.hippos.rest.RestClient;
-
 
 public class DebugActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,7 +24,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.btn_debug_newinventory).setOnClickListener(this);
         findViewById(R.id.btn_debug_invoicetest).setOnClickListener(this);
         findViewById(R.id.btn_debug_categorytest).setOnClickListener(this);
-        RestClient.getInstance();
     }
 
 
