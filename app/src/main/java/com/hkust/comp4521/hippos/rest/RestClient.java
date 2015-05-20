@@ -200,6 +200,7 @@ public class RestClient {
             public void onSuccess(Inventory inventory) {
                 if (imageFile == null) {
                     restListener.onSuccess(inventory);
+                    sendGCM(inventory.getId(), true, true);
                     return;
                 } else {
                     final int inven_id = inventory.getId();
@@ -213,8 +214,9 @@ public class RestClient {
                                     if (!response_inventory.error) {
                                         getInventory(inven_id, new RestListener<Inventory>() {
                                             @Override
-                                            public void onSuccess(Inventory Inventory) {
-                                                restListener.onSuccess(Inventory);
+                                            public void onSuccess(Inventory inventory) {
+                                                restListener.onSuccess(inventory);
+                                                sendGCM(inventory.getId(), true, true);
                                                 return;
                                             }
 
@@ -383,6 +385,7 @@ public class RestClient {
                         public void onSuccess(String s) {
                             if (inventory.getImage() != "null") {
                                 restListener.onSuccess(inventory);
+                                sendGCM(inventory.getId(), true, false);
                                 return;
                             } else {
                                 updateInventoryImageHelper(authorization, id, s, restListener);
@@ -416,6 +419,7 @@ public class RestClient {
                     @Override
                     public void onSuccess(Inventory inventory) {
                         restListener.onSuccess(inventory);
+                        sendGCM(inventory.getId(), true, false);
                         return;
                     }
 
@@ -455,8 +459,10 @@ public class RestClient {
                         if (!response_inventory.error) {
                             getInventory(id, new RestListener<Inventory>() {
                                 @Override
-                                public void onSuccess(Inventory Inventory) {
-                                    restListener.onSuccess(Inventory);
+                                public void onSuccess(Inventory inventory) {
+                                    restListener.onSuccess(inventory);
+                                    sendGCM(inventory.getId(), false, true);
+                                    return;
                                 }
 
                                 @Override
@@ -687,4 +693,51 @@ public class RestClient {
         }
         return null;
     }
+
+
+    private boolean sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
+
+        final GCMHelper gcmHelper = new GCMHelper();
+        if (inven_id < 0) return false;
+
+        else
+            serverAPI.sendGCM(authorization, inven_id, imageChanged, textInfoChanged, new Callback<Response>() {
+                @Override
+                public void success(Response response, Response response2) {
+                    gcmHelper.success = true;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    gcmHelper.success = false;
+                }
+            });
+        return gcmHelper.success;
+    }
+
+
+    public boolean registerGCM(String gcm_id) {
+
+        final GCMHelper gcmHelper = new GCMHelper();
+        if (gcm_id == null || gcm_id.equals("")) return false;
+        serverAPI.registerGCM(gcm_id, new Callback<Response_Message>() {
+            @Override
+            public void success(Response_Message response_Message, Response response2) {
+                if (!response_Message.error) gcmHelper.success = true;
+                else gcmHelper.success = false;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                gcmHelper.success = false;
+            }
+        });
+        return gcmHelper.success;
+    }
+
+    class GCMHelper {
+        boolean success;
+    }
+
+    ;
 }

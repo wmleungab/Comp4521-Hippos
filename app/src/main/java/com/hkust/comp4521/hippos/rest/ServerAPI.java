@@ -87,4 +87,12 @@ public interface ServerAPI {
 
     @GET("/uploads/{name}")
     Response downloadAt_uploads(@Path("name") String fileName);
+
+    @FormUrlEncoded
+    @POST("/gcm_register")
+    void registerGCM(@Field("gcmid") String gcmid, Callback<Response_Message> callback);
+
+    @FormUrlEncoded
+    @POST("/gcm")
+    void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("imageChanged") boolean imageChanged, @Field("textInfoChanged") boolean textInfoChanged, Callback<Response> callback);
 }
