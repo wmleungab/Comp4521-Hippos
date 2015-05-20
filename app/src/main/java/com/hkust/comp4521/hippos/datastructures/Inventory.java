@@ -9,6 +9,9 @@ public class Inventory {
 
     // Flags
     public static String INVENTORY_INV_ID = "inventory_invId";
+    public static int INVENTORY_DISABLED = 0;
+    public static int INVENTORY_NORMAL = 1;
+    public static int INVENTORY_DIRTY = 2;
 
     // Attributes
     int id;
@@ -16,7 +19,7 @@ public class Inventory {
     double price;
     int stock;
     String image; //image location on the server of this inventory
-    int status;
+    int status;     // 0 - disabled; 1 - normal; 2 - dirty
     String timestamp;
     int category;
 

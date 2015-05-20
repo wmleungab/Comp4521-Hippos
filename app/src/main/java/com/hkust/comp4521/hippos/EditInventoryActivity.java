@@ -240,6 +240,8 @@ public class EditInventoryActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Inventory inventory) {
                 Toast.makeText(mContext, "Image uploaded!", Toast.LENGTH_SHORT).show();
+                // Delete the old image
+                ImageUtils.deleteFile(mItem);
             }
 
             @Override

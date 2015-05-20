@@ -23,6 +23,7 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONException;
@@ -93,9 +94,6 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private void initViews() {
         // Header image and tint status bar by extracting Palette
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
-        // Fetch image in case image changed
-        /*if(mItem.getImage() != "" && mHeaderImageView != null)
-            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();*/
         if(heroImageDrawable != null)
             mHeaderImageView.setImageDrawable(heroImageDrawable);
         // setup textviews
@@ -192,5 +190,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+        // Re-fetch image in case image changed
+        if(mItem.getStatus() == Inventory.INVENTORY_DIRTY)
+            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
     }
 }

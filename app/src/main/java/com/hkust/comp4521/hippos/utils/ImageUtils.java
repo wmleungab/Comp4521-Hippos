@@ -3,6 +3,7 @@ package com.hkust.comp4521.hippos.utils;
 import android.graphics.Bitmap;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,5 +74,15 @@ public class ImageUtils {
             }
         }
         return file;
+    }
+
+    public static void deleteFile(Inventory inv) {
+        // Delete cache file
+        File file = new File(IMAGE_CACHE_PATH + inv.getImage());
+        if(file.exists()) {
+            file.delete();
+        }
+        // Mark info as dirty
+        inv.setStatus(2);
     }
 }
