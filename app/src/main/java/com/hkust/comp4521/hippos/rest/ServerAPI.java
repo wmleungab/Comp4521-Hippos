@@ -98,6 +98,9 @@ public interface ServerAPI {
 
     @FormUrlEncoded
     @POST("/company")
-    void updateCompany(@Field("name") String name, @Field("email") String email, @Field("phone") String phone, @Field("address") String address, Callback<Response_Message> callback);
+    void updateCompany(@Field("name") String name, @Field("email") String email, @Field("phone") String phone, @Field("address") String address, Callback<Response_Company> callback);
+
+    @GET("/company/")
+    void getCompany(Callback<Response_Company> callback);
 
 }

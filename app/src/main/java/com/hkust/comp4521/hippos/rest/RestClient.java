@@ -742,11 +742,12 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.updateCompany(name, email, phone, address, new Callback<Response_Message>() {
+        serverAPI.updateCompany(name, email, phone, address, new Callback<Response_Company>() {
             @Override
-            public void success(Response_Message response_message, Response response) {
-                if (!response_message.error) {
-                    restListener.onSuccess(response_message.message);
+            public void success(Response_Company response_company, Response response) {
+                if (!response_company.error) {
+                    restListener.onSuccess(response_company.message);
+                    sendGCM(0, false, false);
                     return;
                 } else {
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
@@ -764,4 +765,26 @@ public class RestClient {
         });
     }
 
+    public void getCompanyDetail(final RestListener<Response_Company> restListener) {
+        serverAPI.getCompany(new Callback<Response_Company>() {
+            @Override
+            public void success(Response_Company response_company, Response response) {
+                if (!response_company.error) {
+                    restListener.onSuccess(response_company);
+                    return;
+                } else {
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                    return;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getResponse().getStatus() == 404) {
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                    return;
+                }
+            }
+        });
+    }
 }
