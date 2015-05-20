@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
@@ -55,9 +56,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID)) == true) {
-                    Toast.makeText(mContext, "GCM registered!", Toast.LENGTH_SHORT).show();
-                };
+                RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>(){
+                    @Override
+                    public void onSuccess(String s) {
+                        Toast.makeText(mContext, "GCM registered!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+
+                    }
+                });
             }
         });
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
