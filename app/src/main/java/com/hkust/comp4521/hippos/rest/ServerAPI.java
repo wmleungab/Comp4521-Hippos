@@ -71,12 +71,12 @@ public interface ServerAPI {
     @FormUrlEncoded
     @POST("/invoice")
     void createInvoice(@Header("Authorization") String authorization, @Field("total_price") double total_price, @Field("final_price") double final_price
-            , @Field("content") String content, @Field("email") String email, Callback<Response_Invoice> callback);
+            , @Field("date_time") String date_time, @Field("content") String content, @Field("email") String email, Callback<Response_Invoice> callback);
 
     @FormUrlEncoded
     @PUT("/invoice/{id}")
     void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price
-            , @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
+            , @Field("date_time") String date_time, @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
 
     @Multipart
     @POST("/upload/{id}")

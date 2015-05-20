@@ -82,7 +82,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                     @Override
                     public void onSuccess(Invoice invoice) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
-                        tv.setText("ID: " + invoice.getID() + "\n" +
+                        tv.setText("ID: " + invoice.getId() + "\n" +
                                 "total_price: " + invoice.getTotalPrice() + "\n" +
                                 "final_price: " + invoice.getFinalPrice() + "\n" +
                                 "date_time: " + invoice.getDateTime() + "\n" +
@@ -108,7 +108,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                     public void onSuccess(List<Invoice> invoices) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
                         tv.setText("size: " + invoices.size() +
-                                " ID: " + invoices.get(0).getID() + "\n" +
+                                " ID: " + invoices.get(0).getId() + "\n" +
                                 "total_price: " + invoices.get(0).getTotalPrice() + "\n" +
                                 "final_price: " + invoices.get(0).getFinalPrice() + "\n" +
                                 "date_time: " + invoices.get(0).getDateTime() + "\n" +
@@ -134,7 +134,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                     @Override
                     public void onSuccess(Invoice invoice) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
-                        tv.setText("ID: " + invoice.getID() + "\n" +
+                        tv.setText("ID: " + invoice.getId() + "\n" +
                                 "total_price: " + invoice.getTotalPrice() + "\n" +
                                 "final_price: " + invoice.getFinalPrice() + "\n" +
                                 "date_time: " + invoice.getDateTime() + "\n" +
@@ -170,7 +170,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                     @Override
                     public void onSuccess(Invoice invoice) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
-                        tv.setText("ID: " + invoice.getID() + "\n" +
+                        tv.setText("ID: " + invoice.getId() + "\n" +
                                 "total_price: " + invoice.getTotalPrice() + "\n" +
                                 "final_price: " + invoice.getFinalPrice() + "\n" +
                                 "date_time: " + invoice.getDateTime() + "\n" +

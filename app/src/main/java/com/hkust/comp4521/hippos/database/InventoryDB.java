@@ -14,8 +14,6 @@ import java.util.List;
  */
 public class InventoryDB {
 
-    public static InventoryDB instance;
-
     public static final String TABLE_NAME = "inventory";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
@@ -25,29 +23,31 @@ public class InventoryDB {
     public static final String COLUMN_STATUS = "status";
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_CATEGORY = "category";
-
     public static final String CREATE_TABLE = "create table "
                                                 + TABLE_NAME + "("
                                                 + COLUMN_ID + " integer primary key, "
-                                                + COLUMN_NAME + " text not null,"
-                                                + COLUMN_PRICE + " real not null,"
-                                                + COLUMN_STOCK + " integer not null,"
-                                                + COLUMN_IMAGE + " text not null,"
-                                                + COLUMN_STATUS + " integer not null,"
-                                                + COLUMN_TIMESTAMP + " text not null,"
-                                                + COLUMN_CATEGORY + " integer not null"
+            + COLUMN_NAME + " text not null, "
+            + COLUMN_PRICE + " real not null, "
+            + COLUMN_STOCK + " integer not null, "
+            + COLUMN_IMAGE + " text not null, "
+            + COLUMN_STATUS + " integer not null, "
+            + COLUMN_TIMESTAMP + " text not null, "
+            + COLUMN_CATEGORY + " integer not null "
                                                 + ");";
-
+    public static InventoryDB instance;
     private SQLiteDatabase db;
+
+    private InventoryDB() {
+        db = DatabaseHelper.getDatabase();
+    }
+
     public static InventoryDB getInstance() {
         if(instance == null) {
             instance = new InventoryDB();
         }
         return instance;
     }
-    private InventoryDB() {
-        db = DatabaseHelper.getDatabase();
-    }
+
     public void close() {
         db.close();
     }

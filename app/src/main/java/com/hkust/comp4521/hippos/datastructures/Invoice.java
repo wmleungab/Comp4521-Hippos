@@ -21,16 +21,28 @@ public class Invoice {
     int status;
     List<InvoiceInventory> invoiceInventories;
 
-    public int getID() {
+    public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getTotalPrice() {
         return total_price;
     }
 
+    public void setTotalPrice(double total_price) {
+        this.total_price = total_price;
+    }
+
     public double getFinalPrice() {
         return final_price;
+    }
+
+    public void setFinalPrice(double final_price) {
+        this.final_price = final_price;
     }
 
     public String getDateTime() {
@@ -49,12 +61,24 @@ public class Invoice {
         return content;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public int getStatus() {
         return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public List<InvoiceInventory> getInvoiceInventories() {

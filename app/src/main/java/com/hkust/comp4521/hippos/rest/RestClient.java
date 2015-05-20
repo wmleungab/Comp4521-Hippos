@@ -77,10 +77,11 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-                if(error.getResponse() == null)
+                if (error.getResponse() == null)
                     rl.onFailure(RestListener.AUTHORIZATION_FAIL);
                 else if (error.getResponse().getStatus() == 400)
                     rl.onFailure(RestListener.INVALID_EMAIL);
+                return;
             }
         });
     }
@@ -108,7 +109,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                rl.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -129,7 +131,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                rl.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -156,6 +159,7 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 404)
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                return;
             }
         });
     }
@@ -183,7 +187,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -235,7 +240,8 @@ public class RestClient {
 
                                 @Override
                                 public void failure(RetrofitError error) {
-
+                                    restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                                    return;
                                 }
                             });
                         }
@@ -272,11 +278,13 @@ public class RestClient {
                 Log.d("RestClient", "UPLOAD SUCCESS RETURN " + response);
                 Log.d("RestClient", "uploaded to path: " + response_fileUpload.path);
                 restListener.onSuccess(response_fileUpload.path);
+                return;
             }
 
             @Override
             public void failure(RetrofitError error) {
                 restListener.onFailure(RestListener.UPLOAD_FAIL);
+                return;
             }
         });
     }
@@ -312,7 +320,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
 
@@ -339,6 +348,7 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 404)
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                return;
             }
         });
     }
@@ -354,12 +364,14 @@ public class RestClient {
             public void success(Response_InventoryList response_inventoryList, Response response) {
                 if (!response_inventoryList.error) {
                     restListener.onSuccess(response_inventoryList.getInventoryList());
+                    return;
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -393,6 +405,7 @@ public class RestClient {
                                 updateInventoryImageHelper(authorization, id, s, restListener);
                             }
                         }
+
                         @Override
                         public void onFailure(int status) {
                             restListener.onFailure(status);
@@ -435,14 +448,15 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
 
     public void updateInventory(final int id, final String updatedName
             , final double updatedPrice, final int updatedStock, final int updatedStatus,
-                                 final int updatedCategory, final RestListener<Inventory> restListener) {
+                                final int updatedCategory, final RestListener<Inventory> restListener) {
 
 
         if (authorization.equals("")) {
@@ -479,7 +493,8 @@ public class RestClient {
 
                     @Override
                     public void failure(RetrofitError error) {
-
+                        restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                        return;
                     }
                 });
     }
@@ -504,6 +519,7 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 404)
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                return;
             }
         });
     }
@@ -523,7 +539,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -543,7 +560,8 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
@@ -563,12 +581,13 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
     }
 
-    public void createInvoice(final double total_price, final double final_price,
+    public void createInvoice(final double total_price, final double final_price, final String date_time,
                               final String content, final String email, final RestListener<Invoice> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
@@ -578,11 +597,11 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.createInvoice(authorization, total_price, final_price, content, email, new Callback<Response_Invoice>() {
+        serverAPI.createInvoice(authorization, total_price, final_price, date_time, content, email, new Callback<Response_Invoice>() {
             @Override
             public void success(Response_Invoice response_invoice, Response response) {
                 if (!response_invoice.error) {
-                    getInvoice(response_invoice.getID(), new RestListener<Invoice>() {
+                    getInvoice(response_invoice.getId(), new RestListener<Invoice>() {
                         @Override
                         public void onSuccess(Invoice invoice) {
                             restListener.onSuccess(invoice);
@@ -601,11 +620,12 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 400)
                     restListener.onFailure(RestListener.INVALID_EMAIL);
+                return;
             }
         });
     }
 
-    public void updateInvoice(final int id, final double updatedTotal_price, final double updatedFinal_price,
+    public void updateInvoice(final int id, final double updatedTotal_price, final double updatedFinal_price, final String updatedDate_time,
                               final String updatedContent, final String updatedEmail, final int updatedStatus, final RestListener<Invoice> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
@@ -615,7 +635,7 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.updateInvoice(authorization, id, updatedTotal_price, updatedFinal_price, updatedContent, updatedEmail, updatedStatus, new Callback<Response_Invoice>() {
+        serverAPI.updateInvoice(authorization, id, updatedTotal_price, updatedFinal_price, updatedDate_time, updatedContent, updatedEmail, updatedStatus, new Callback<Response_Invoice>() {
             @Override
             public void success(Response_Invoice response_invoice, Response response) {
                 if (!response_invoice.error) {
@@ -640,6 +660,7 @@ public class RestClient {
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 400)
                     restListener.onFailure(RestListener.INVALID_EMAIL);
+                return;
             }
         });
     }
@@ -672,6 +693,7 @@ public class RestClient {
             @Override
             public void failure(RetrofitError error) {
                 restListener.onFailure(RestListener.DOWNLOAD_FAIL);
+                return;
             }
         });
     }
@@ -682,7 +704,7 @@ public class RestClient {
         }
 
         Response response = serverAPI.downloadAt_uploads(filePath);
-        if(response.getStatus() == 200) {
+        if (response.getStatus() == 200) {
             // JPEG file sucessfully retrieved
             TypedInput tI = response.getBody();
             try {
@@ -708,7 +730,6 @@ public class RestClient {
 
                 @Override
                 public void failure(RetrofitError error) {
-
                 }
             });
 
@@ -733,6 +754,7 @@ public class RestClient {
             @Override
             public void failure(RetrofitError error) {
                 restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
             }
         });
 
@@ -760,7 +782,7 @@ public class RestClient {
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 400) {
-                    restListener.onFailure(RestListener.INVALID_PARA);
+                    restListener.onFailure(RestListener.INVALID_EMAIL);
                     return;
                 }
             }
