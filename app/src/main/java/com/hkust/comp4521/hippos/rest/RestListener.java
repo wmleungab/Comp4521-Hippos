@@ -12,7 +12,8 @@ public interface RestListener<T> {
     public static final int INVALID_EMAIL = 4;
     public static final int UPLOAD_FAIL = 5;
     public static final int DOWNLOAD_FAIL = 6;
-
+    public static final int HIPPOS_SERVER_ERROR = 500;
+    public static final int UNKNOWN_REASON = 999;
     public void onSuccess(T t);
 
     /*

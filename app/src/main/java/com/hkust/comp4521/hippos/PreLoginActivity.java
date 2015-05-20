@@ -10,7 +10,6 @@ import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
-import com.hkust.comp4521.hippos.utils.StatisticsUtils;
 
 
 public class PreLoginActivity extends AppCompatActivity {
@@ -61,6 +60,6 @@ public class PreLoginActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, R.anim.none);
             finish();
         }
-        StatisticsUtils.getWeeklyDataPoints(1);
+
     }
 }

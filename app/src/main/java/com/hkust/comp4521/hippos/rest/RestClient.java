@@ -695,49 +695,46 @@ public class RestClient {
     }
 
 
-    public boolean sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
-
-        final GCMHelper gcmHelper = new GCMHelper();
-        if (inven_id < 0) return false;
-
+    public void sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
+        if (inven_id < 0) return;
         else
             serverAPI.sendGCM(authorization, inven_id, imageChanged, textInfoChanged, new Callback<Response>() {
                 @Override
                 public void success(Response response, Response response2) {
-                    gcmHelper.success = true;
+
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    gcmHelper.success = false;
+
                 }
             });
-        return gcmHelper.success;
+
     }
 
 
-    public boolean registerGCM(String gcm_id) {
+    public void registerGCM(String gcm_id, final RestListener<String> restListener) {
 
-        final GCMHelper gcmHelper = new GCMHelper();
-        if (gcm_id == null || gcm_id.equals("")) return false;
+
+        if (gcm_id == null || gcm_id.equals("")) {
+
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
         serverAPI.registerGCM(gcm_id, new Callback<Response_Message>() {
             @Override
             public void success(Response_Message response_Message, Response response2) {
-                if (!response_Message.error) gcmHelper.success = true;
-                else gcmHelper.success = false;
+                if (!response_Message.error) restListener.onSuccess(response_Message.message);
+                else restListener.onFailure(RestListener.UNKNOWN_REASON);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                gcmHelper.success = false;
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
             }
         });
-        return gcmHelper.success;
+
     }
 
-    class GCMHelper {
-        boolean success;
-    }
 
-    ;
 }
