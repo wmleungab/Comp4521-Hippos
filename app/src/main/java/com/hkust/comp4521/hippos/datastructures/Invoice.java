@@ -1,5 +1,8 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +37,10 @@ public class Invoice {
         return date_time;
     }
 
+    public void setDateTime(String s) {
+        this.date_time = s;
+    }
+
     public String getUser() {
         return user;
     }
@@ -56,5 +63,18 @@ public class Invoice {
 
     public void setInvoiceInventories(List<InvoiceInventory> invoiceInventories) {
         this.invoiceInventories = invoiceInventories;
+    }
+
+    public Date getDate() {
+        SimpleDateFormat sdf;
+        Date date = null;
+        try {
+            sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            date = sdf.parse(date_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        ;
+        return date;
     }
 }
