@@ -15,13 +15,13 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.StatisticsUtils;
 import com.hkust.comp4521.hippos.views.InvoiceListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -50,8 +50,6 @@ public class SalesHistoryActivity extends AppCompatActivity {
     // Chart data
     private LineChartData lineData;
     private ColumnChartData columnData;
-    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    public final static String[] days = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
     // Data
     List<View> viewList;
@@ -68,7 +66,6 @@ public class SalesHistoryActivity extends AppCompatActivity {
         // Setup pages of inventories
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();
-
         View v = mInflater.inflate(R.layout.view_revenue, null);
         viewList.add(v);
         v = mInflater.inflate(R.layout.view_invoice, null);
@@ -98,9 +95,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // Generate and set data for line chart
         chartTop = (LineChartView) view.findViewById(R.id.chart_top);
-        generateInitialLineData();
+        generateInitialWeekData();
         chartBottom = (ColumnChartView) view.findViewById(R.id.chart_bottom);
-        generateColumnData();
+        generateMonthData();
     }
 
     private void setupInvoicePage() {
@@ -137,7 +134,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v, int invIndex) {
                         Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
-                        Bundle b=new Bundle();
+                        Bundle b = new Bundle();
                         b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
                         i.putExtras(b);
                         startActivity(i);
@@ -151,46 +148,38 @@ public class SalesHistoryActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.none, android.R.anim.fade_out);
-    }
+    private void generateMonthData() {
+        // Generate data from StatisticsUtils
+        int[] monthlyDP = StatisticsUtils.getMonthlyDataPoints();
+        int numColumns = StatisticsUtils.MONTHS.length;
 
-    private void generateColumnData() {
-
-        int numSubcolumns = 1;
-        int numColumns = months.length;
-
+        // Setup x-axis of the chart
         List<AxisValue> axisValues = new ArrayList<AxisValue>();
         List<Column> columns = new ArrayList<Column>();
         List<SubcolumnValue> values;
         for (int i = 0; i < numColumns; ++i) {
-
+            // add the only bar "subcolumn" value to the column and set properties
             values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                values.add(new SubcolumnValue((float) Math.random() * 50f + 5, ChartUtils.pickColor()));
-            }
-
-            axisValues.add(new AxisValue(i).setLabel(months[i]));
-
+            values.add(new SubcolumnValue((float) monthlyDP[i], ChartUtils.pickColor()));
+            axisValues.add(new AxisValue(i).setLabel(StatisticsUtils.MONTHS[i]));
             columns.add(new Column(values).setHasLabelsOnlyForSelected(true));
         }
 
+        // setup bar chart properties
         columnData = new ColumnChartData(columns);
-
         columnData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
         columnData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(2));
-
         chartBottom.setColumnChartData(columnData);
 
         // Set value touch listener that will trigger changes for chartTop.
         chartBottom.setOnValueTouchListener(new ValueTouchListener());
 
         // Set selection mode to keep selected month column highlighted.
+        // also disable zooming
+        Viewport v = new Viewport(-1, StatisticsUtils.getMaximumMonthValue(), numColumns, 0);
+        chartBottom.setMaximumViewport(v);
+        chartBottom.setCurrentViewport(v);
         chartBottom.setValueSelectionEnabled(true);
-
-        chartBottom.setZoomType(ZoomType.HORIZONTAL);
         chartBottom.setZoomEnabled(false);
     }
 
@@ -198,50 +187,71 @@ public class SalesHistoryActivity extends AppCompatActivity {
      * Generates initial data for line chart. At the begining all Y values are equals 0. That will change when user
      * will select value on column chart.
      */
-    private void generateInitialLineData() {
-        int numValues = 7;
+    private void generateInitialWeekData() {
+        int numValues = StatisticsUtils.DAYS.length;
 
+        // Setup for x-axis of the chart
         List<AxisValue> axisValues = new ArrayList<AxisValue>();
         List<PointValue> values = new ArrayList<PointValue>();
         for (int i = 0; i < numValues; ++i) {
             values.add(new PointValue(i, 0));
-            axisValues.add(new AxisValue(i).setLabel(days[i]));
+            axisValues.add(new AxisValue(i).setLabel(StatisticsUtils.DAYS[i]));
         }
 
+        // initialize the line
         Line line = new Line(values);
-        line.setColor(ChartUtils.COLOR_GREEN).setCubic(true);
-
+        line.setColor(ChartUtils.DEFAULT_COLOR).setCubic(true);
         List<Line> lines = new ArrayList<Line>();
         lines.add(line);
 
+        // setup line chart properties
         lineData = new LineChartData(lines);
         lineData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
         lineData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(3));
-
         chartTop.setLineChartData(lineData);
 
         // For build-up animation you have to disable viewport recalculation.
         chartTop.setViewportCalculationEnabled(false);
 
         // And set initial max viewport and current viewport- remember to set viewports after data.
-        Viewport v = new Viewport(0, 110, 6, 0);
+        // also disable zooming
+        Viewport v = new Viewport(0, StatisticsUtils.getMaximumWeekValue(), numValues-1, 0);
         chartTop.setMaximumViewport(v);
         chartTop.setCurrentViewport(v);
-
-        chartTop.setZoomType(ZoomType.HORIZONTAL);
         chartTop.setZoomEnabled(false);
     }
 
-    private void generateLineData(int color, float range) {
+    private void generateLineData(int color, int fromMonth) {
+        // Generate data from StatisticsUtils
+        int[] weeklyDP = StatisticsUtils.getWeeklyDataPoints(fromMonth);
         // Cancel last animation if not finished.
         chartTop.cancelDataAnimation();
 
-        // Modify data targets
-        Line line = lineData.getLines().get(0);// For this example there is always only one line.
+        // Modify data targets from the only line
+        Line line = lineData.getLines().get(0);
         line.setColor(color);
+        PointValue value = null;
+        for(int i=0; i<line.getValues().size(); i++) {
+            value = line.getValues().get(i);
+            value.setTarget(value.getX(), (float) weeklyDP[i]);
+        }
+
+        // Start new data animation with 300ms duration;
+        Viewport v = new Viewport(0, StatisticsUtils.getMaximumMonthValue(), 6, 0);
+        chartTop.setMaximumViewport(v);
+        chartTop.setCurrentViewport(v);
+        chartTop.startDataAnimation(300);
+    }
+
+    private void resetLineData() {
+        // Cancel last animation if not finished.
+        chartTop.cancelDataAnimation();
+
+        // Zero out data targets from the only line
+        Line line = lineData.getLines().get(0);
+        line.setColor(ChartUtils.DEFAULT_COLOR);
         for (PointValue value : line.getValues()) {
-            // Change target only for Y value.
-            value.setTarget(value.getX(), (float) Math.random() * range);
+            value.setTarget(value.getX(), 0);
         }
 
         // Start new data animation with 300ms duration;
@@ -252,15 +262,19 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         @Override
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            generateLineData(value.getColor(), 100);
+            generateLineData(value.getColor(), columnIndex);
         }
 
         @Override
         public void onValueDeselected() {
-
-            generateLineData(ChartUtils.COLOR_GREEN, 0);
-
+            resetLineData();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.none, android.R.anim.fade_out);
     }
 
 }
