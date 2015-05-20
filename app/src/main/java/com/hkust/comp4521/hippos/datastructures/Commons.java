@@ -25,7 +25,7 @@ public class Commons {
 
     // ViewPager Tabs
     private static String[] INVENTORY_CATEGORY = {};
-    private static String[] SALESHISTORY_CATEGORY = {"Invoices", "Statistics", "Revenue"};
+    private static String[] SALESHISTORY_CATEGORY = {"Local invoice", "Remote Invoices", "Statistics", "Revenue"};
 
     // Adapter modes
     public static int MODE_NEW_INVOICE = 0;

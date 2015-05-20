@@ -148,4 +148,10 @@ public class InventoryListActivity extends AppCompatActivity {
         if(adapter != null)
             adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+    }
 }

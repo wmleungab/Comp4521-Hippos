@@ -8,10 +8,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
@@ -24,9 +20,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     // Views
     private RevealColorView revealColorView;
     private View selectedView;
-    private GridLayout buttonGridLayout;
-    private TextView titleText;
-    private ImageView logoView;
 
     private int backgroundColor;
 
@@ -43,12 +36,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        backgroundColor = Color.parseColor("#FFFFFF");
-        TintedStatusBar.changeStatusBarColor(this, backgroundColor);
+        backgroundColor = Color.TRANSPARENT;
+        TintedStatusBar.changeStatusBarColor(this, Color.parseColor("#FFFFFF"));
         revealColorView = (RevealColorView) findViewById(R.id.revealview_main_bg);
-        buttonGridLayout = (GridLayout) findViewById(R.id.gl_main_buttons);
-        titleText = (TextView) findViewById(R.id.tv_main_title);
-        logoView = (ImageView) findViewById(R.id.iv_main_logo);
 
         findViewById(R.id.btn_main_newinvoice).setOnClickListener(this);
         findViewById(R.id.btn_main_invlist).setOnClickListener(this);
@@ -64,9 +54,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if (selectedView == v) {
             revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
             selectedView = null;
-            applyFadeAnimation(buttonGridLayout, 1);
-            applyFadeAnimation(titleText, 1);
-            applyFadeAnimation(logoView, 1);
             TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         } else {
             revealColorView.reveal(p.x, p.y, color, v.getHeight() / 2, 340, new Animator.AnimatorListener() {
@@ -84,7 +71,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 public void onAnimationEnd(Animator animation) {
                     // launch actual activity
                     Intent i = null;
-                    switch(v.getId()) {
+                    switch (v.getId()) {
                         case R.id.btn_main_newinvoice:
                             i = new Intent(mContext, NewInvoiceActivity.class);
                             break;
@@ -100,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         default:
                             break;
                     }
-                    if(i != null) {
+                    if (i != null) {
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, R.anim.none);
                     }
@@ -117,18 +104,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             });
             selectedView = v;
-            applyFadeAnimation(buttonGridLayout, 0);
-            applyFadeAnimation(titleText, 0);
-            applyFadeAnimation(logoView, 0);
             subActivityLaunched = true;
         }
-    }
-
-    public void applyFadeAnimation(View view, float fade) {
-        AlphaAnimation alpha = new AlphaAnimation(1 - fade, fade);
-        alpha.setDuration(300);
-        alpha.setFillAfter(true);
-        view.startAnimation(alpha);
     }
 
     private Point getLocationInView(View src, View target) {
@@ -156,10 +133,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         final Point p = getLocationInView(revealColorView, selectedView);
                         revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
                         selectedView = null;
-                        applyFadeAnimation(buttonGridLayout, 1);
-                        applyFadeAnimation(titleText, 1);
-                        applyFadeAnimation(logoView, 1);
-                        TintedStatusBar.changeStatusBarColor(MainActivity.this, backgroundColor);
+                        TintedStatusBar.changeStatusBarColor(MainActivity.this, Color.parseColor("#FFFFFF"));
                         subActivityLaunched = false;
                     }
                 }
@@ -174,9 +148,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             final Point p = getLocationInView(revealColorView, selectedView);
             revealColorView.hide(p.x, p.y, backgroundColor, 0, 300, null);
             selectedView = null;
-            applyFadeAnimation(buttonGridLayout, 1);
-            applyFadeAnimation(titleText, 1);
-            applyFadeAnimation(logoView, 1);
             TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         } else {
             super.onBackPressed();

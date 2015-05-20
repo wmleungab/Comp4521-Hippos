@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,12 +36,13 @@ public class NewInvoiceActivity extends AppCompatActivity {
     // Activity-related
     private Activity mActivity;
     private Context mContext;
-    private InvoiceInventoryListAdapter adapter;
+    private InvoiceInventoryListAdapter mAdapter;
 
     // Views
     private RelativeLayout mActionBar;
     private ImageButton btnAddFromInventoryList, btnCompleteSales;
     MaterialDialog mSalesConfirmDialog;
+    private EditText etPrice, etPaid;
 
     // Services
     private NFCService mNFC;
@@ -67,8 +70,8 @@ public class NewInvoiceActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        adapter = new InvoiceInventoryListAdapter(mContext, Commons.MODE_NEW_INVOICE);
-        recList.setAdapter(adapter);
+        mAdapter = new InvoiceInventoryListAdapter(mContext, Commons.MODE_NEW_INVOICE);
+        recList.setAdapter(mAdapter);
         recList.setItemAnimator(new DefaultItemAnimator());
 
         SwipeDismissRecyclerViewTouchListener touchListener =
@@ -83,10 +86,10 @@ public class NewInvoiceActivity extends AppCompatActivity {
                             @Override
                             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    adapter.getInvoiceInventories().remove(position);
+                                    mAdapter.getInvoiceInventories().remove(position);
                                 }
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
-                                adapter.notifyDataSetChanged();
+                                mAdapter.notifyDataSetChanged();
                             }
                         });
         recList.setOnTouchListener(touchListener);
@@ -110,19 +113,46 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 View vv = mInflater.inflate(R.layout.dialog_sales_confirm, null);
                 mSalesConfirmDialog =  new MaterialDialog.Builder(mActivity)
                                         .customView(vv, false)
+                                        .autoDismiss(false)
                                         .positiveText("Confirm")
                                         .negativeText("Cancel")
                                         .callback(new MaterialDialog.ButtonCallback() {
                                             @Override
                                             public void onPositive(MaterialDialog dialog) {
+                                                if(etPaid.getText().toString().trim().length() > 0) {
+                                                    // check if price is valid first
+                                                    double paidPrice = Double.parseDouble(etPaid.getText().toString());
+                                                    double totalPrice = Double.parseDouble(etPrice.getText().toString());
+                                                    if(totalPrice > paidPrice) {
+                                                        etPaid.setError("Please input a valid price");
+                                                    } else {
+                                                        generateInvoiceRecord();
+                                                        dialog.dismiss();
+                                                    }
+                                                } else {
+                                                    etPaid.setError("Please input a price!");
+                                                }
                                             }
                                             @Override
                                             public void onNegative(MaterialDialog dialog) {
+                                                dialog.dismiss();
                                             }
                                         })
                                         .show();
+                // Put price data into the view
+                double price = mAdapter.getInvoiceInventoriesTotal();
+                TextView tvTotal = (TextView) vv.findViewById(R.id.tv_sales_confirms_item_total);
+                tvTotal.setText(price+"");
+                etPrice = (EditText) vv.findViewById(R.id.et_sales_confirm_final_charge);
+                etPrice.setText(price+"");
+                etPaid = (EditText) vv.findViewById(R.id.et_sales_confirm_paid);
+                etPaid.setText("");
+
             }
         });
+    }
+
+    private void generateInvoiceRecord() {
     }
 
     @Override
@@ -133,7 +163,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 Inventory inv = Commons.getInventory(b.getInt(Inventory.INVENTORY_INV_ID));
-                adapter.addItem(new InvoiceInventory(inv, 1));
+                mAdapter.addItem(new InvoiceInventory(inv, 1));
             }
         }
     }
@@ -172,13 +202,11 @@ public class NewInvoiceActivity extends AppCompatActivity {
                         JSONObject nfcJSON = new JSONObject(readStr);
                         Toast.makeText(mContext, readStr, Toast.LENGTH_SHORT).show();
                         Inventory inv = Commons.getInventory(nfcJSON.getInt(Inventory.INVENTORY_INV_ID));
-                        adapter.addItem(new InvoiceInventory(inv, 1));
+                        mAdapter.addItem(new InvoiceInventory(inv, 1));
                     } catch (JSONException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                         Toast.makeText(mContext, "NFC tag is invalid", Toast.LENGTH_SHORT).show();
                     }
-
                 }
                 @Override
                 public void onError() {

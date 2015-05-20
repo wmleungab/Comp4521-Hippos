@@ -3,6 +3,7 @@ package com.hkust.comp4521.hippos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,21 +39,22 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 public class SalesHistoryActivity extends AppCompatActivity {
 
+    // Views
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
-
-    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",};
-
-    public final static String[] days = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",};
-
+    private SwipeRefreshLayout mRefreshLayout;
     private LineChartView chartTop;
     private ColumnChartView chartBottom;
+    RecyclerView recList;
 
+    // Chart data
     private LineChartData lineData;
     private ColumnChartData columnData;
+    public final static String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    public final static String[] days = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
+    // Data
     List<View> viewList;
-    RecyclerView recList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();
 
-        View v = mInflater.inflate(R.layout.view_invoice, null);
+        View v = mInflater.inflate(R.layout.view_revenue, null);
+        viewList.add(v);
+        v = mInflater.inflate(R.layout.view_invoice, null);
         viewList.add(v);
         v = mInflater.inflate(R.layout.view_statistics, null);
         viewList.add(v);
@@ -83,17 +87,14 @@ public class SalesHistoryActivity extends AppCompatActivity {
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_sales_history);
         tabs.setViewPager(mViewPager);
 
-        // setup invoice records
-        View view = viewList.get(0);
-        recList = (RecyclerView) view.findViewById(R.id.cardList);
-        recList.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
-        setupInvoice();
+        // setup data for each page
+        setupInvoicePage();
+        setupStatisticsPage();
 
-        // setup charts for statistics view
-        view = viewList.get(1);
+    }
+
+    private void setupStatisticsPage() {
+        View view = viewList.get(2);
 
         // Generate and set data for line chart
         chartTop = (LineChartView) view.findViewById(R.id.chart_top);
@@ -102,7 +103,32 @@ public class SalesHistoryActivity extends AppCompatActivity {
         generateColumnData();
     }
 
-    private void setupInvoice() {
+    private void setupInvoicePage() {
+        View view = viewList.get(1);
+
+        // initialize RecyclerView
+        recList = (RecyclerView) view.findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+
+        // initialize pull-to-refresh listener
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        mRefreshLayout.setColorSchemeResources(
+                        R.color.refresh_progress_1,
+                        R.color.refresh_progress_2,
+                        R.color.refresh_progress_3);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshInvoiceItems();
+            }
+        });
+    }
+
+    private void refreshInvoiceItems() {
         Commons.initializeInvoiceList(new Commons.onInitializedListener() {
             @Override
             public void onInitialized() {
@@ -118,6 +144,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
                     }
                 });
                 recList.setAdapter(adapter);
+
+                // Stop refresh animation
+                mRefreshLayout.setRefreshing(false);
             }
         });
     }

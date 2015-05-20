@@ -28,6 +28,7 @@ public class Category {
         this.name = name;
     }
 
+    // For showing names in spinner
     @Override
     public String toString() {
         return name;

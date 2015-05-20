@@ -31,4 +31,8 @@
     <color name="text_white">#FFFFFF</color>
 
     <color name="icon_dark">#696969</color>
+
+    <color name="refresh_progress_1">#2962FF</color>
+    <color name="refresh_progress_2">#F4AB02</color>
+    <color name="refresh_progress_3">#FD3924</color>
 </resources>

@@ -39,6 +39,15 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
             this.notifyItemInserted(invList.size() - 1);
         }
 
+        public double getInvoiceInventoriesTotal() {
+            // Add up total prices from each of the invoice inventory
+            double price = 0;
+            for(InvoiceInventory inv : invList) {
+                price += inv.getPrice();
+            }
+            return price;
+        }
+
         public List<InvoiceInventory> getInvoiceInventories() {
             return invList;
         }

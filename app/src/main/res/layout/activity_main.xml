@@ -3,12 +3,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <at.markushi.ui.RevealColorView
-        android:id="@+id/revealview_main_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"/>
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +24,7 @@
             android:text=" "
             android:id="@+id/btn_main_newinvoice"
             android:tag="@color/blue_primary"
-            android:background="@mipmap/menu_button_blue"
+            android:background="@mipmap/menu_btn_tl"
             android:layout_row="0"
             android:layout_column="0" />
         <Button
@@ -39,7 +33,7 @@
             android:text=" "
             android:id="@+id/btn_main_invlist"
             android:tag="@color/green_primary"
-            android:background="@mipmap/menu_button_green"
+            android:background="@mipmap/menu_btn_tr"
             android:layout_row="0"
             android:layout_column="1" />
         <Button
@@ -48,7 +42,7 @@
             android:text=" "
             android:id="@+id/btn_main_saleshistory"
             android:tag="@color/red_primary"
-            android:background="@mipmap/menu_button_red"
+            android:background="@mipmap/menu_btn_bl"
             android:layout_row="1"
             android:layout_column="0" />
         <Button
@@ -57,7 +51,7 @@
             android:text=" "
             android:id="@+id/btn_main_settings"
             android:tag="@color/yellow_primary"
-            android:background="@mipmap/menu_button_yellow"
+            android:background="@mipmap/menu_btn_br"
             android:layout_row="1"
             android:layout_column="1" />
     </GridLayout>
@@ -75,9 +69,15 @@
 
     <ImageView
         android:id="@+id/iv_main_logo"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:src="@mipmap/ic_logo"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
+
+    <at.markushi.ui.RevealColorView
+        android:id="@+id/revealview_main_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"/>
 </RelativeLayout>

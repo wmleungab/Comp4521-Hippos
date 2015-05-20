@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 public class Inventory {
 
     // Flags
-    public static String INVENTORY_CAT_ID = "inventory_catId";
     public static String INVENTORY_INV_ID = "inventory_invId";
 
     // Attributes
