@@ -5,8 +5,10 @@ package com.hkust.comp4521.hippos.datastructures;
  */
 public class InvoiceInventory {
 
+    // Attributes
     private Inventory inventory;
     private int quantity;
+    private double price;
 
     public Inventory getInventory() {
         return inventory;
@@ -22,6 +24,18 @@ public class InvoiceInventory {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getPrice() {
+        price = inventory.getPrice();
+        price *= quantity;
+        return price;
+    }
+
+    public String getFormattedPrice() {
+        price = inventory.getPrice();
+        price *= quantity;
+        return "$" + String.format("%.1f", price);
     }
 
     public InvoiceInventory(Inventory mInv, int mQuantity) {

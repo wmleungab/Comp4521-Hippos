@@ -24,14 +24,17 @@ Image AsyncTask: for loading image from either local storage or fetch remotely (
 public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
     private final String fileUrl;
+    private Boolean fileExist = false;
     private Activity activity = null;        // for tinted status bar
     private int sbColor;
 
+    // For trivial use
     public ImageRetriever(ImageView imageView, String fileName) {
         imageViewReference = new WeakReference<ImageView>(imageView);
         fileUrl = fileName;
     }
 
+    // For tinted status bar
     public ImageRetriever(ImageView imageView, String fileName, Activity mActivity) {
         this(imageView, fileName);
         activity = mActivity;
@@ -39,11 +42,15 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... params) {
+        // skip if no url supplied
+        if(fileUrl == "")
+            return null;
         // Check if file exists locally first
         Bitmap bitmap = null;
         File file = new File(ImageUtils.IMAGE_CACHE_PATH + fileUrl);
         Log.i("ImageRetriever", "Loading: " + file.getAbsolutePath());
-        if(file.exists()) {
+        fileExist = file.exists();
+        if(fileExist) {
             // load locally
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         } else {
@@ -69,7 +76,8 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
             if (imageView != null) {
                 if (bitmap != null) {
                     // cache to local storage
-                    ImageUtils.writeBitmapToFile(bitmap, ImageUtils.IMAGE_CACHE_PATH + fileUrl);
+                    if(!fileExist)
+                        ImageUtils.writeBitmapToFile(bitmap, ImageUtils.IMAGE_CACHE_PATH + fileUrl);
                     // set as view
                     imageView.setImageBitmap(bitmap);
                 }

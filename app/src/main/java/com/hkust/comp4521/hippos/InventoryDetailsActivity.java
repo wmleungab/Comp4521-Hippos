@@ -23,7 +23,6 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
-import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONException;
@@ -48,6 +47,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private Activity mActivity;
     private Context mContext;
     MaterialDialog mNFCDialog;
+    public static Drawable heroImageDrawable;
 
     // Data structure
     private Inventory mItem;
@@ -55,7 +55,6 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     // Services
     private NFCService mNFC;
 
-    public static Drawable heroImageDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +74,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         }
 
         initViews();
+
         // set view transitions
         ViewCompat.setTransitionName(mHeaderImageView, VIEW_NAME_HEADER_IMAGE);
         ViewCompat.setTransitionName(mHeaderTitle, VIEW_NAME_HEADER_TITLE);
@@ -93,8 +93,11 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private void initViews() {
         // Header image and tint status bar by extracting Palette
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
-        if(mItem.getImage() != "")
-            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
+        // Fetch image in case image changed
+        /*if(mItem.getImage() != "" && mHeaderImageView != null)
+            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();*/
+        if(heroImageDrawable != null)
+            mHeaderImageView.setImageDrawable(heroImageDrawable);
         // setup textviews
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());

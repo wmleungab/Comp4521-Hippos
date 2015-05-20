@@ -10,8 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -38,6 +36,9 @@ public class InventoryListActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
     private ImageButton btnAddInventory;
+
+    // Data
+    private InventoryListAdapter adapter;
     List<View> viewList;
 
     @Override
@@ -109,7 +110,7 @@ public class InventoryListActivity extends AppCompatActivity {
 
             // Setup list adapter
             final int cId = Commons.getCategory(i).getID();
-            InventoryListAdapter adapter = new InventoryListAdapter(this, cId);
+            adapter = new InventoryListAdapter(this, cId);
             adapter.setOnClickListener(new InventoryListAdapter.OnInventoryClickListener() {
                 @Override
                 public void onClick(View v, int catId, int invIndex) {
@@ -141,32 +142,10 @@ public class InventoryListActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_inventory_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+    public void onResume() {
+        super.onResume();
+        if(adapter != null)
+            adapter.notifyDataSetChanged();
     }
 }

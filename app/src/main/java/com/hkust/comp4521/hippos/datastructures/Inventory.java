@@ -1,5 +1,7 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Yman on 15/5/2015.
  */
@@ -8,6 +10,7 @@ public class Inventory {
     // Flags
     public static String INVENTORY_CAT_ID = "inventory_catId";
     public static String INVENTORY_INV_ID = "inventory_invId";
+
     // Attributes
     int id;
     String name;
@@ -100,5 +103,9 @@ public class Inventory {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public class DrawableContainer {
+        public Drawable drawable = null;
     }
 }

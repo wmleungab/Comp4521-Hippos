@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hkust.comp4521.hippos.InventoryDetailsActivity;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
@@ -87,6 +88,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             public void onClick(View v) {
                 // trigger on click method from delegated listener
                 mListener.onClick(v, catId, invId);
+                // Hook drawable to InventoryDetailsActivity, otherwise transition cannot be done smoothly (Due to asynchronized operation)
+                InventoryDetailsActivity.heroImageDrawable = heroImage.getDrawable();
             }
     }
 

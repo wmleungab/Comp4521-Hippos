@@ -26,6 +26,7 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
 import java.io.File;
@@ -82,6 +83,9 @@ public class EditInventoryActivity extends AppCompatActivity {
             etItemPrice.setText(mItem.getPrice()+"");
             etItemStock.setText(mItem.getStock()+"");
             categorySpinner.setSelection(Commons.getCategoryIndex(mItem.getCategory()));
+
+            // setup image view
+            new ImageRetriever(ivHeroImage, mItem.getImage()).execute();
 
             // setup mode flag
             currentMode = MODE_EDIT_INVENTORY;
@@ -217,9 +221,13 @@ public class EditInventoryActivity extends AppCompatActivity {
                 Bitmap mBitmap = null;
                 try {
                     mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileUri);
-                    ImageUtils.writeBitmapToFile(mBitmap, ImageUtils.UPLOAD_IMAGE_PATH);
-                    
-                    uploadImageToServer();
+                    mBitmap = ImageUtils.getSizedBitmap(mBitmap);
+                    selectedFile = ImageUtils.writeBitmapToFile(mBitmap, ImageUtils.UPLOAD_IMAGE_PATH);
+                    ivHeroImage.setImageBitmap(mBitmap);
+
+                    if(currentMode == MODE_EDIT_INVENTORY) {
+                        uploadImageToServer();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -228,7 +236,17 @@ public class EditInventoryActivity extends AppCompatActivity {
     }
 
     private void uploadImageToServer() {
+        RestClient.getInstance().updateInventory(mItem.getId(), mItem.getName(), mItem.getPrice(), mItem.getStock(), selectedFile, 1, mItem.getCategory(), new RestListener<Inventory>() {
+            @Override
+            public void onSuccess(Inventory inventory) {
+                Toast.makeText(mContext, "Image uploaded!", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onFailure(int status) {
+                Toast.makeText(mContext, "Image not uploaded!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

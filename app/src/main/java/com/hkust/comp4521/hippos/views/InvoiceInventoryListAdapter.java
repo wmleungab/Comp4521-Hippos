@@ -39,13 +39,20 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
             this.notifyItemInserted(invList.size() - 1);
         }
 
+        public List<InvoiceInventory> getInvoiceInventories() {
+            return invList;
+        }
+
         @Override
         public void onBindViewHolder(InvoiceInventoryViewHolder contactViewHolder, int i) {
+             InvoiceInventory cii = invList.get(i);
              Inventory ci = invList.get(i).getInventory();
              contactViewHolder.itemName.setText(ci.getName());
-             contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
-             contactViewHolder.itemStock.setText("x1");
-             contactViewHolder.invId = i;
+             contactViewHolder.itemPrice.setText(cii.getFormattedPrice());
+             contactViewHolder.itemStock.setText("x" + cii.getQuantity());
+             contactViewHolder.invIdx = i;
+             contactViewHolder.inv = cii;
+             contactViewHolder.adapter = this;
              new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
         }
 
@@ -64,19 +71,39 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
                 protected ImageButton btnAdd, btnSubtract;
 
                 // Info used for referring in OnClick method
-                protected int invId;
+                protected int invIdx;
+                protected InvoiceInventory inv;
+                protected InvoiceInventoryListAdapter adapter;
 
                 public InvoiceInventoryViewHolder(View v) {
                     super(v);
-                    invId = -1;
                     itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
                     itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
                     itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
                     heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
                     btnAdd = (ImageButton) v.findViewById(R.id.ib_invoice_inventory_add);
-                    btnSubtract = (ImageButton) v.findViewById(R.id.ib_invoice_inventory_add);
+                    btnSubtract = (ImageButton) v.findViewById(R.id.ib_invoice_inventory_subtract);
+
+                    // setup add/subtract method
+                    btnAdd.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(inv.getQuantity() < inv.getInventory().getStock())
+                                inv.setQuantity(inv.getQuantity()+1);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    btnSubtract.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(inv.getQuantity() > 0)
+                                inv.setQuantity(inv.getQuantity()-1);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
                 }
         }
+
 
 }
 

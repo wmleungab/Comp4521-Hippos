@@ -24,6 +24,7 @@ import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
+import com.hkust.comp4521.hippos.views.SwipeDismissRecyclerViewTouchListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +70,29 @@ public class NewInvoiceActivity extends AppCompatActivity {
         adapter = new InvoiceInventoryListAdapter(mContext, Commons.MODE_NEW_INVOICE);
         recList.setAdapter(adapter);
         recList.setItemAnimator(new DefaultItemAnimator());
+
+        SwipeDismissRecyclerViewTouchListener touchListener =
+                new SwipeDismissRecyclerViewTouchListener(
+                        recList,
+                        new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    adapter.getInvoiceInventories().remove(position);
+                                }
+                                // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+        recList.setOnTouchListener(touchListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        recList.addOnScrollListener(touchListener.makeScrollListener());
 
         btnAddFromInventoryList.setOnClickListener(new View.OnClickListener() {
             @Override
