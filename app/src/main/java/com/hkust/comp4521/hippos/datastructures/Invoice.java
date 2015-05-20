@@ -12,7 +12,7 @@ public class Invoice {
     double total_price;
     double final_price;
     String date_time;
-    int user;
+    String user;
     String content;
     String email;
     int status;
@@ -35,7 +35,7 @@ public class Invoice {
         return date_time;
     }
 
-    public int getUser() {
+    public String getUser() {
         return user;
     }
 
