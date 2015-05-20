@@ -33,6 +33,7 @@ public class InventoryListActivity extends AppCompatActivity {
     private int currentMode = MODE_NORMAL;
 
     // Views
+    private RecyclerView recList;
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
     private ImageButton btnAddInventory;
@@ -40,6 +41,7 @@ public class InventoryListActivity extends AppCompatActivity {
     // Data
     private InventoryListAdapter adapter;
     List<View> viewList;
+    List<InventoryListAdapter> adapterList = new ArrayList<InventoryListAdapter>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,7 @@ public class InventoryListActivity extends AppCompatActivity {
         for(int i=0; i < Commons.getCategoryCount(); i++) {
             // Setup RecyclerView
             View view = viewList.get(i);
-            RecyclerView recList = (RecyclerView) view.findViewById(R.id.cardList);
+            recList = (RecyclerView) view.findViewById(R.id.cardList);
             recList.setHasFixedSize(true);
             LinearLayoutManager llm = new LinearLayoutManager(this);
             llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -120,6 +122,10 @@ public class InventoryListActivity extends AppCompatActivity {
                         Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putInt(Inventory.INVENTORY_INV_ID, item.getId());
+                        if(item.getImage() != null && !item.getImage().equals(""))
+                            InventoryDetailsActivity.itemIndex = invIndex;
+                        else
+                            InventoryDetailsActivity.itemIndex = -1;
                         intent.putExtras(bundle);
                         ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
                                 InventoryListActivity.this,
@@ -139,14 +145,23 @@ public class InventoryListActivity extends AppCompatActivity {
                 }
             });
             recList.setAdapter(adapter);
+            adapterList.add(adapter);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(adapter != null)
-            adapter.notifyDataSetChanged();
+        // Update view holder contents when back from another activity
+        // Remember to update from according adapter
+        InventoryListAdapter adapter = adapterList.get(mViewPager.getCurrentItem());
+        Inventory inv = null;
+        if(InventoryDetailsActivity.itemIndex != -1)
+            inv = adapter.getInventoryList().get(InventoryDetailsActivity.itemIndex);
+        if(adapter != null && inv != null && inv.getStatus() == Inventory.INVENTORY_DIRTY) {
+            adapter.notifyItemChanged(InventoryDetailsActivity.itemIndex);
+            inv.setStatus(Inventory.INVENTORY_NORMAL);
+        }
     }
 
     @Override

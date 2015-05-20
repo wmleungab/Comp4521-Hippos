@@ -236,7 +236,7 @@ public class EditInventoryActivity extends AppCompatActivity {
     }
 
     private void uploadImageToServer() {
-        RestClient.getInstance().updateInventory(mItem.getId(), mItem.getName(), mItem.getPrice(), mItem.getStock(), selectedFile, 1, mItem.getCategory(), new RestListener<Inventory>() {
+        RestClient.getInstance().updateInventoryImage(mItem.getId(), selectedFile, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
                 Toast.makeText(mContext, "Image uploaded!", Toast.LENGTH_SHORT).show();

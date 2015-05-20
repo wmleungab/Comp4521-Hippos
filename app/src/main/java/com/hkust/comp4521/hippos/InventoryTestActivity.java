@@ -141,32 +141,6 @@ public class InventoryTestActivity extends ActionBarActivity implements View.OnC
                 });
                 break;
             }
-            case R.id.update_inve: {
-                int num = 25;
-                String name = "Transformer Comic 2";
-                int stock = 10;
-                double price = 60.5;
-                int category = 5;
-                rc.updateInventory(num, name, price, stock, RestClient.file, 1, category, new RestListener<Inventory>() {
-                    @Override
-                    public void onSuccess(Inventory inventory) {
-                        TextView tv = (TextView) findViewById(R.id.textView333);
-                        tv.setText("name: " + inventory.getName() + "\n" +
-                                "Price: " + inventory.getPrice() + "\n" +
-                                "Stock: " + inventory.getStock() + "\n" +
-                                "Image:" + inventory.getImage() + "\n" +
-                                "Status: " + inventory.getStatus() + "\n" +
-                                "TimeStamp: " + inventory.getTimeStamp() + "\n" +
-                                "Category: " + inventory.getCategory() + "\n");
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-
-                    }
-                });
-                break;
-            }
         }
 
     }

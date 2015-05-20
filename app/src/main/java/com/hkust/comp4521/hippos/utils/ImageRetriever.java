@@ -43,7 +43,7 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
         // skip if no url supplied
-        if(fileUrl == "")
+        if(fileUrl != null && fileUrl.equals(""))
             return null;
         // Check if file exists locally first
         Bitmap bitmap = null;

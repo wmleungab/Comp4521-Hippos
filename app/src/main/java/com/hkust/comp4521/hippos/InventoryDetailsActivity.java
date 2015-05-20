@@ -3,11 +3,15 @@ package com.hkust.comp4521.hippos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.graphics.Palette;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.view.LayoutInflater;
@@ -49,6 +53,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private Context mContext;
     MaterialDialog mNFCDialog;
     public static Drawable heroImageDrawable;
+    public static int itemIndex;        // for recyclerview update
 
     // Data structure
     private Inventory mItem;
@@ -95,7 +100,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         // Header image and tint status bar by extracting Palette
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
         if(heroImageDrawable != null)
-            mHeaderImageView.setImageDrawable(heroImageDrawable);
+            setupHeroImageFromDrawable();
         // setup textviews
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());
@@ -150,6 +155,15 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         });
     }
 
+    private void setupHeroImageFromDrawable() {
+        // for image view
+        mHeaderImageView.setImageDrawable(heroImageDrawable);
+        // for tinted status bar
+        Bitmap bitmap = ((BitmapDrawable)heroImageDrawable).getBitmap();
+        int color = Palette.generate(bitmap).getDarkVibrantColor(Color.parseColor("#696969"));
+        TintedStatusBar.changeStatusBarColor(this, color);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -191,7 +205,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
         // Re-fetch image in case image changed
-        if(mItem.getStatus() == Inventory.INVENTORY_DIRTY)
+        if(mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
             new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
+        }
     }
 }
