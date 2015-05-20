@@ -8,7 +8,10 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.Toast;
 
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
@@ -44,6 +47,31 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.btn_main_invlist).setOnClickListener(this);
         findViewById(R.id.btn_main_saleshistory).setOnClickListener(this);
         findViewById(R.id.btn_main_settings).setOnClickListener(this);
+
+        setupGCMButtons();
+    }
+
+    private void setupGCMButtons() {
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID)) == true) {
+                    Toast.makeText(mContext, "GCM registered!", Toast.LENGTH_SHORT).show();
+                };
+            }
+        });
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RestClient.getInstance().sendGCM(1, true, false);
+            }
+        });
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RestClient.getInstance().sendGCM(2, false, true);
+            }
+        });
     }
 
     @Override

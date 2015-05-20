@@ -16,9 +16,11 @@ import java.util.List;
  */
 public class Commons {
 
-    // Trivial information
+    // Application information
     public static String appName = "hippos";
     public static String APP_ROOT_PATH = Environment.getExternalStorageDirectory() + File.separator + Commons.appName + File.separator;
+    public static String GCM_PROJECT_NUMBER = "19676954580";
+    public static String GCM_REGISTRATION_ID = "";
 
     // Server information
     private static User user = null;

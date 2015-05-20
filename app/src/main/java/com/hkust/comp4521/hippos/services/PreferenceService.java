@@ -13,6 +13,7 @@ public class PreferenceService {
 	public static final String KEY_LOGIN_USERNAME = "user_email";
 	public static final String KEY_LOGIN_PASSWORD = "user_password";
 	public static final String KEY_SERVER_LOCATION = "server_location";
+	public static final String KEY_GCM_REGISTRATION_ID = "gcm_registration_id";
 	
 	// Shared Preferences methods
 	public static void initPreference(Context context) {
@@ -31,12 +32,18 @@ public class PreferenceService {
 		return preferences.getString(key, "");
 	}
 
+	public static boolean getBooleanValue(String key) {
+		if(preferences == null)
+			return false;
+		return preferences.getBoolean(key, false);
+	}
+
 	public static boolean getBooleanValue(Context context, String key) {
-		if(preferences == null && context != null) 
+		if(preferences == null && context != null)
 			initPreference(context);
 		return preferences.getBoolean(key, false);
 	}
-	
+
 	public static int getIntValue(Context context, String key) {
 		if(preferences == null && context != null) 
 			initPreference(context);
@@ -64,9 +71,17 @@ public class PreferenceService {
 		editor.putString(key, info);
 		editor.commit();
 	}
-	
+
+	public static void saveBooleanValue(String key,Boolean info) {
+		if(preferences == null)
+			return;
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(key, info);
+		editor.commit();
+	}
+
 	public static void saveBooleanValue(Context context, String key,Boolean info) {
-		if(preferences == null && context != null) 
+		if(preferences == null && context != null)
 			initPreference(context);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putBoolean(key, info);

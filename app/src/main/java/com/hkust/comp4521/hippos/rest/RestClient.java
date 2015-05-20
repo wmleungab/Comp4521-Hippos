@@ -695,7 +695,7 @@ public class RestClient {
     }
 
 
-    private boolean sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
+    public boolean sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
 
         final GCMHelper gcmHelper = new GCMHelper();
         if (inven_id < 0) return false;

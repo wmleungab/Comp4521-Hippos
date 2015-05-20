@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -18,12 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.ThreadService;
+
+import java.io.IOException;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -152,13 +156,34 @@ public class LoginActivity extends AppCompatActivity {
                 Commons.initializeInventoryList(new Commons.onInitializedListener() {
                     @Override
                     public void onInitialized() {
-                        Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(i);
-                        overridePendingTransition(android.R.anim.fade_in, R.anim.none);
-                        finish();
-                    }
-                });
+                        // Register for GCM service
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... params) {
+                                String msg = "";
+                                try {
+                                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                                    String regid = gcm.register(Commons.GCM_PROJECT_NUMBER);
+                                    msg = regid;
+                                } catch(IOException ex) {
+                                    msg = "Error :" + ex.getMessage();
+                                }
+                                return msg;
+                        }
+
+                        @Override
+                        protected void onPostExecute (String msg){
+                            PreferenceService.saveStringValue("gcm_registration_id", msg);
+                            Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_SHORT).show();
+                        }
+                    }.execute(null, null, null);
+
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(i);
+                    overridePendingTransition(android.R.anim.fade_in, R.anim.none);
+                    finish();
+                }
+            });
             }
 
             @Override
