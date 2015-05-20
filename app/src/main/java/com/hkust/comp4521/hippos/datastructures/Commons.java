@@ -3,6 +3,7 @@ package com.hkust.comp4521.hippos.datastructures;
 import android.os.Environment;
 import android.util.Log;
 
+import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 
@@ -108,56 +109,96 @@ public class Commons {
     }
 
     public static void initializeInventoryList(final onInitializedListener mListener) {
-        // TODO: fetch list from local DB first, go to remote server if local DB does not exist
         if(categorizedinventoryHMList != null) {
             if(mListener != null) {
                 mListener.onInitialized();
                 return;
             }
         }
+
+        // fetch list from local DB first, go to remote server if local DB does not exist
         categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
         inventoryHM = new HashMap<Integer, Inventory>();
-        final RestClient rc = RestClient.getInstance();
-        // Init Category information
-        rc.getAllCategory(new RestListener<List<Category>>() {
-            @Override
-            public void onSuccess(List<Category> categories) {
-                if (categories != null) {
-                    Log.i("Commons", "Get category list");
-                    categoryList = categories;
-                    INVENTORY_CATEGORY = new String[categories.size()];
-                    for (Category c : categories) {
-                        categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
-                    }
-                    for(int i = 0; i < categories.size(); i++) {
-                        INVENTORY_CATEGORY[i] = categories.get(i).getName();
-                    }
-                    // Init Inventory information
-                    rc.getAllInventory(new RestListener<List<Inventory>>() {
-                        @Override
-                        public void onSuccess(List<Inventory> netInventories) {
-                            Log.i("Commons", "Get Inventory list");
-                            for (Inventory inv : netInventories) {
-                                ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
-                                list.add(inv);
-                                inventoryHM.put(inv.getId(), inv);
-                            }
-                            if(mListener != null)
-                                mListener.onInitialized();
+        final InventoryDB dbHelper = InventoryDB.getInstance();
+        if(dbHelper.getCount() > 0) {
+            // Inventory table is initialized already
+            final RestClient rc = RestClient.getInstance();
+            // Init Category information
+            rc.getAllCategory(new RestListener<List<Category>>() {
+                @Override
+                public void onSuccess(List<Category> categories) {
+                    if (categories != null) {
+                        Log.i("Commons", "Get category list");
+                        categoryList = categories;
+                        INVENTORY_CATEGORY = new String[categories.size()];
+                        for (Category c : categories) {
+                            categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
                         }
-                        @Override
-                        public void onFailure(int status) {
-
+                        for (int i = 0; i < categories.size(); i++) {
+                            INVENTORY_CATEGORY[i] = categories.get(i).getName();
                         }
-                    });
+                        List<Inventory> netInventories = dbHelper.getAll();
+                        Log.i("Commons", "Inventory table already initialized, load from local DB instead");
+                        for (Inventory inv : netInventories) {
+                            ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
+                            list.add(inv);
+                            inventoryHM.put(inv.getId(), inv);
+                        }
+                        if(mListener != null)
+                            mListener.onInitialized();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int status) {
+                @Override
+                public void onFailure(int status) {
 
-            }
-        });
+                }
+            });
+        } else {
+            // Inventory table not yet initialized, get data from server
+            final RestClient rc = RestClient.getInstance();
+            // Init Category information
+            rc.getAllCategory(new RestListener<List<Category>>() {
+                @Override
+                public void onSuccess(List<Category> categories) {
+                    if (categories != null) {
+                        Log.i("Commons", "Get category list");
+                        categoryList = categories;
+                        INVENTORY_CATEGORY = new String[categories.size()];
+                        for (Category c : categories) {
+                            categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
+                        }
+                        for(int i = 0; i < categories.size(); i++) {
+                            INVENTORY_CATEGORY[i] = categories.get(i).getName();
+                        }
+                        // Init Inventory information
+                        rc.getAllInventory(new RestListener<List<Inventory>>() {
+                            @Override
+                            public void onSuccess(List<Inventory> netInventories) {
+                                Log.i("Commons", "Get Inventory list");
+                                for (Inventory inv : netInventories) {
+                                    ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
+                                    list.add(inv);
+                                    inventoryHM.put(inv.getId(), inv);
+                                    dbHelper.insert(inv);
+                                }
+                                if(mListener != null)
+                                    mListener.onInitialized();
+                            }
+                            @Override
+                            public void onFailure(int status) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(int status) {
+
+                }
+            });
+        }
     }
 
 

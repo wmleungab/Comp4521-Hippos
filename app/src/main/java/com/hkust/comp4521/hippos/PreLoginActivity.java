@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -21,7 +22,10 @@ public class PreLoginActivity extends AppCompatActivity {
         // ensure app folders exist
         ImageUtils.checkAppFolderStructure();
 
-        // for determining login information and presence of local DB data
+        // look for local DB data, initialize if not exist
+        DatabaseHelper.initDatabase(this);
+
+        // for determining login information
         PreferenceService.initPreference(this);
         String email = PreferenceService.getStringValue(this, PreferenceService.KEY_LOGIN_USERNAME);
         String pw = PreferenceService.getStringValue(this, PreferenceService.KEY_LOGIN_PASSWORD);

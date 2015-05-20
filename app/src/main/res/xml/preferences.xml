@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="General settings">
-
-        <Preference android:title="Logout"
-            android:key="@string/logout_prefs"
-            android:summary="Logout from current server"/>
-
-        <Preference android:title="Clear Cache"
-            android:key="@string/clear_cache_prefs"
-            android:summary="Clear image cache of inventory list"/>
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="Company details">
         <EditTextPreference
             android:dialogTitle="Please enter the name:"
@@ -36,6 +24,16 @@
             android:key="@string/company_address_prefs"
             android:summary="Company physical address"
             android:title="Contact address" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="General settings">
+        <Preference android:title="Logout"
+            android:key="@string/logout_prefs"
+            android:summary="Logout from current server"/>
+
+        <Preference android:title="Clear Cache"
+            android:key="@string/clear_cache_prefs"
+            android:summary="Clear image cache of inventory list"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

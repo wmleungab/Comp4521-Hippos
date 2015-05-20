@@ -55,7 +55,11 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         } else {
             // download from remote server
-            bitmap = RestClient.getInstance().downloadAsBitmap(fileUrl);
+            try {
+                bitmap = RestClient.getInstance().downloadAsBitmap(fileUrl);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
         }
         // generate color for status bar if needed
         if(activity != null && bitmap != null) {

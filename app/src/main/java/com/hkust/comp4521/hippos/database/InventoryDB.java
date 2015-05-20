@@ -1,7 +1,6 @@
 package com.hkust.comp4521.hippos.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -15,26 +14,40 @@ import java.util.List;
  */
 public class InventoryDB {
 
-    public static final String TABLE_NAME = "inventory";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_CATEGORY = "category";
-    public static final String COLUMN_PRICE = "price";
+    public static InventoryDB instance;
 
-    private static final String CREATE_TABLE = "create table "
+    public static final String TABLE_NAME = "inventory";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_PRICE = "price";
+    public static final String COLUMN_STOCK = "stock";
+    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_STATUS = "status";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static final String COLUMN_CATEGORY = "category";
+
+    public static final String CREATE_TABLE = "create table "
                                                 + TABLE_NAME + "("
-                                                + COLUMN_ID + " integer primary key autoincrement, "
+                                                + COLUMN_ID + " integer primary key, "
                                                 + COLUMN_NAME + " text not null,"
-                                                + COLUMN_CATEGORY + " integer not null,"
-                                                + COLUMN_PRICE + " real not null"
+                                                + COLUMN_PRICE + " real not null,"
+                                                + COLUMN_STOCK + " integer not null,"
+                                                + COLUMN_IMAGE + " text not null,"
+                                                + COLUMN_STATUS + " integer not null,"
+                                                + COLUMN_TIMESTAMP + " text not null,"
+                                                + COLUMN_CATEGORY + " integer not null"
                                                 + ");";
 
     private SQLiteDatabase db;
-
-    public InventoryDB(Context context) {
-        db = DatabaseHelper.getDatabase(context);
+    public static InventoryDB getInstance() {
+        if(instance == null) {
+            instance = new InventoryDB();
+        }
+        return instance;
     }
-
+    private InventoryDB() {
+        db = DatabaseHelper.getDatabase();
+    }
     public void close() {
         db.close();
     }
@@ -42,9 +55,14 @@ public class InventoryDB {
     public Inventory insert(Inventory item) {
         ContentValues cv = new ContentValues();
 
+        cv.put(COLUMN_ID, item.getId());
         cv.put(COLUMN_NAME, item.getName());
-        cv.put(COLUMN_CATEGORY, item.getCategory());
         cv.put(COLUMN_PRICE, item.getPrice());
+        cv.put(COLUMN_STOCK, item.getStock());
+        cv.put(COLUMN_IMAGE, item.getImage());
+        cv.put(COLUMN_STATUS, item.getStatus());
+        cv.put(COLUMN_TIMESTAMP, item.getTimeStamp());
+        cv.put(COLUMN_CATEGORY, item.getCategory());
 
         long id = db.insert(TABLE_NAME, null, cv);
 
@@ -56,8 +74,12 @@ public class InventoryDB {
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_NAME, item.getName());
-        cv.put(COLUMN_CATEGORY, item.getCategory());
         cv.put(COLUMN_PRICE, item.getPrice());
+        cv.put(COLUMN_STOCK, item.getStock());
+        cv.put(COLUMN_IMAGE, item.getImage());
+        cv.put(COLUMN_STATUS, item.getStatus());
+        cv.put(COLUMN_TIMESTAMP, item.getTimeStamp());
+        cv.put(COLUMN_CATEGORY, item.getCategory());
 
         String where = COLUMN_ID + "=" + item.getId();
 
@@ -100,8 +122,12 @@ public class InventoryDB {
 
         result.setId(cursor.getInt(0));
         result.setName(cursor.getString(1));
-        result.setCategory(cursor.getInt(2));
-        result.setPrice(cursor.getFloat(3));
+        result.setPrice(cursor.getDouble(2));
+        result.setStock(cursor.getInt(3));
+        result.setImage(cursor.getString(4));
+        result.setStatus(cursor.getInt(5));
+        result.setTimestamp(cursor.getString(6));
+        result.setCategory(cursor.getInt(7));
 
         return result;
     }

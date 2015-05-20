@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Daily Sales"
+        android:text="@string/weekly_sales"
         android:id="@+id/textView2" />
 
     <lecho.lib.hellocharts.view.LineChartView
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Monthly Sales"/>
+        android:text="@string/monthly_sales"/>
 
     <lecho.lib.hellocharts.view.ColumnChartView
         android:id="@+id/chart_bottom"

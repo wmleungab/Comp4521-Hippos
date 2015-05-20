@@ -27,4 +27,7 @@
     <string name="logout_prefs">logout</string>
     <string name="clear_cache_prefs">clear_cache</string>
 
+    <string name="weekly_sales">Weekly Sales</string>
+    <string name="monthly_sales">Monthly Sales</string>
+
 </resources>

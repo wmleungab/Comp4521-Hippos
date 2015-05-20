@@ -77,7 +77,9 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse().getStatus() == 400)
+                if(error.getResponse() == null)
+                    rl.onFailure(RestListener.AUTHORIZATION_FAIL);
+                else if (error.getResponse().getStatus() == 400)
                     rl.onFailure(RestListener.INVALID_EMAIL);
             }
         });

@@ -18,10 +18,14 @@ public class StatisticsUtils {
 
     public final static String[] MONTHS = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     public final static String[] DAYS = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    private static int[] weeklyDP, monthlyDP;
+    private static int[] weeklyDP = new int[DAYS.length];
+    private static int[] monthlyDP = new int[MONTHS.length];
 
     public static int[] getWeeklyDataPoints(int fromMonth) {
-        weeklyDP = new int[DAYS.length];
+        // Clear old data
+        for(int i=0; i < weeklyDP.length; i++)
+            weeklyDP[i] = 0;
+
         // List<Invoice> invoiceList = Commons.getInvoiceList();
         // For each invoice, look the respective weekday from date
         // then add count to weekday
@@ -73,7 +77,10 @@ public class StatisticsUtils {
     }
 
     public static int[] getMonthlyDataPoints() {
-        monthlyDP = new int[MONTHS.length];
+        // Clear old data
+        for(int i=0; i < monthlyDP.length; i++)
+            monthlyDP[i] = 0;
+
         //  List<Invoice> invoiceList = Commons.getInvoiceList();
         // For each invoice, look the respective month from date
         // then add count to month
