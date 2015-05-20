@@ -736,5 +736,32 @@ public class RestClient {
 
     }
 
+    public void updateCompanyDetail(final String name, final String email, final String phone, final String address, final RestListener<String> restListener) {
+        if (name.equals("") || name == null || email.equals("") || email == null || phone.equals("") || phone == null
+                || address.equals("") || address == null) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.updateCompany(name, email, phone, address, new Callback<Response_Message>() {
+            @Override
+            public void success(Response_Message response_message, Response response) {
+                if (!response_message.error) {
+                    restListener.onSuccess(response_message.message);
+                    return;
+                } else {
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                    return;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (error.getResponse().getStatus() == 400) {
+                    restListener.onFailure(RestListener.INVALID_PARA);
+                    return;
+                }
+            }
+        });
+    }
 
 }

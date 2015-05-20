@@ -95,4 +95,9 @@ public interface ServerAPI {
     @FormUrlEncoded
     @POST("/gcm")
     void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("imageChanged") boolean imageChanged, @Field("textInfoChanged") boolean textInfoChanged, Callback<Response> callback);
+
+    @FormUrlEncoded
+    @POST("/company")
+    void updateCompany(@Field("name") String name, @Field("email") String email, @Field("phone") String phone, @Field("address") String address, Callback<Response_Message> callback);
+
 }
