@@ -360,9 +360,85 @@ public class RestClient {
         });
     }
 
+    public void updateInventoryImage(final int id, final File updatedImage, final RestListener<Inventory> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
+
+        if (id < 0) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+
+        getInventory(id, new RestListener<Inventory>() {
+            @Override
+            public void onSuccess(final Inventory inventory) {
+                if (inventory.getImage() == "null" && updatedImage == null) {
+                    restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                    return;
+                } else if (updatedImage != null) {
+                    fileUpload(inventory.getId(), updatedImage, new RestListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            if (inventory.getImage() != "null") {
+                                restListener.onSuccess(inventory);
+                                return;
+                            } else {
+                                updateInventoryImageHelper(authorization, id, s, restListener);
+                            }
+                        }
+                        @Override
+                        public void onFailure(int status) {
+                            restListener.onFailure(status);
+                            return;
+                        }
+                    });
+                } else if (inventory.getImage() != "null" && updatedImage == null) {
+                    updateInventoryImageHelper(authorization, id, RestClient.DEFAULF_INVEN_PIC, restListener);
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                restListener.onFailure(status);
+                return;
+            }
+        });
+    }
+
+    private void updateInventoryImageHelper(String authorization, final int id, final String s, final RestListener<Inventory> restListener) {
+        serverAPI.updateInventoryImage(authorization, id, s, new Callback<Response_Inventory>() {
+            @Override
+            public void success(Response_Inventory response_inventory, Response response) {
+                getInventory(id, new RestListener<Inventory>() {
+
+                    @Override
+                    public void onSuccess(Inventory inventory) {
+                        restListener.onSuccess(inventory);
+                        return;
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+                        restListener.onFailure(status);
+                        return;
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
     public void updateInventory(final int id, final String updatedName
-            , final double updatedPrice, final int updatedStock, final File updatedImage, final int updatedStatus,
-                                final int updatedCategory, final RestListener<Inventory> restListener) {
+            , final double updatedPrice, final int updatedStock, final int updatedStatus,
+                                 final int updatedCategory, final RestListener<Inventory> restListener) {
+
+
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
@@ -371,63 +447,7 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-
-        if (updatedImage == null) {
-            updateInventory(id, updatedName, updatedPrice, updatedStock, RestClient.DEFAULF_INVEN_PIC, updatedStatus, updatedCategory, new RestListener<Inventory>() {
-                @Override
-                public void onSuccess(Inventory inventory) {
-                    restListener.onSuccess(inventory);
-                    return;
-                }
-
-                @Override
-                public void onFailure(int status) {
-                    restListener.onFailure(status);
-                    return;
-                }
-            });
-        } else {
-            fileUpload(id, updatedImage, new RestListener<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    updateInventory(id, updatedName, updatedPrice, updatedStock, s, updatedStatus, updatedCategory, new RestListener<Inventory>() {
-                        @Override
-                        public void onSuccess(Inventory inventory) {
-                            restListener.onSuccess(inventory);
-                            return;
-                        }
-
-                        @Override
-                        public void onFailure(int status) {
-                            restListener.onFailure(status);
-                            return;
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(int status) {
-                    restListener.onFailure(status);
-                    return;
-                }
-            });
-        }
-    }
-
-    public void updateInventory(final int id, final String updatedName
-            , final double updatedPrice, final int updatedStock, final String updatedImage, final int updatedStatus,
-                                 final int updatedCategory, final RestListener<Inventory> restListener) {
-
-
-        if (authorization.equals("")) {
-            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
-            return;
-        } else if (updatedName.equals("") || updatedName == null || updatedImage.equals("") || updatedImage == null || id < 0
-                || updatedPrice < 0 || updatedStock < 0 || updatedCategory < 0) {
-            restListener.onFailure(RestListener.INVALID_PARA);
-            return;
-        }
-        serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock, updatedImage,
+        serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock,
                 updatedStatus, updatedCategory, new Callback<Response_Inventory>() {
 
                     @Override

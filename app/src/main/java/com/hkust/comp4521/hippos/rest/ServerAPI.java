@@ -49,7 +49,7 @@ public interface ServerAPI {
     @FormUrlEncoded
     @PUT("/inventory/{id}")
     void updateInventory(@Header("Authorization") String authorization, @Path("id") int id, @Field("name") String name
-            , @Field("price") double price, @Field("stock") int stock, @Field(("image")) String image, @Field("status") int status
+            , @Field("price") double price, @Field("stock") int stock, @Field("status") int status
             , @Field("category") int category, Callback<Response_Inventory> callback);
 
     @FormUrlEncoded
