@@ -1,22 +1,28 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageUtils;
 
 
 public class SettingActivity extends PreferenceActivity {
 
     // Views
     private RelativeLayout mActionBar;
+
+    // Intent
+    static Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,10 @@ public class SettingActivity extends PreferenceActivity {
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
+
+        // Intent for restarting application
+        intent = new Intent(getApplicationContext(), PreLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
     }
 
     @Override
@@ -77,23 +87,27 @@ public class SettingActivity extends PreferenceActivity {
             else
                 findPreference(getResources().getString(R.string.company_phone_prefs)).setSummary(nth);
 
-            s = sp.getString(getResources().getString(R.string.user_email_prefs), "");
-            if (s != null && !s.equals(""))
-                findPreference(getResources().getString(R.string.user_email_prefs)).setSummary(s);
-            else
-                findPreference(getResources().getString(R.string.user_email_prefs)).setSummary(nth);
+            // Set general settings listener
+            Preference button = (Preference)findPreference(getString(R.string.logout_prefs));
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    PreferenceService.saveStringValue(getResources().getString(R.string.user_email_prefs), "");
+                    PreferenceService.saveStringValue(getResources().getString(R.string.user_password_prefs), "");
 
-            s = sp.getString(getResources().getString(R.string.user_password_prefs), "");
-            if (s != null && !s.equals(""))
-                findPreference(getResources().getString(R.string.user_password_prefs)).setSummary("******");
-            else
-                findPreference(getResources().getString(R.string.user_password_prefs)).setSummary(nth);
+                    startActivity(intent);
 
-            s = sp.getString(getResources().getString(R.string.server_location_prefs), "");
-            if (s != null && !s.equals(""))
-                findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(s);
-            else
-                findPreference(getResources().getString(R.string.server_location_prefs)).setSummary(nth);
+                    return true;
+                }
+            });button = (Preference)findPreference(getString(R.string.clear_cache_prefs));
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ImageUtils.clearImageCache();
+                    return true;
+                }
+            });
+
         }
 
         @Override

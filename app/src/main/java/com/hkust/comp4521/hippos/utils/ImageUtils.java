@@ -85,4 +85,12 @@ public class ImageUtils {
         // Mark info as dirty
         inv.setStatus(2);
     }
+
+    public static void clearImageCache() {
+        File dir = new File(IMAGE_CACHE_PATH);
+        if(dir.exists()) {
+            for(File file: dir.listFiles())
+                file.delete();
+        }
+    }
 }

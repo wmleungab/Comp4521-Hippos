@@ -16,7 +16,6 @@ public class Invoice {
     String content;
     String email;
     int status;
-
     List<InvoiceInventory> invoiceInventories;
 
     public int getID() {

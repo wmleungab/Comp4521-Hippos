@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Server settings">
+    <PreferenceCategory android:title="General settings">
 
-        <EditTextPreference
-            android:dialogTitle="Please enter the email:"
-            android:key="@string/user_email_prefs"
-            android:summary="Server log in account"
-            android:title="Account E-mail address" />
+        <Preference android:title="Logout"
+            android:key="@string/logout_prefs"
+            android:summary="Logout from current server"/>
 
-        <EditTextPreference
-            android:dialogTitle="Please enter the password:"
-            android:key="@string/user_password_prefs"
-            android:summary="Server log in password"
-            android:title="Password" />
-
-        <EditTextPreference
-            android:dialogTitle="Please enter the server IP:"
-            android:key="@string/server_location_prefs"
-            android:summary=""
-            android:title="HiPPoS Server IP:" />
+        <Preference android:title="Clear Cache"
+            android:key="@string/clear_cache_prefs"
+            android:summary="Clear image cache of inventory list"/>
 
     </PreferenceCategory>
 
