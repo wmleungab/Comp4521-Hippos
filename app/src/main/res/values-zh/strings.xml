@@ -26,6 +26,7 @@
     <!-- For InventoryDetailsActivity-->
     <string name="inventory_details_assign_nfc">賦值到 NFC 標籤</string>
     <string name="inventory_details_disable_inventory">停用存貨</string>
+    <string name="inventory_details_disabled"> (已停用)</string>
 
     <!-- For LoginActivity-->
     <string name="login_server_address">伺服器地址</string>
@@ -51,6 +52,8 @@
     <string name="dialog_sales_confirm_item_total">物品總計</string>
     <string name="dialog_sales_confirm_final_charge">累計</string>
     <string name="dialog_sales_confirm_paid">付費</string>
+    <string name="dialog_okay">確認</string>
+    <string name="dialog_cancel">取消</string>
 
     <!-- For PerferenceFragment-->
     <string name="company_details_pref_title">公司詳情</string>

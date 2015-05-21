@@ -26,6 +26,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
@@ -48,7 +50,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     private ImageView mHeaderImageView;
     private TextView mHeaderTitle, tvItemDesc, tvItemPrice, tvItemStock;
     private ImageButton btnBack, btnEdit;
-    private LinearLayout btnNFCAssign;
+    private LinearLayout btnNFCAssign, btnDisableInventory;
 
     // Activity-related
     private Activity mActivity;
@@ -141,22 +143,58 @@ public class InventoryDetailsActivity extends ActionBarActivity {
                 // inflate view for dialog
                 LayoutInflater mInflater = getLayoutInflater().from(mContext);
                 View vv = mInflater.inflate(R.layout.dialog_nfc_assign, null);
-                mNFCDialog =  new MaterialDialog.Builder(InventoryDetailsActivity.this)
-                                .customView(vv, false)
-                                .negativeText("Cancel")
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onNegative(MaterialDialog dialog) {
-                                        mNFC.WriteModeOff();
-                                    }
-                                })
-                                .show();
+                mNFCDialog = new MaterialDialog.Builder(InventoryDetailsActivity.this)
+                        .customView(vv, false)
+                        .negativeText(mContext.getString(R.string.dialog_cancel))
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                mNFC.WriteModeOff();
+                            }
+                        })
+                        .show();
                 mNFC.WriteModeOn();
                 // start ripple animation
-                final RippleBackground rippleBackground=(RippleBackground) vv.findViewById(R.id.content);
+                final RippleBackground rippleBackground = (RippleBackground) vv.findViewById(R.id.content);
                 rippleBackground.startRippleAnimation();
             }
         });
+        // disable inventory button and its dialog
+        btnDisableInventory = (LinearLayout) findViewById(R.id.ll_inventory_details_disable_inventory);
+        btnDisableInventory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // inflate view for dialog
+                mNFCDialog =  new MaterialDialog.Builder(InventoryDetailsActivity.this)
+                        .content(mContext.getString(R.string.dialog_disable_inventory_content))
+                        .positiveText(mContext.getString(R.string.dialog_okay))
+                        .negativeText(mContext.getString(R.string.dialog_cancel))
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                RestClient.getInstance().updateInventory(mItem.getId(), mItem.getName(), mItem.getPrice(), mItem.getStock(), Inventory.INVENTORY_DISABLED, mItem.getCategory(), new RestListener<Inventory>() {
+                                    @Override
+                                    public void onSuccess(Inventory inventory) {
+                                        Toast.makeText(mContext, "Inventory " + inventory.getName() + " disabled!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int status) {
+
+                                    }
+                                });
+                            }
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+
+                            }
+                        })
+                        .show();
+            }
+        });
+        // disable inventory action (if needed)
+        if(mItem.getStatus() == Inventory.INVENTORY_DISABLED)
+            disableInventory();
     }
 
     private void setupHeroImageFromDrawable() {
@@ -224,7 +262,6 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         }
     }
 
-
     @Subscribe
     public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
         // Update inventory view from bus message
@@ -234,7 +271,16 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             tvItemDesc.setText(updatedItem.getTimeStamp());
             tvItemPrice.setText(updatedItem.getFormattedPrice());
             tvItemStock.setText("Stock: " + updatedItem.getStock());
+            if(updatedItem.getStatus() == Inventory.INVENTORY_DISABLED)
+                disableInventory();
             new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
         }
+    }
+
+    public void disableInventory() {
+        mHeaderTitle.setText(mItem.getName() + getString(R.string.inventory_details_disabled));
+        btnNFCAssign.setVisibility(View.GONE);
+        btnDisableInventory.setVisibility(View.GONE);
+        btnEdit.setVisibility(View.GONE);
     }
 }

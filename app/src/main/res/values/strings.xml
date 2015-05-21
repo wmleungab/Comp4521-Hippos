@@ -26,6 +26,7 @@
     <!-- For InventoryDetailsActivity-->
     <string name="inventory_details_assign_nfc">Assign information to NFC tag</string>
     <string name="inventory_details_disable_inventory">Disable inventory</string>
+    <string name="inventory_details_disabled"> (Disabled)</string>
 
     <!-- For LoginActivity-->
     <string name="login_server_address">Server Address</string>
@@ -47,10 +48,13 @@
 
     <!--For  dialogs-->
     <string name="dialog_nfc_hint">Tap to a NFC tag</string>
+    <string name="dialog_disable_inventory_content">Are you sure you want to disable this inventory?</string>
     <string name="dialog_sales_confirm_title">Confirmation</string>
     <string name="dialog_sales_confirm_item_total">Item Total</string>
     <string name="dialog_sales_confirm_final_charge">Final Charge</string>
     <string name="dialog_sales_confirm_paid">Paid</string>
+    <string name="dialog_okay">Okay</string>
+    <string name="dialog_cancel">Cancel</string>
 
     <!-- Preference keys-->
     <string name="user_email_prefs">user_email</string>

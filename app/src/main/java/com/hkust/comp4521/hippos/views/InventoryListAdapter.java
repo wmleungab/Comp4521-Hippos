@@ -43,12 +43,16 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i);
              ci.setIndex(catIndex, i);
-             contactViewHolder.itemName.setText(ci.getName());
+             if(ci.getStatus() == Inventory.INVENTORY_DISABLED) {
+                 contactViewHolder.itemName.setText(ci.getName() + mContext.getString(R.string.inventory_details_disabled));
+             } else {
+                 contactViewHolder.itemName.setText(ci.getName());
+                 contactViewHolder.mListener = mOnClickListener;
+             }
              contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
              contactViewHolder.itemStock.setText("Stock: " + ci.getStock());
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
-             contactViewHolder.mListener = mOnClickListener;
              new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 
@@ -101,7 +105,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
                 @Override
                 public void onClick(View v) {
                     // trigger on click method from delegated listener
-                    mListener.onClick(v, catId, invId);
+                    if(mListener != null)
+                        mListener.onClick(v, catId, invId);
                     // Hook drawable to InventoryDetailsActivity, otherwise transition cannot be done smoothly (Due to asynchronized operation)
                     InventoryDetailsActivity.heroImageDrawable = heroImage.getDrawable();
                 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,7 +72,8 @@ public class NewInvoiceActivity extends AppCompatActivity {
 
         mAdapter = new InvoiceInventoryListAdapter(mContext, Commons.MODE_NEW_INVOICE);
         recList.setAdapter(mAdapter);
-        recList.setItemAnimator(new DefaultItemAnimator());
+        //recList.setItemAnimator(new DefaultItemAnimator());
+        recList.setItemAnimator(null);
 
         SwipeDismissRecyclerViewTouchListener touchListener =
                 new SwipeDismissRecyclerViewTouchListener(
@@ -86,11 +86,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
 
                             @Override
                             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    mAdapter.getInvoiceInventories().remove(position);
-                                }
+                                //for (int position : reverseSortedPositions) {
+                                    mAdapter.getInvoiceInventories().remove(reverseSortedPositions[0]);
+                                //}
                                 // do not call notifyItemRemoved for every item, it will cause gaps on deleting items
-                                mAdapter.notifyDataSetChanged();
+                                //mAdapter.notifyDataSetChanged();
+                                mAdapter.notifyItemRemoved(reverseSortedPositions[0]);
                             }
                         });
         recList.setOnTouchListener(touchListener);
