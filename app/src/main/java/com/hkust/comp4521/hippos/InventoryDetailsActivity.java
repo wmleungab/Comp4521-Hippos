@@ -25,10 +25,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.skyfishjy.library.RippleBackground;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,12 +201,32 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         mNFC.WriteModeOff();
+        // Always unregister when an object no longer should be on the bus.
+        Commons.getBusInstance().unregister(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        // Register for bus
+        Commons.getBusInstance().register(this);
         // Re-fetch image in case image changed
+        if(mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
+            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
+        }
+    }
+
+
+    @Subscribe
+    public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
+        Toast.makeText(this, "Bus test!", Toast.LENGTH_SHORT).show();
+
+        // Update inventory view from bus message
+        Inventory mItem = event.getInventory();
+        mHeaderTitle.setText(mItem.getName());
+        tvItemDesc.setText(mItem.getTimeStamp());
+        tvItemPrice.setText(mItem.getFormattedPrice());
+        tvItemStock.setText("Stock: " + mItem.getStock());
         if(mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
             new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
         }

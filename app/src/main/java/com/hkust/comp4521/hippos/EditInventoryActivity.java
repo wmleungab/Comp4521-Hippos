@@ -282,8 +282,4 @@ public class EditInventoryActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
 }
