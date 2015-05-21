@@ -390,14 +390,14 @@ public class RestClient {
         getInventory(id, new RestListener<Inventory>() {
             @Override
             public void onSuccess(final Inventory inventory) {
-                if (inventory.getImage() == "null" && updatedImage == null) {
+                if (inventory.getImage().equals(RestClient.DEFAULF_INVEN_PIC) && updatedImage == null) {
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
                     return;
                 } else if (updatedImage != null) {
                     fileUpload(inventory.getId(), updatedImage, new RestListener<String>() {
                         @Override
                         public void onSuccess(String s) {
-                            if (inventory.getImage() != "null") {
+                            if (!inventory.getImage().equals(RestClient.DEFAULF_INVEN_PIC)) {
                                 restListener.onSuccess(inventory);
                                 sendGCM(inventory.getId(), true, false);
                                 return;
@@ -412,7 +412,7 @@ public class RestClient {
                             return;
                         }
                     });
-                } else if (inventory.getImage() != "null" && updatedImage == null) {
+                } else if (!inventory.getImage().equals(RestClient.DEFAULF_INVEN_PIC) && updatedImage == null) {
                     updateInventoryImageHelper(authorization, id, RestClient.DEFAULF_INVEN_PIC, restListener);
                 }
             }
