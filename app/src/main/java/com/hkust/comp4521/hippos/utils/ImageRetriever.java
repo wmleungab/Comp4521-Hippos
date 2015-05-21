@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -84,6 +86,10 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
                         ImageUtils.writeBitmapToFile(bitmap, ImageUtils.IMAGE_CACHE_PATH + fileUrl);
                     // set as view
                     imageView.setImageBitmap(bitmap);
+                    // animate the view
+                    Animation am = new AlphaAnimation( 0, 1 );
+                    am.setDuration(300);
+                    imageView.startAnimation(am);
                 }
             }
         }

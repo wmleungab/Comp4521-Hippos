@@ -5,6 +5,8 @@
     <string name="title_activity_debug">HiPPoS Debug</string>
     <string name="title_activity_new_invoice">New Invoice</string>
     <string name="title_activity_inventory_list">Item List</string>
+    <string name="title_activity_edit_inventory_new">New Inventory</string>
+    <string name="title_activity_edit_inventory">Edit Inventory</string>
 
     <string name="title_activity_inventory_details">InventoryDetailsActivity</string>
     <string name="title_activity_sales_history">Sales History</string>
@@ -12,7 +14,6 @@
     <string name="title_activity_setting">Settings</string>
     <string name="title_activity_inventory_test">InventoryTestActivity</string>
     <string name="title_activity_invoice_test">InvoiceTestActivity</string>
-    <string name="title_activity_edit_inventory">Edit Inventory</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_pre_login">PreLoginActivity</string>
 
@@ -26,6 +27,7 @@
     <string name="server_location_prefs">server_location</string>
     <string name="logout_prefs">logout</string>
     <string name="clear_cache_prefs">clear_cache</string>
+    <string name="clear_db_prefs">clear_db</string>
 
     <string name="weekly_sales">Weekly Sales</string>
     <string name="monthly_sales">Monthly Sales</string>

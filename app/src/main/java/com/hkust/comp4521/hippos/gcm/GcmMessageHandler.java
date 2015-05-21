@@ -22,7 +22,6 @@ public class GcmMessageHandler extends IntentService {
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
         handler = new Handler();
     }
@@ -46,9 +45,8 @@ public class GcmMessageHandler extends IntentService {
     public void showToast(){
         handler.post(new Runnable() {
             public void run() {
-                Toast.makeText(getApplicationContext(),mes , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), mes , Toast.LENGTH_LONG).show();
             }
         });
-
     }
 }

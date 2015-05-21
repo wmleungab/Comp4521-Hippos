@@ -3,8 +3,11 @@ package com.hkust.comp4521.hippos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
+import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -41,29 +44,46 @@ public class PreLoginActivity extends AppCompatActivity {
                     Commons.initializeInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {
-                            Intent i = new Intent(PreLoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            overridePendingTransition(android.R.anim.fade_in, R.anim.none);
-                            finish();
+                            launchActivity(MainActivity.class);
                         }
                     });
                 }
 
                 @Override
                 public void onFailure(int status) {
-                    Intent i = new Intent(PreLoginActivity.this, LoginActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.none);
-                    finish();
+                    Log.i("PreLogin", InventoryDB.getInstance().getCount() + " && " + CategoryDB.getInstance().getCount());
+                    if(status == RestListener.NETWORK_UNREACHABLE) {
+                        // Server unreachable, see if local DB exists
+                        Log.i("PreLogin2", InventoryDB.getInstance().getCount() + " && " + CategoryDB.getInstance().getCount());
+                        if(InventoryDB.getInstance().getCount() > 0 && CategoryDB.getInstance().getCount() > 0) {
+                            // if yes, use the app as usual in offline mode
+                            Commons.ONLINE_MODE = false;
+                            Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                                @Override
+                                public void onInitialized() {
+                                    launchActivity(MainActivity.class);
+                                }
+                            });
+                        } else {
+                            // if no, jump back to LoginActivity
+                            launchActivity(LoginActivity.class);
+                        }
+                    } else {
+                        // Other failures, jump back to LoginActivity
+                        launchActivity(LoginActivity.class);
+                    }
                 }
             });
         } else {
             // not enough info for login, jump to loginActivity
-            Intent i = new Intent(PreLoginActivity.this, LoginActivity.class);
-            startActivity(i);
-            overridePendingTransition(android.R.anim.fade_in, R.anim.none);
-            finish();
+            launchActivity(LoginActivity.class);
         }
+    }
 
+    private void launchActivity(Class<?> activityClass) {
+        Intent i = new Intent(this, activityClass);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, R.anim.none);
+        finish();
     }
 }

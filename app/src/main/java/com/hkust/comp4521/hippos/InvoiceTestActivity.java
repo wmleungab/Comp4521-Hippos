@@ -130,7 +130,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                 double f_price = 20.0;
                 String content = "{ 2:3 6:2 }";
                 String email = "yolwyman@gmail.com";
-                rc.createInvoice(t_price, f_price, content, email, new RestListener<Invoice>() {
+                /*rc.createInvoice(t_price, f_price, content, email, new RestListener<Invoice>() {
                     @Override
                     public void onSuccess(Invoice invoice) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
@@ -153,7 +153,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                             }
                         }
                     }
-                });
+                });*/
 
 
                 break;
@@ -166,7 +166,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                 EditText ev = (EditText) findViewById(R.id.editText7);
                 String s = ev.getText().toString();
 
-                rc.updateInvoice(Integer.parseInt(s), t_price, f_price, content, email, 1, new RestListener<Invoice>() {
+                /*rc.updateInvoice(Integer.parseInt(s), t_price, f_price, content, email, 1, new RestListener<Invoice>() {
                     @Override
                     public void onSuccess(Invoice invoice) {
                         TextView tv = (TextView) findViewById(R.id.textView3);
@@ -195,7 +195,7 @@ public class InvoiceTestActivity extends ActionBarActivity implements View.OnCli
                             }
                         }
                     }
-                });
+                });*/
 
 
                 break;

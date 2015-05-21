@@ -9,8 +9,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
@@ -30,6 +29,8 @@ import com.hkust.comp4521.hippos.views.SwipeDismissRecyclerViewTouchListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class NewInvoiceActivity extends AppCompatActivity {
 
@@ -121,12 +122,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
                                             public void onPositive(MaterialDialog dialog) {
                                                 if(etPaid.getText().toString().trim().length() > 0) {
                                                     // check if price is valid first
-                                                    double paidPrice = Double.parseDouble(etPaid.getText().toString());
                                                     double totalPrice = Double.parseDouble(etPrice.getText().toString());
+                                                    double paidPrice = Double.parseDouble(etPaid.getText().toString());
                                                     if(totalPrice > paidPrice) {
                                                         etPaid.setError("Please input a valid price");
                                                     } else {
-                                                        generateInvoiceRecord();
+                                                        generateInvoiceRecord(totalPrice, paidPrice);
                                                         dialog.dismiss();
                                                     }
                                                 } else {
@@ -152,7 +153,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
         });
     }
 
-    private void generateInvoiceRecord() {
+    private void generateInvoiceRecord(double totalPrice, double paidPrice) {
+        InvoiceDB invoiceHelper = InvoiceDB.getInstance();
+        List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
+        Invoice invoice = new Invoice();
+        invoice.setFinalPrice(totalPrice);
+        invoice.setInvoiceInventories(invList);
     }
 
     @Override
@@ -166,29 +172,6 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 mAdapter.addItem(new InvoiceInventory(inv, 1));
             }
         }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_invoice, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     // NFC intent received actions

@@ -78,7 +78,7 @@ public class RestClient {
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse() == null)
-                    rl.onFailure(RestListener.AUTHORIZATION_FAIL);
+                    rl.onFailure(RestListener.NETWORK_UNREACHABLE);
                 else if (error.getResponse().getStatus() == 400)
                     rl.onFailure(RestListener.INVALID_EMAIL);
                 return;
@@ -670,12 +670,6 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-//        } else if (filePath.indexOf("./uploads/") < 0) {
-//            restListener.onFailure(RestListener.INVALID_PARA);
-//            return;
-//        } else {
-//            filePath = filePath.substring("./uploads/".length(), filePath.length());
-//        }
         serverAPI.downloadAt_uploads(filePath, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {

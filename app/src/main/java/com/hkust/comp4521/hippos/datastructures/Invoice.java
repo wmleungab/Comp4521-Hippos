@@ -1,5 +1,8 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -87,7 +90,23 @@ public class Invoice {
 
     public void setInvoiceInventories(List<InvoiceInventory> invoiceInventories) {
         this.invoiceInventories = invoiceInventories;
+        serializeInvoiceInventories();
     }
+
+    private void serializeInvoiceInventories() {
+        JSONObject jsonObj = new JSONObject();
+        // put each InvoiceInventory into json object
+        // with format of "Inventory ID : Quantity"
+        try {
+            for (InvoiceInventory inv : this.invoiceInventories) {
+                jsonObj.put(inv.getInventory().getId() + "", inv.getQuantity() + "");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        content = jsonObj.toString();
+    }
+
 
     public Date getDate() {
         SimpleDateFormat sdf;

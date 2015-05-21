@@ -8,11 +8,9 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.hkust.comp4521.hippos.rest.RestClient;
-import com.hkust.comp4521.hippos.rest.RestListener;
-import com.hkust.comp4521.hippos.services.PreferenceService;
+import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
@@ -24,6 +22,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     // Views
     private RevealColorView revealColorView;
     private View selectedView;
+    private TextView offlineModeText;
 
     private int backgroundColor;
 
@@ -49,11 +48,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.btn_main_saleshistory).setOnClickListener(this);
         findViewById(R.id.btn_main_settings).setOnClickListener(this);
 
-        setupGCMButtons();
+        offlineModeText = (TextView) findViewById(R.id.tv_main_offline_mode);
+        if(Commons.ONLINE_MODE == false) {
+            offlineModeText.setText("Offline Mode");
+        }
     }
 
     private void setupGCMButtons() {
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        /*findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>(){
@@ -80,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onClick(View v) {
                 RestClient.getInstance().sendGCM(2, false, true);
             }
-        });
+        });*/
     }
 
     @Override

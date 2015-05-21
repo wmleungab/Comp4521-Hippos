@@ -31,6 +31,10 @@
             android:key="@string/logout_prefs"
             android:summary="Logout from current server"/>
 
+        <Preference android:title="Clear Database"
+            android:key="@string/clear_db_prefs"
+            android:summary="Clear all database records"/>
+
         <Preference android:title="Clear Cache"
             android:key="@string/clear_cache_prefs"
             android:summary="Clear image cache of inventory list"/>

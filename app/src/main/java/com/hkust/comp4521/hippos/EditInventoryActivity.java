@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
@@ -52,6 +53,7 @@ public class EditInventoryActivity extends AppCompatActivity {
     private ImageView ivHeroImage;
     private EditText etItemName, etItemPrice, etItemStock;
     private ImageButton btnFinish;
+    private TextView actionBarTitle;
 
     // Data
     private Uri selectedFileUri, outputFileUri;
@@ -94,10 +96,17 @@ public class EditInventoryActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        // text fields
         ivHeroImage = (ImageView) findViewById(R.id.iv_edit_inventory_hero_image);
         etItemName = (EditText) findViewById(R.id.et_edit_inventory_item_name);
         etItemPrice = (EditText) findViewById(R.id.et_edit_inventory_item_price);
         etItemStock = (EditText) findViewById(R.id.et_edit_inventory_item_stock);
+        actionBarTitle = (TextView) findViewById(R.id.actionBarTitle);
+        if(currentMode == MODE_NEW_INVENTORY) {
+            actionBarTitle.setText(getResources().getString(R.string.title_activity_edit_inventory_new));
+        }
+
+        // buttons
         btnFinish = (ImageButton) findViewById(R.id.ib_edit_inventory_complete_item);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
