@@ -234,9 +234,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             tvItemDesc.setText(updatedItem.getTimeStamp());
             tvItemPrice.setText(updatedItem.getFormattedPrice());
             tvItemStock.setText("Stock: " + updatedItem.getStock());
-            if (mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
-                new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
-            }
+            new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
         }
     }
 }

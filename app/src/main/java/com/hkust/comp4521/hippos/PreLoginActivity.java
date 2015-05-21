@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
@@ -44,6 +45,16 @@ public class PreLoginActivity extends AppCompatActivity {
                     Commons.initializeInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {
+                            RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
+                                @Override
+                                public void onSuccess(String s) {
+                                    Toast.makeText(PreLoginActivity.this, "GCM service registered!", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void onFailure(int status) {
+
+                                }
+                            });
                             launchActivity(MainActivity.class);
                         }
                     });
