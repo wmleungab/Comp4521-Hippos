@@ -62,7 +62,7 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
              contactViewHolder.invIdx = i;
              contactViewHolder.inv = cii;
              contactViewHolder.adapter = this;
-             new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
+             new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 
         @Override

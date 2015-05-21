@@ -89,17 +89,33 @@ public class GcmMessageHandler extends IntentService {
                 inventoryHelper.update(inventory);
 
                 // Update inventory list if exists
+                boolean reinitialize = false;
                 Inventory toUpdateInv = Commons.getInventory(inventory.getId());
                 if(toUpdateInv != null) {
+                    // Handle for categorical changes
+                    if(toUpdateInv.getCategory() != inventory.getCategory()) {
+                        reinitialize = true;
+                    }
                     toUpdateInv.update(inventory);
                 }
 
                 Toast.makeText(mContext, "Inventory updated!", Toast.LENGTH_SHORT).show();
 
                 // Send message to activity using Bus event
-                Commons.getBusInstance().register(mContext);
-                Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
-                Commons.getBusInstance().unregister(mContext);
+                if(reinitialize) {
+                    Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                        @Override
+                        public void onInitialized() {
+                            Commons.getBusInstance().register(mContext);
+                            Commons.getBusInstance().post(new InventoryInfoChangedEvent());
+                            Commons.getBusInstance().unregister(mContext);
+                        }
+                    });
+                } else {
+                    Commons.getBusInstance().register(mContext);
+                    Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
+                    Commons.getBusInstance().unregister(mContext);
+                }
             }
             @Override
             public void onFailure(int status) {

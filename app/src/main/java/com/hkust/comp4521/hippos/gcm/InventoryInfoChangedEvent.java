@@ -7,10 +7,15 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
  */
 public class InventoryInfoChangedEvent {
 
+    public boolean refreshAll = false;
     private Inventory inv;
 
     public InventoryInfoChangedEvent(Inventory inv) {
         this.inv = inv;
+    }
+
+    public InventoryInfoChangedEvent() {
+        refreshAll = true;
     }
 
     public Inventory getInventory() {

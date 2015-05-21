@@ -87,7 +87,7 @@ public class EditInventoryActivity extends AppCompatActivity {
             categorySpinner.setSelection(Commons.getCategoryIndex(mItem.getCategory()));
 
             // setup image view
-            new ImageRetriever(ivHeroImage, mItem.getImage()).execute();
+            new ImageRetriever(ivHeroImage, mItem.getImage(), getResources().getDrawable(R.mipmap.placeholder)).execute();
 
             // setup mode flag
             currentMode = MODE_EDIT_INVENTORY;
@@ -139,12 +139,12 @@ public class EditInventoryActivity extends AppCompatActivity {
         String name = etItemName.getText().toString();
         Double price = Double.parseDouble(etItemPrice.getText().toString());
         int stock = Integer.parseInt(etItemStock.getText().toString());
-        int category = ((Category) categorySpinner.getSelectedItem()).getID();
+        final int category = ((Category) categorySpinner.getSelectedItem()).getID();
 
         RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, category, mItem.getStatus(), new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
-                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated with category=" + category, Toast.LENGTH_SHORT).show();
                 finish();
             }
 

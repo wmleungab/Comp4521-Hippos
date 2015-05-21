@@ -19,7 +19,11 @@ import java.util.List;
 
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.InventoryViewHolder>{
 
-        private int categoryId, catIndex;
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    private int categoryId, catIndex;
         private Context mContext;
         private List<Inventory> invList;
         private OnInventoryClickListener mOnClickListener;
@@ -47,7 +51,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
              Log.i("InventoryListAdapter", "Updated");
-             new ImageRetriever(contactViewHolder.heroImage, ci.getImage()).execute();
+             new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {
@@ -61,45 +65,49 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             return new InventoryViewHolder(itemView);
         }
 
+        public void setInventoryList(List<Inventory> pInvList) {
+            invList = pInvList;
+        }
+
         public List<Inventory> getInventoryList() {
             return invList;
         }
 
-    // Interface for onClick function in the adapter
-    public interface OnInventoryClickListener {
-        public void onClick(View v, int cId, int invIndex);
-    }
+        // Interface for onClick function in the adapter
+        public interface OnInventoryClickListener {
+            public void onClick(View v, int cId, int invIndex);
+        }
 
-    public static class InventoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            protected TextView itemName;
-            protected TextView itemPrice;
-            protected TextView itemStock;
-            protected ImageView heroImage;
+        public static class InventoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+                protected TextView itemName;
+                protected TextView itemPrice;
+                protected TextView itemStock;
+                protected ImageView heroImage;
 
-            // Info used for referring in OnClick method
-            protected int catId;
-            protected int invId;
-            protected OnInventoryClickListener mListener;
+                // Info used for referring in OnClick method
+                protected int catId;
+                protected int invId;
+                protected OnInventoryClickListener mListener;
 
-            public InventoryViewHolder(View v) {
-                super(v);
-                catId = -1;
-                invId = -1;
-                itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
-                itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
-                itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
-                heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
-                v.setOnClickListener(this);
-            }
+                public InventoryViewHolder(View v) {
+                    super(v);
+                    catId = -1;
+                    invId = -1;
+                    itemName =  (TextView) v.findViewById(R.id.tv_inventory_item_name);
+                    itemPrice = (TextView)  v.findViewById(R.id.tv_card_inventory_item_price);
+                    itemStock = (TextView) v.findViewById(R.id.tv_card_inventory_item_stock);
+                    heroImage = (ImageView) v.findViewById(R.id.iv_inventory);
+                    v.setOnClickListener(this);
+                }
 
-            @Override
-            public void onClick(View v) {
-                // trigger on click method from delegated listener
-                mListener.onClick(v, catId, invId);
-                // Hook drawable to InventoryDetailsActivity, otherwise transition cannot be done smoothly (Due to asynchronized operation)
-                InventoryDetailsActivity.heroImageDrawable = heroImage.getDrawable();
-            }
-    }
+                @Override
+                public void onClick(View v) {
+                    // trigger on click method from delegated listener
+                    mListener.onClick(v, catId, invId);
+                    // Hook drawable to InventoryDetailsActivity, otherwise transition cannot be done smoothly (Due to asynchronized operation)
+                    InventoryDetailsActivity.heroImageDrawable = heroImage.getDrawable();
+                }
+        }
 
 }
 

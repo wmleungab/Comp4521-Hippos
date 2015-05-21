@@ -63,6 +63,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     // Services
     private NFCService mNFC;
 
+    // Bus
+    private boolean busRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +173,11 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         super.onBackPressed();
         mNFC.WriteModeOff();
         TintedStatusBar.changeStatusBarColor(this, this.getResources().getColor(R.color.green_primary));
+        // Always unregister when an object no longer should be on the bus.
+        if(busRegistered == true) {
+            Commons.getBusInstance().unregister(this);
+            busRegistered = false;
+        }
     }
 
 
@@ -201,34 +208,35 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         mNFC.WriteModeOff();
-        // Always unregister when an object no longer should be on the bus.
-        Commons.getBusInstance().unregister(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         // Register for bus
-        Commons.getBusInstance().register(this);
+        if(busRegistered == false) {
+            Commons.getBusInstance().register(this);
+            busRegistered = true;
+        }
         // Re-fetch image in case image changed
         if(mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
-            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
+            new ImageRetriever(mHeaderImageView, mItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
         }
     }
 
 
     @Subscribe
     public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
-        Toast.makeText(this, "Bus test!", Toast.LENGTH_SHORT).show();
-
         // Update inventory view from bus message
-        Inventory mItem = event.getInventory();
-        mHeaderTitle.setText(mItem.getName());
-        tvItemDesc.setText(mItem.getTimeStamp());
-        tvItemPrice.setText(mItem.getFormattedPrice());
-        tvItemStock.setText("Stock: " + mItem.getStock());
-        if(mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
-            new ImageRetriever(mHeaderImageView, mItem.getImage(), mActivity).execute();
+        Inventory updatedItem = event.getInventory();
+        if(updatedItem != null && mItem.getId() == updatedItem.getId()) {
+            mHeaderTitle.setText(updatedItem.getName());
+            tvItemDesc.setText(updatedItem.getTimeStamp());
+            tvItemPrice.setText(updatedItem.getFormattedPrice());
+            tvItemStock.setText("Stock: " + updatedItem.getStock());
+            if (mItem.getStatus() == Inventory.INVENTORY_DIRTY) {
+                new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
+            }
         }
     }
 }

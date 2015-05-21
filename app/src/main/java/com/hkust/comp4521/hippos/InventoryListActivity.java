@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
@@ -45,6 +44,9 @@ public class InventoryListActivity extends AppCompatActivity {
     private InventoryListAdapter adapter;
     List<View> viewList;
     List<InventoryListAdapter> adapterList = new ArrayList<InventoryListAdapter>();
+
+    // Bus
+    private boolean busRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,24 +153,21 @@ public class InventoryListActivity extends AppCompatActivity {
         super.onResume();
         // Update view holder contents when back from another activity
         // Remember to update from according adapter
-        InventoryListAdapter adapter = adapterList.get(mViewPager.getCurrentItem());
+        /*InventoryListAdapter adapter = adapterList.get(mViewPager.getCurrentItem());
         Inventory inv = null;
         if(InventoryDetailsActivity.itemIndex != -1)
             inv = adapter.getInventoryList().get(InventoryDetailsActivity.itemIndex);
         if(adapter != null && inv != null && inv.getStatus() == Inventory.INVENTORY_DIRTY) {
             adapter.notifyItemChanged(InventoryDetailsActivity.itemIndex);
             inv.setStatus(Inventory.INVENTORY_NORMAL);
-        }
+        }*/
         // Register for bus
-        Commons.getBusInstance().register(this);
+        if(busRegistered == false) {
+            Commons.getBusInstance().register(this);
+            busRegistered = true;
+        }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Always unregister when an object no longer should be on the bus.
-        Commons.getBusInstance().unregister(this);
-    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -176,13 +175,24 @@ public class InventoryListActivity extends AppCompatActivity {
 
         // Clear item index
         InventoryDetailsActivity.itemIndex = -1;
+
+        // Always unregister when an object no longer should be on the bus.
+        if(busRegistered == true) {
+            Commons.getBusInstance().unregister(this);
+            busRegistered = false;
+        }
     }
 
     @Subscribe
     public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
-        Toast.makeText(this, "Bus test!", Toast.LENGTH_SHORT).show();
-
         // Update inventory view from bus message
+        if(event.refreshAll == true) {
+            // notify all adapters that info changed
+            for(InventoryListAdapter adapter : adapterList) {
+                adapter.setInventoryList(Commons.getInventoryList(adapter.getCategoryId()));
+                adapter.notifyDataSetChanged();
+            }
+        }
         if(adapter != null && event.getInventory() != null) {
             Inventory inv = event.getInventory();
             InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
