@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="56dp"
-            android:text="Item List"
+            android:text="@string/title_activity_inventory_list"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 

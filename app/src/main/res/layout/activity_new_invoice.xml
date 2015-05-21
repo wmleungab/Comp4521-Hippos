@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Tap NFC tag to add item"
+            android:text="@string/new_invoice_hint"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/iv_new_invoice_nfc_hint" />
 

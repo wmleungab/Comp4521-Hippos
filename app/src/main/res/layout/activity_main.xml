@@ -59,7 +59,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to HiPPoS!"
+        android:text="@string/main_greeting_msg"
         android:id="@+id/tv_main_title"
         android:textColor="@color/text_description"
         android:textSize="32dp"

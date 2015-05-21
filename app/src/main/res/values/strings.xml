@@ -13,7 +13,46 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_pre_login">HiPPoS Launch</string>
 
-    <!-- From PerferenceFragment-->
+    <string name="invoice_id_text">Invoice #</string>
+
+    <!-- For MainActivity-->
+    <string name="main_greeting_msg">Welcome to HiPPoS!</string>
+
+    <!-- For Inventory tags-->
+    <string name="inventory_name">Item Name</string>
+    <string name="inventory_price">Item Price</string>
+    <string name="inventory_stock">Item Stock</string>
+
+    <!-- For InventoryDetailsActivity-->
+    <string name="inventory_details_assign_nfc">Assign information to NFC tag</string>
+    <string name="inventory_details_disable_inventory">Disable inventory</string>
+
+    <!-- For LoginActivity-->
+    <string name="login_server_address">Server Address</string>
+    <string name="login_username">User Name</string>
+    <string name="login_password">Password</string>
+
+    <!-- For NewInvoiceActivity-->
+    <string name="new_invoice_hint">Tap NFC tag to add item</string>
+
+    <!--For SalesDetailsActivity-->
+    <string name="sales_details_totals_title">Totals</string>
+    <string name="sales_details_item_total_title">Item Total</string>
+    <string name="sales_details_adjustment_title">Adjustment</string>
+    <string name="sales_details_grand_totals_title">Grand Total</string>
+    <string name="sales_details_changes_title">Changes</string>
+    <string name="sales_details_invoice_items_title">Invoice Items</string>
+    <string name="sales_details_invoice_date">Date: </string>
+    <string name="sales_details_invoice_handled_by">Handled by: </string>
+
+    <!--For  dialogs-->
+    <string name="dialog_nfc_hint">Tap to a NFC tag</string>
+    <string name="dialog_sales_confirm_title">Confirmation</string>
+    <string name="dialog_sales_confirm_item_total">Item Total</string>
+    <string name="dialog_sales_confirm_final_charge">Final Charge</string>
+    <string name="dialog_sales_confirm_paid">Paid</string>
+
+    <!-- Preference keys-->
     <string name="user_email_prefs">user_email</string>
     <string name="user_password_prefs">user_password</string>
     <string name="company_email_prefs">company_email</string>
@@ -24,17 +63,26 @@
     <string name="logout_prefs">logout</string>
     <string name="clear_cache_prefs">clear_cache</string>
     <string name="clear_db_prefs">clear_db</string>
+
+    <!-- For PerferenceFragment-->
+    <string name="company_details_pref_title">Company details</string>
+    <string name="general_settings_pref_title">General settings</string>
+    <string name="company_name_pref_title">Company Name</string>
+    <string name="company_email_pref_title">Company Email address</string>
+    <string name="company_phone_pref_title">Company phone number</string>
+    <string name="company_address_pref_title">Contact address</string>
+    <string name="logout_pref_title">Logout</string>
+    <string name="clear_db_pref_title">Clear database</string>
+    <string name="clear_cache_pref_title">Clear cache</string>
     <string name="logout_desc">Logout from current server</string>
     <string name="clear_cache_desc">Clear image cache of inventory list</string>
     <string name="clear_db_desc">Clear all database records</string>
-
 
     <!--For SalesHistoryActivity-->
     <string name="tab_local_invoice">Local Invoice</string>
     <string name="tab_remote_invoice">Remote Invoice</string>
     <string name="tab_statistics">Statistics</string>
     <string name="tab_revenue">Revenue</string>
-    <string name="invoice_id_text">Invoice #</string>
     <string name="weekly_sales">Weekly Sales</string>
     <string name="monthly_sales">Monthly Sales</string>
 

@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Company details">
+    <PreferenceCategory android:title="@string/company_details_pref_title">
         <EditTextPreference
             android:dialogTitle="Please enter the name:"
             android:key="@string/company_name_prefs"
-            android:summary="Company full name"
-            android:title="Company name" />
+            android:title="@string/company_name_pref_title" />
 
         <EditTextPreference
             android:dialogTitle="Please enter the email:"
             android:key="@string/company_email_prefs"
-            android:summary="Company contact email"
-            android:title="Contact E-mail address" />
+            android:title="@string/company_email_pref_title" />
 
         <EditTextPreference
             android:dialogTitle="Please enter the phone number:"
             android:key="@string/company_phone_prefs"
-            android:summary="Company contact number"
-            android:title="Contact phone number" />
+            android:title="@string/company_phone_pref_title" />
 
         <EditTextPreference
             android:dialogTitle="Please enter the address:"
             android:key="@string/company_address_prefs"
-            android:summary="Company physical address"
-            android:title="Contact address" />
+            android:title="@string/company_address_pref_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="General settings">
+    <PreferenceCategory android:title="@string/general_settings_pref_title">
         <Preference android:title="Clear Database"
             android:key="@string/clear_db_prefs"
-            android:summary="@string/clear_db_desc"/>
+            android:summary="@string/clear_db_pref_title"/>
 
         <Preference android:title="Clear Cache"
             android:key="@string/clear_cache_prefs"
-            android:summary="@string/clear_cache_desc"/>
+            android:summary="@string/clear_cache_pref_title"/>
 
         <Preference android:title="Logout"
             android:key="@string/logout_prefs"
-            android:summary="@string/logout_desc"/>
+            android:summary="@string/logout_pref_title"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

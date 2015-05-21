@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginTop="16dp"
-        android:text="Ready to write NFC tag"
+        android:text="@string/dialog_nfc_hint"
         android:textColor="@color/text_description"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
