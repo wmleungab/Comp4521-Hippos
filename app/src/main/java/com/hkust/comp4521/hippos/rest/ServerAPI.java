@@ -103,4 +103,6 @@ public interface ServerAPI {
     @GET("/company/")
     void getCompany(Callback<Response_Company> callback);
 
+    @GET("/revenue")
+    void getRevenueList(@Header("Authorization") String authorization, Callback<Response_RevenueList> callback);
 }

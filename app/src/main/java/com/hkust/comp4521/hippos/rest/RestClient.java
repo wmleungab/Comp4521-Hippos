@@ -812,6 +812,28 @@ public class RestClient {
                     return;
                 }
             }
+
+        });
+    }
+
+    public void getRevenueList(final RestListener<List<InventoryRevenue>> restListener) {
+        serverAPI.getRevenueList(authorization, new Callback<Response_RevenueList>() {
+            @Override
+            public void success(Response_RevenueList response_revenueList, Response response) {
+                if (!response_revenueList.error) {
+                    restListener.onSuccess(response_revenueList.inventoryRevenue);
+                    return;
+                } else {
+                    restListener.onFailure(RestListener.NO_INVENTORY);
+                    return;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
+                return;
+            }
         });
     }
 }
