@@ -23,17 +23,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general_settings_pref_title">
-        <Preference android:title="Clear Database"
+        <Preference android:title="@string/clear_db_pref_title"
             android:key="@string/clear_db_prefs"
-            android:summary="@string/clear_db_pref_title"/>
+            android:summary="@string/clear_db_desc"/>
 
-        <Preference android:title="Clear Cache"
+        <Preference android:title="@string/clear_cache_pref_title"
             android:key="@string/clear_cache_prefs"
-            android:summary="@string/clear_cache_pref_title"/>
+            android:summary="@string/clear_cache_desc"/>
 
-        <Preference android:title="Logout"
+        <Preference android:title="@string/logout_pref_title"
             android:key="@string/logout_prefs"
-            android:summary="@string/logout_pref_title"/>
+            android:summary="@string/logout_desc"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

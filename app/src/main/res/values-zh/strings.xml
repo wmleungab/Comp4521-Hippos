@@ -2,24 +2,76 @@
     <string name="app_name">HiPPoS</string>
 
     <!-- App titles-->
-    <string name="title_activity_new_invoice">New 發票</string>
-    <string name="title_activity_inventory_list">Item List</string>
-    <string name="title_activity_edit_inventory_new">New Inventory</string>
-    <string name="title_activity_edit_inventory">Edit Inventory</string>
-    <string name="title_activity_inventory_details">Inventory Details</string>
-    <string name="title_activity_sales_history">Sales History</string>
-    <string name="title_activity_sales_details">Sales Details</string>
-    <string name="title_activity_setting">Settings</string>
-    <string name="title_activity_login">Login</string>
-    <string name="title_activity_pre_login">HiPPoS Launch</string>
+    <string name="title_activity_new_invoice">開新發票</string>
+    <string name="title_activity_inventory_list">存貨清單</string>
+    <string name="title_activity_edit_inventory_new">開新存貨</string>
+    <string name="title_activity_edit_inventory">編輯存貨</string>
+    <string name="title_activity_inventory_details">存貨詳情</string>
+    <string name="title_activity_sales_history">銷售記錄</string>
+    <string name="title_activity_sales_details">銷售詳情</string>
+    <string name="title_activity_setting">設定</string>
+    <string name="title_activity_login">登入</string>
+    <string name="title_activity_pre_login">HiPPoS 啟動</string>
+
+    <string name="invoice_id_text">發票 #</string>
+
+    <!-- For MainActivity-->
+    <string name="main_greeting_msg">歡迎使用 HiPPoS!</string>
+
+    <!-- For Inventory tags-->
+    <string name="inventory_name">物品名稱</string>
+    <string name="inventory_price">物品價格</string>
+    <string name="inventory_stock">物品庫存</string>
+
+    <!-- For InventoryDetailsActivity-->
+    <string name="inventory_details_assign_nfc">賦值到 NFC 標籤</string>
+    <string name="inventory_details_disable_inventory">停用存貨</string>
+
+    <!-- For LoginActivity-->
+    <string name="login_server_address">伺服器地址</string>
+    <string name="login_username">用戶名</string>
+    <string name="login_password">密碼</string>
+
+    <!-- For NewInvoiceActivity-->
+    <string name="new_invoice_hint">Tap NFC tag to add item</string>
+
+    <!--For SalesDetailsActivity-->
+    <string name="sales_details_totals_title">總計</string>
+    <string name="sales_details_item_total_title">物品總計</string>
+    <string name="sales_details_adjustment_title">調整</string>
+    <string name="sales_details_grand_totals_title">累計</string>
+    <string name="sales_details_changes_title">找回</string>
+    <string name="sales_details_invoice_items_title">發票物品</string>
+    <string name="sales_details_invoice_date">日期: </string>
+    <string name="sales_details_invoice_handled_by">處理者: </string>
+
+    <!--For  dialogs-->
+    <string name="dialog_nfc_hint">Tap to a NFC tag</string>
+    <string name="dialog_sales_confirm_title">確認</string>
+    <string name="dialog_sales_confirm_item_total">物品總計</string>
+    <string name="dialog_sales_confirm_final_charge">累計</string>
+    <string name="dialog_sales_confirm_paid">付費</string>
+
+    <!-- For PerferenceFragment-->
+    <string name="company_details_pref_title">公司詳情</string>
+    <string name="general_settings_pref_title">一般設定</string>
+    <string name="company_name_pref_title">公司名稱</string>
+    <string name="company_email_pref_title">電郵位置</string>
+    <string name="company_phone_pref_title">電話號碼</string>
+    <string name="company_address_pref_title">聯繫地址</string>
+    <string name="logout_pref_title">登出</string>
+    <string name="clear_db_pref_title">清除數據庫</string>
+    <string name="clear_cache_pref_title">刪除圖片緩存</string>
+    <string name="logout_desc">從當前伺服器登出</string>
+    <string name="clear_cache_desc">刪除所有存貨清單圖片</string>
+    <string name="clear_db_desc">清除所有數據庫記錄</string>
 
     <!--For SalesHistoryActivity-->
-    <string name="tab_local_invoice">Local 發票</string>
-    <string name="tab_remote_invoice">Remote 發票</string>
-    <string name="tab_statistics">Statistics</string>
-    <string name="tab_revenue">Revenue</string>
-    <string name="invoice_id_text">發票 #</string>
-    <string name="weekly_sales">Weekly Sales</string>
-    <string name="monthly_sales">Monthly Sales</string>
+    <string name="tab_local_invoice">本地發票</string>
+    <string name="tab_remote_invoice">遠端發票</string>
+    <string name="tab_statistics">統計</string>
+    <string name="tab_revenue">收入</string>
+    <string name="weekly_sales">每週銷售</string>
+    <string name="monthly_sales">每月銷售</string>
 
 </resources>
