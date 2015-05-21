@@ -49,6 +49,7 @@ public class PreLoginActivity extends AppCompatActivity {
                                 public void onSuccess(String s) {
                                     Toast.makeText(PreLoginActivity.this, "GCM service registered!", Toast.LENGTH_SHORT).show();
                                 }
+
                                 @Override
                                 public void onFailure(int status) {
 

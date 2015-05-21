@@ -49,6 +49,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public static void reinitDatabase() {
+        if(database == null)
+            return;
+        database.execSQL("DROP TABLE IF EXISTS " + InventoryDB.TABLE_NAME);
+        database.execSQL("DROP TABLE IF EXISTS " + InvoiceDB.TABLE_NAME);
+        database.execSQL("DROP TABLE IF EXISTS " + CategoryDB.TABLE_NAME);
+        database.execSQL(InventoryDB.CREATE_TABLE);
+        database.execSQL(InvoiceDB.CREATE_TABLE);
+        database.execSQL(CategoryDB.CREATE_TABLE);
+    }
+
     public static void delete() {
         File file = new File(Commons.APP_ROOT_PATH + DATABASE_NAME);
         if(file.exists()) {

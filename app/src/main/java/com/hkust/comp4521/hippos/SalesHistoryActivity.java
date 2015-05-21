@@ -86,7 +86,6 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // setup data for each page
         setupInvoicePage();
-        setupStatisticsPage();
 
     }
 
@@ -147,6 +146,8 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
                 // Stop refresh animation
                 mRefreshLayout.setRefreshing(false);
+
+                setupStatisticsPage();
             }
         });
     }
@@ -203,7 +204,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // initialize the line
         Line line = new Line(values);
-        line.setColor(ChartUtils.DEFAULT_COLOR).setCubic(true);
+        line.setColor(ChartUtils.DEFAULT_COLOR).setCubic(false);
         List<Line> lines = new ArrayList<Line>();
         lines.add(line);
 

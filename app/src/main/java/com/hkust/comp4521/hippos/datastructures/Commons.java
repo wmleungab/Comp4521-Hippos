@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.database.CategoryDB;
+import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
@@ -51,15 +52,58 @@ public class Commons {
     }
 
     // This method initialize inventory and category list
-    public static void initializeInventoryList(final onInitializedListener mListener) {
-        // If list already initialized, trigger the callback method immediately
-        /*if(categorizedinventoryHMList != null) {
-            if(mListener != null) {
-                mListener.onInitialized();
-                return;
-            }
-        }*/
+    public static void forceUpdateInventoryList(final onInitializedListener mListener) {
+        categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
+        inventoryHM = new HashMap<Integer, Inventory>();
+        final InventoryDB inventoryHelper = InventoryDB.getInstance();
+        final CategoryDB categoryHelper = CategoryDB.getInstance();
+        DatabaseHelper.reinitDatabase();
+        // Inventory table not yet initialized, get data from server
+        final RestClient rc = RestClient.getInstance();
+        // Init Category information
+        rc.getAllCategory(new RestListener<List<Category>>() {
+            @Override
+            public void onSuccess(List<Category> categories) {
+                if (categories != null) {
+                    Log.i("Commons", "Get category list");
+                    categoryList = categories;
+                    INVENTORY_CATEGORY = new String[categories.size()];
+                    for (Category c : categories) {
+                        categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
+                        categoryHelper.insert(c);
+                    }
+                    for(int i = 0; i < categories.size(); i++) {
+                        INVENTORY_CATEGORY[i] = categories.get(i).getName();
+                    }
+                    // Init Inventory information
+                    rc.getAllInventory(new RestListener<List<Inventory>>() {
+                        @Override
+                        public void onSuccess(List<Inventory> netInventories) {
+                            Log.i("Commons", "Get Inventory list");
+                            for (Inventory inv : netInventories) {
+                                ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
+                                list.add(inv);
+                                inventoryHM.put(inv.getId(), inv);
+                                inventoryHelper.insert(inv);
+                            }
+                            if(mListener != null)
+                                mListener.onInitialized();
+                        }
+                        @Override
+                        public void onFailure(int status) {
 
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
+    }
+    public static void initializeInventoryList(final onInitializedListener mListener) {
         // fetch list from local DB first, go to remote server if local DB does not exist
         categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
         inventoryHM = new HashMap<Integer, Inventory>();
@@ -91,50 +135,7 @@ public class Commons {
                     mListener.onInitialized();
             }
         } else {
-            // Inventory table not yet initialized, get data from server
-            final RestClient rc = RestClient.getInstance();
-            // Init Category information
-            rc.getAllCategory(new RestListener<List<Category>>() {
-                @Override
-                public void onSuccess(List<Category> categories) {
-                    if (categories != null) {
-                        Log.i("Commons", "Get category list");
-                        categoryList = categories;
-                        INVENTORY_CATEGORY = new String[categories.size()];
-                        for (Category c : categories) {
-                            categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
-                            categoryHelper.insert(c);
-                        }
-                        for(int i = 0; i < categories.size(); i++) {
-                            INVENTORY_CATEGORY[i] = categories.get(i).getName();
-                        }
-                        // Init Inventory information
-                        rc.getAllInventory(new RestListener<List<Inventory>>() {
-                            @Override
-                            public void onSuccess(List<Inventory> netInventories) {
-                                Log.i("Commons", "Get Inventory list");
-                                for (Inventory inv : netInventories) {
-                                    ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
-                                    list.add(inv);
-                                    inventoryHM.put(inv.getId(), inv);
-                                    inventoryHelper.insert(inv);
-                                }
-                                if(mListener != null)
-                                    mListener.onInitialized();
-                            }
-                            @Override
-                            public void onFailure(int status) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onFailure(int status) {
-
-                }
-            });
+            forceUpdateInventoryList(mListener);
         }
     }
 

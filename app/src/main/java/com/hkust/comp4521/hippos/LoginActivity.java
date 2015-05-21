@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_USERNAME, email);
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_PASSWORD, pw);
                 // Initialize Inventory List
-                Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                Commons.forceUpdateInventoryList(new Commons.onInitializedListener() {
                     @Override
                     public void onInitialized() {
                         // Register for GCM service
