@@ -475,6 +475,7 @@ public class RestClient {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
+        Log.i("RestClient", "Category: " + updatedCategory);
         serverAPI.updateInventory(authorization, id, updatedName, updatedPrice, updatedStock,
                 updatedStatus, updatedCategory, new Callback<Response_Inventory>() {
 

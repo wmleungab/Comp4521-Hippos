@@ -52,6 +52,7 @@ public class GcmMessageHandler extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
         if(extras.getString("id") != null) {
+            Toast.makeText(mContext, "GCM Message!", Toast.LENGTH_SHORT).show();
             inventoryId = Integer.parseInt(extras.getString("id"));
             statusCode = Integer.parseInt(extras.getString("statusCode"));
             showToast();

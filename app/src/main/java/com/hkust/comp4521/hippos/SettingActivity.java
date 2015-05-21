@@ -12,7 +12,11 @@ import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
+import com.hkust.comp4521.hippos.database.InventoryDB;
+import com.hkust.comp4521.hippos.database.InvoiceDB;
+import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
@@ -118,8 +122,15 @@ public class SettingActivity extends PreferenceActivity {
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    DatabaseHelper.delete();
-                    startActivity(intent);
+                    DatabaseHelper.getDatabase().delete(InventoryDB.TABLE_NAME, null, null);
+                    DatabaseHelper.getDatabase().delete(InvoiceDB.TABLE_NAME, null, null);
+                    DatabaseHelper.getDatabase().delete(CategoryDB.TABLE_NAME, null, null);
+                    Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                        @Override
+                        public void onInitialized() {
+                            startActivity(intent);
+                        }
+                    });
                     return true;
                 }
             });

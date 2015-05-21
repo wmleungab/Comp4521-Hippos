@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -141,10 +142,12 @@ public class EditInventoryActivity extends AppCompatActivity {
         int stock = Integer.parseInt(etItemStock.getText().toString());
         final int category = ((Category) categorySpinner.getSelectedItem()).getID();
 
-        RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, category, mItem.getStatus(), new RestListener<Inventory>() {
+        Log.i("EditInventory", "Category: " + category);
+
+        RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, mItem.getStatus(), category, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
-                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated with category=" + category, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated with category=" + category, Toast.LENGTH_SHORT).show();
                 finish();
             }
 
