@@ -86,11 +86,13 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
                         ImageUtils.writeBitmapToFile(bitmap, ImageUtils.IMAGE_CACHE_PATH + fileUrl);
                     // set as view
                     imageView.setImageBitmap(bitmap);
-                    // animate the view
-                    Animation am = new AlphaAnimation( 0, 1 );
-                    am.setDuration(300);
-                    imageView.startAnimation(am);
+                } else {
+                    //imageView.setImageDrawable();
                 }
+                // animate the view
+                Animation am = new AlphaAnimation( 0, 1 );
+                am.setDuration(300);
+                imageView.startAnimation(am);
             }
         }
 
