@@ -94,7 +94,7 @@ public interface ServerAPI {
 
     @FormUrlEncoded
     @POST("/gcm")
-    void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("id") int statusCode, Callback<Response> callback);
+    void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("statusCode") int statusCode, Callback<Response> callback);
 
     @FormUrlEncoded
     @POST("/company")
