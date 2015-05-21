@@ -67,6 +67,7 @@ public class GcmMessageHandler extends IntentService {
                 // initialize database for updating
                 DatabaseHelper.initDatabase(mContext);
 
+                // perform action on different status code
                 switch (statusCode) {
                     case INVEN_IMAGE_CHANGED:
                         notifyImageChanged();
@@ -74,7 +75,36 @@ public class GcmMessageHandler extends IntentService {
                     case INVEN_TEXT_CHANGED:
                         notifyTextChanged();
                         break;
+                    case BOTH_INVEN_IMAGE_TEXT_CHANGED:
+                        notifyNewInventory();
                 }
+
+            }
+        });
+    }
+
+    private void notifyNewInventory() {
+        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+            @Override
+            public void onSuccess(Inventory inventory) {
+                // Create database record
+                InventoryDB inventoryHelper = InventoryDB.getInstance();
+                inventoryHelper.insert(inventory);
+
+                Toast.makeText(mContext, "Inventory created!", Toast.LENGTH_SHORT).show();
+
+                // Send message to activity using Bus event
+                Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                    @Override
+                    public void onInitialized() {
+                        Commons.getBusInstance().register(mContext);
+                        Commons.getBusInstance().post(new InventoryInfoChangedEvent());
+                        Commons.getBusInstance().unregister(mContext);
+                    }
+                });
+            }
+            @Override
+            public void onFailure(int status) {
 
             }
         });

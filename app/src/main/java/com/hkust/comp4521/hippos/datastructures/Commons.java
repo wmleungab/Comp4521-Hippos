@@ -23,14 +23,11 @@ public class Commons {
     public static String appName = "hippos";
     public static String APP_ROOT_PATH = Environment.getExternalStorageDirectory() + File.separator + Commons.appName + File.separator;
     public static String GCM_PROJECT_NUMBER = "19676954580";
-    public static String GCM_REGISTRATION_ID = "";
     public static boolean ONLINE_MODE = true;
+    private static User user = null;
 
     // Bus event
     private static Bus mBus = new Bus();
-
-    // Server information
-    private static User user = null;
 
     // ViewPager Tabs
     private static String[] INVENTORY_CATEGORY = {};
@@ -40,70 +37,15 @@ public class Commons {
     public static int MODE_NEW_INVOICE = 0;
     public static int MODE_SALES_CONFIRM = 1;
 
-    // Data structure for inventory
+    // Data structure
     private static List<Category> categoryList = null;
     private static HashMap<Integer, Inventory> inventoryHM = null;
     private static HashMap<Integer, ArrayList<Inventory>> categorizedinventoryHMList = null;
-    private static int lastUpdate = -1;
-
-    // Data structure for invoices
     private static List<Invoice> invoiceList = null;
 
+    // Getter for Bus event
     public static Bus getBusInstance() {
         return mBus;
-    }
-
-    public static int getCategoryCount() {
-        if(categoryList == null)
-            return -1;
-        return categoryList.size();
-    }
-
-    public static ArrayList<Inventory> getInventoryList(int index) {
-        if(categorizedinventoryHMList == null)
-            return null;
-        return categorizedinventoryHMList.get(index);
-    }
-
-    public static Category getCategory(int cIndex) {
-        if(categoryList == null)
-            return null;
-        return categoryList.get(cIndex);
-    }
-
-    public static int getCategoryIndex(int cId) {
-        if(categoryList == null)
-            return -1;
-        int toReturn = -1;
-        for(int i=0; i<categoryList.size(); i++) {
-            if(categoryList.get(i).getID() == cId)
-                toReturn = i;
-        }
-        return toReturn;
-    }
-
-    public static List<Category> getCategoryList() {
-        if(categoryList == null)
-            return null;
-        return categoryList;
-    }
-
-    public static Inventory getInventoryFromIndex(int cId, int iIndex) {
-        if(categorizedinventoryHMList == null)
-            return null;
-        return categorizedinventoryHMList.get(cId).get(iIndex);
-    }
-
-    public static Inventory getInventory(int iId) {
-        if(inventoryHM == null)
-            return null;
-        return inventoryHM.get(iId);
-    }
-
-    public static String[] getCategoryTabs() {
-        if(categoryList == null)
-            return null;
-        return INVENTORY_CATEGORY;
     }
 
     public static Inventory getRandomInventory() {
@@ -114,10 +56,7 @@ public class Commons {
         return toReturn;
     }
 
-    public static String[] getSalesHistoryTabs() {
-        return SALESHISTORY_CATEGORY;
-    }
-
+    // This method initialize inventory and category list
     public static void initializeInventoryList(final onInitializedListener mListener) {
         // If list already initialized, trigger the callback method immediately
         /*if(categorizedinventoryHMList != null) {
@@ -205,7 +144,51 @@ public class Commons {
         }
     }
 
+    // For category-related functions
+    public static int getCategoryCount() {
+        if(categoryList == null)
+            return -1;
+        return categoryList.size();
+    }
+    public static Category getCategory(int cIndex) {
+        if(categoryList == null)
+            return null;
+        return categoryList.get(cIndex);
+    }
+    public static int getCategoryIndex(int cId) {
+        if(categoryList == null)
+            return -1;
+        int toReturn = -1;
+        for(int i=0; i<categoryList.size(); i++) {
+            if(categoryList.get(i).getID() == cId)
+                toReturn = i;
+        }
+        return toReturn;
+    }
+    public static List<Category> getCategoryList() {
+        if(categoryList == null)
+            return null;
+        return categoryList;
+    }
 
+    // For inventory-related functions
+    public static Inventory getInventory(int iId) {
+        if(inventoryHM == null)
+            return null;
+        return inventoryHM.get(iId);
+    }
+    public static ArrayList<Inventory> getInventoryList(int index) {
+        if(categorizedinventoryHMList == null)
+            return null;
+        return categorizedinventoryHMList.get(index);
+    }
+    public static Inventory getInventoryFromIndex(int cId, int iIndex) {
+        if(categorizedinventoryHMList == null)
+            return null;
+        return categorizedinventoryHMList.get(cId).get(iIndex);
+    }
+
+    // For invoice-related functions
     public static void initializeInvoiceList(final onInitializedListener mListener) {
         RestClient.getInstance().getAllInvoice(new RestListener<List<Invoice>>() {
             @Override
@@ -220,26 +203,35 @@ public class Commons {
             }
         });
     }
-
     public static List<Invoice> getInvoiceList() {
         return invoiceList;
     }
-
     public static Invoice getInvoice(int invoiceIdx) {
         if(invoiceList == null)
             return null;
         return invoiceList.get(invoiceIdx);
     }
 
-    public interface onInitializedListener {
-        public void onInitialized();
-    }
-
+    // User getter/setter for RestClient
     public static User getUser() {
         return user;
     }
-
     public static void setUser(User user) {
         Commons.user = user;
+    }
+
+    // Getters for ViewPager
+    public static String[] getSalesHistoryTabs() {
+        return SALESHISTORY_CATEGORY;
+    }
+    public static String[] getCategoryTabs() {
+        if(categoryList == null)
+            return null;
+        return INVENTORY_CATEGORY;
+    }
+
+    // Interface used for initializeInventoryList method
+    public interface onInitializedListener {
+        public void onInitialized();
     }
 }

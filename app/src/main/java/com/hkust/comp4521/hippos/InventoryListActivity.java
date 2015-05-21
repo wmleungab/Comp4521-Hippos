@@ -18,6 +18,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
+import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
@@ -151,16 +152,6 @@ public class InventoryListActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        // Update view holder contents when back from another activity
-        // Remember to update from according adapter
-        /*InventoryListAdapter adapter = adapterList.get(mViewPager.getCurrentItem());
-        Inventory inv = null;
-        if(InventoryDetailsActivity.itemIndex != -1)
-            inv = adapter.getInventoryList().get(InventoryDetailsActivity.itemIndex);
-        if(adapter != null && inv != null && inv.getStatus() == Inventory.INVENTORY_DIRTY) {
-            adapter.notifyItemChanged(InventoryDetailsActivity.itemIndex);
-            inv.setStatus(Inventory.INVENTORY_NORMAL);
-        }*/
         // Register for bus
         if(busRegistered == false) {
             Commons.getBusInstance().register(this);
@@ -194,9 +185,15 @@ public class InventoryListActivity extends AppCompatActivity {
             }
         }
         if(adapter != null && event.getInventory() != null) {
-            Inventory inv = event.getInventory();
-            InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
-            adapter.notifyItemChanged(inv.getInvIndex());
+            final Inventory inv = event.getInventory();
+            final InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
+            // Defer image loading to avoid I/O error
+            ThreadService.delayedStart(this, new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyItemChanged(inv.getInvIndex());
+                }
+            }, 150);
             inv.setStatus(Inventory.INVENTORY_NORMAL);
         }
     }

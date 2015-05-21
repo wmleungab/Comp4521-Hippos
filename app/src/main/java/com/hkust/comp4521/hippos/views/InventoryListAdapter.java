@@ -2,7 +2,6 @@ package com.hkust.comp4521.hippos.views;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,6 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
              contactViewHolder.mListener = mOnClickListener;
-             Log.i("InventoryListAdapter", "Updated");
              new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 

@@ -147,7 +147,7 @@ public class EditInventoryActivity extends AppCompatActivity {
         RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, mItem.getStatus(), category, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
-                //Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated with category=" + category, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated!", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
