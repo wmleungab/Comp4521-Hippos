@@ -53,7 +53,7 @@ public interface ServerAPI {
             , @Field("category") int category, Callback<Response_Inventory> callback);
 
     @FormUrlEncoded
-    @PUT("/inventory/{id}")
+    @PUT("/inventoryImage/{id}")
     void updateInventoryImage(@Header("Authorization") String authorization, @Path("id") int id, @Field(("image")) String image, Callback<Response_Inventory> callback);
 
     @GET("/invoice/{id}")
