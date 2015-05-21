@@ -17,6 +17,7 @@ public class Invoice {
     int id;
     double total_price;
     double final_price;
+    double paid;
     String date_time;
     String user;
     String content;
@@ -46,6 +47,14 @@ public class Invoice {
 
     public void setFinalPrice(double final_price) {
         this.final_price = final_price;
+    }
+
+    public double getPaid() {
+        return this.paid;
+    }
+
+    public void setPaid(double paid) {
+        this.paid = paid;
     }
 
     public String getDateTime() {

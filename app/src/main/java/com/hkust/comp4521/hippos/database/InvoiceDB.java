@@ -20,6 +20,7 @@ public class InvoiceDB {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_TOTAL_PRICE = "total_price";
     public static final String COLUMN_FINAL_PRICE = "final_price";
+    public static final String COLUMN_PAID = "paid";
     public static final String COLUMN_DATETIME = "date_time";
     // public static final String COLUMN_USER = "user";
     public static final String COLUMN_CONTENT = "content";
@@ -30,6 +31,7 @@ public class InvoiceDB {
             + COLUMN_ID + " integer primary key, "
             + COLUMN_TOTAL_PRICE + " real not null, "
             + COLUMN_FINAL_PRICE + " real not null, "
+            + COLUMN_PAID + " real not null, "
             + COLUMN_DATETIME + " text not null, "
             // + COLUMN_USER + " text not null, "
             + COLUMN_CONTENT + " text not null, "
@@ -71,6 +73,7 @@ public class InvoiceDB {
         cv.put(COLUMN_ID, invoice.getId());
         cv.put(COLUMN_TOTAL_PRICE, invoice.getTotalPrice());
         cv.put(COLUMN_FINAL_PRICE, invoice.getFinalPrice());
+        cv.put(COLUMN_PAID, invoice.getPaid());
         cv.put(COLUMN_DATETIME, invoice.getDateTime());
         cv.put(COLUMN_CONTENT, invoice.getContent());
         cv.put(COLUMN_EMAIL, invoice.getEmail());
@@ -100,6 +103,7 @@ public class InvoiceDB {
         cv.put(COLUMN_ID, invoice.getId());
         cv.put(COLUMN_TOTAL_PRICE, invoice.getTotalPrice());
         cv.put(COLUMN_FINAL_PRICE, invoice.getFinalPrice());
+        cv.put(COLUMN_PAID, invoice.getPaid());
         cv.put(COLUMN_DATETIME, invoice.getDateTime());
         cv.put(COLUMN_CONTENT, invoice.getContent());
         cv.put(COLUMN_EMAIL, invoice.getEmail());
@@ -151,10 +155,11 @@ public class InvoiceDB {
         invoice.setId(cursor.getInt(0));
         invoice.setTotalPrice(cursor.getDouble(1));
         invoice.setFinalPrice(cursor.getDouble(2));
-        invoice.setDateTime(cursor.getString(3));
-        invoice.setContent(cursor.getString(4));
-        invoice.setEmail(cursor.getString(5));
-        invoice.setStatus(cursor.getInt(6));
+        invoice.setPaid(cursor.getDouble(3));
+        invoice.setDateTime(cursor.getString(4));
+        invoice.setContent(cursor.getString(5));
+        invoice.setEmail(cursor.getString(6));
+        invoice.setStatus(cursor.getInt(7));
 
         return invoice;
     }

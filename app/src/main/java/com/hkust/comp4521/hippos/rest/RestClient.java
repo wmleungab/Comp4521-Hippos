@@ -27,6 +27,11 @@ import retrofit.mime.TypedInput;
  * Created by Yman on 15/5/2015.
  */
 public class RestClient {
+    public static final int ONLY_INVEN_IMAGE_CHANGED = 1;
+    public static final int ONLY_INVEN_TEXT_CHANGED = 2;
+    public static final int BOTH_INVEN_IMAGE_TEXT_CHANGED = 3;
+    public static final int COMPANY_CHANGED = 4;
+
     public static final String SERVER_ID = "124.244.57.81:80/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
     public static final String DEFAULF_INVEN_PIC = "null";//"./uploads/default.jpg";
@@ -207,7 +212,7 @@ public class RestClient {
             public void onSuccess(Inventory inventory) {
                 if (imageFile == null) {
                     restListener.onSuccess(inventory);
-                    sendGCM(inventory.getId(), true, true);
+                    sendGCM(inventory.getId(), RestClient.BOTH_INVEN_IMAGE_TEXT_CHANGED);
                     return;
                 } else {
                     final int inven_id = inventory.getId();
@@ -223,7 +228,7 @@ public class RestClient {
                                             @Override
                                             public void onSuccess(Inventory inventory) {
                                                 restListener.onSuccess(inventory);
-                                                sendGCM(inventory.getId(), true, true);
+                                                sendGCM(inventory.getId(), RestClient.BOTH_INVEN_IMAGE_TEXT_CHANGED);
                                                 return;
                                             }
 
@@ -399,7 +404,7 @@ public class RestClient {
                         public void onSuccess(String s) {
                             if (!inventory.getImage().equals(RestClient.DEFAULF_INVEN_PIC)) {
                                 restListener.onSuccess(inventory);
-                                sendGCM(inventory.getId(), true, false);
+                                sendGCM(inventory.getId(), RestClient.ONLY_INVEN_IMAGE_CHANGED);
                                 return;
                             } else {
                                 updateInventoryImageHelper(authorization, id, s, restListener);
@@ -434,7 +439,7 @@ public class RestClient {
                     @Override
                     public void onSuccess(Inventory inventory) {
                         restListener.onSuccess(inventory);
-                        sendGCM(inventory.getId(), true, false);
+                        sendGCM(inventory.getId(), RestClient.ONLY_INVEN_IMAGE_CHANGED);
                         return;
                     }
 
@@ -477,7 +482,7 @@ public class RestClient {
                                 @Override
                                 public void onSuccess(Inventory inventory) {
                                     restListener.onSuccess(inventory);
-                                    sendGCM(inventory.getId(), false, true);
+                                    sendGCM(inventory.getId(), RestClient.ONLY_INVEN_TEXT_CHANGED);
                                     return;
                                 }
 
@@ -587,17 +592,17 @@ public class RestClient {
         });
     }
 
-    public void createInvoice(final double total_price, final double final_price, final String date_time,
+    public void createInvoice(final double total_price, final double final_price, final double paid, final String date_time,
                               final String content, final String email, final RestListener<Invoice> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
         } else if (content.equals("") || content == null ||
-                email.equals("") || email == null || total_price < 0 || final_price < 0) {
+                email.equals("") || email == null || total_price < 0 || final_price < 0 || paid < 0) {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.createInvoice(authorization, total_price, final_price, date_time, content, email, new Callback<Response_Invoice>() {
+        serverAPI.createInvoice(authorization, total_price, final_price, paid, date_time, content, email, new Callback<Response_Invoice>() {
             @Override
             public void success(Response_Invoice response_invoice, Response response) {
                 if (!response_invoice.error) {
@@ -625,17 +630,17 @@ public class RestClient {
         });
     }
 
-    public void updateInvoice(final int id, final double updatedTotal_price, final double updatedFinal_price, final String updatedDate_time,
+    public void updateInvoice(final int id, final double updatedTotal_price, final double updatedFinal_price, final double updatedPaid, final String updatedDate_time,
                               final String updatedContent, final String updatedEmail, final int updatedStatus, final RestListener<Invoice> restListener) {
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;
         } else if (updatedContent.equals("") || updatedContent == null ||
-                updatedEmail.equals("") || updatedEmail == null || updatedTotal_price < 0 || updatedFinal_price < 0 || id < 0) {
+                updatedEmail.equals("") || updatedEmail == null || updatedTotal_price < 0 || updatedFinal_price < 0 || updatedPaid < 0 || id < 0) {
             restListener.onFailure(RestListener.INVALID_PARA);
             return;
         }
-        serverAPI.updateInvoice(authorization, id, updatedTotal_price, updatedFinal_price, updatedDate_time, updatedContent, updatedEmail, updatedStatus, new Callback<Response_Invoice>() {
+        serverAPI.updateInvoice(authorization, id, updatedTotal_price, updatedFinal_price, updatedPaid, updatedDate_time, updatedContent, updatedEmail, updatedStatus, new Callback<Response_Invoice>() {
             @Override
             public void success(Response_Invoice response_invoice, Response response) {
                 if (!response_invoice.error) {
@@ -713,10 +718,10 @@ public class RestClient {
     }
 
 
-    public void sendGCM(int inven_id, boolean imageChanged, boolean textInfoChanged) {
+    public void sendGCM(int inven_id, int statusCode) {
         if (inven_id < 0) return;
         else
-            serverAPI.sendGCM(authorization, inven_id, imageChanged, textInfoChanged, new Callback<Response>() {
+            serverAPI.sendGCM(authorization, inven_id, statusCode, new Callback<Response>() {
                 @Override
                 public void success(Response response, Response response2) {
 
@@ -765,7 +770,7 @@ public class RestClient {
             public void success(Response_Company response_company, Response response) {
                 if (!response_company.error) {
                     restListener.onSuccess(response_company.message);
-                    sendGCM(0, false, false);
+                    sendGCM(0, RestClient.COMPANY_CHANGED);
                     return;
                 } else {
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);

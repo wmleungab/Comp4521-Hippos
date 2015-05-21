@@ -70,12 +70,12 @@ public interface ServerAPI {
 
     @FormUrlEncoded
     @POST("/invoice")
-    void createInvoice(@Header("Authorization") String authorization, @Field("total_price") double total_price, @Field("final_price") double final_price
+    void createInvoice(@Header("Authorization") String authorization, @Field("total_price") double total_price, @Field("final_price") double final_price, @Field("paid") double paid
             , @Field("date_time") String date_time, @Field("content") String content, @Field("email") String email, Callback<Response_Invoice> callback);
 
     @FormUrlEncoded
     @PUT("/invoice/{id}")
-    void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price
+    void updateInvoice(@Header("Authorization") String authorization, @Path("id") int id, @Field("total_price") double total_price, @Field("final_price") double final_price, @Field("paid") double paid
             , @Field("date_time") String date_time, @Field("content") String content, @Field("email") String email, @Field("status") int status, Callback<Response_Invoice> callback);
 
     @Multipart
@@ -94,7 +94,7 @@ public interface ServerAPI {
 
     @FormUrlEncoded
     @POST("/gcm")
-    void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("imageChanged") boolean imageChanged, @Field("textInfoChanged") boolean textInfoChanged, Callback<Response> callback);
+    void sendGCM(@Header("Authorization") String authorization, @Field("id") int inven_id, @Field("id") int statusCode, Callback<Response> callback);
 
     @FormUrlEncoded
     @POST("/company")
