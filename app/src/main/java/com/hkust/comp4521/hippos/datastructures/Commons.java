@@ -7,6 +7,7 @@ import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
+import com.squareup.otto.Bus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class Commons {
     public static String GCM_PROJECT_NUMBER = "19676954580";
     public static String GCM_REGISTRATION_ID = "";
     public static boolean ONLINE_MODE = true;
+
+    // Bus event
+    private static Bus mBus = new Bus();
 
     // Server information
     private static User user = null;
@@ -44,6 +48,10 @@ public class Commons {
 
     // Data structure for invoices
     private static List<Invoice> invoiceList = null;
+
+    public static Bus getBusInstance() {
+        return mBus;
+    }
 
     public static int getCategoryCount() {
         if(categoryList == null)
@@ -112,12 +120,12 @@ public class Commons {
 
     public static void initializeInventoryList(final onInitializedListener mListener) {
         // If list already initialized, trigger the callback method immediately
-        if(categorizedinventoryHMList != null) {
+        /*if(categorizedinventoryHMList != null) {
             if(mListener != null) {
                 mListener.onInitialized();
                 return;
             }
-        }
+        }*/
 
         // fetch list from local DB first, go to remote server if local DB does not exist
         categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();

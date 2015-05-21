@@ -13,13 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +109,7 @@ public class InventoryListActivity extends AppCompatActivity {
 
             // Setup list adapter
             final int cId = Commons.getCategory(i).getID();
-            adapter = new InventoryListAdapter(this, cId);
+            adapter = new InventoryListAdapter(this, cId, i);
             adapter.setOnClickListener(new InventoryListAdapter.OnInventoryClickListener() {
                 @Override
                 public void onClick(View v, int catId, int invIndex) {
@@ -156,8 +159,16 @@ public class InventoryListActivity extends AppCompatActivity {
             adapter.notifyItemChanged(InventoryDetailsActivity.itemIndex);
             inv.setStatus(Inventory.INVENTORY_NORMAL);
         }
+        // Register for bus
+        Commons.getBusInstance().register(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Always unregister when an object no longer should be on the bus.
+        Commons.getBusInstance().unregister(this);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -166,4 +177,18 @@ public class InventoryListActivity extends AppCompatActivity {
         // Clear item index
         InventoryDetailsActivity.itemIndex = -1;
     }
+
+    @Subscribe
+    public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
+        Toast.makeText(this, "Bus test!", Toast.LENGTH_SHORT).show();
+
+        // Update inventory view from bus message
+        if(adapter != null && event.getInventory() != null) {
+            Inventory inv = event.getInventory();
+            InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
+            adapter.notifyItemChanged(inv.getInvIndex());
+            inv.setStatus(Inventory.INVENTORY_NORMAL);
+        }
+    }
+
 }

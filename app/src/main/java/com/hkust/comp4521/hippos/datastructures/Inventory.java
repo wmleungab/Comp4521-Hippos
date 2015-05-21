@@ -21,6 +21,10 @@ public class Inventory {
     String timestamp;
     int category;
 
+    // Extra attributes for view
+    int catIdx;
+    int invIdx;
+
     public Inventory() {
 
     }
@@ -114,4 +118,18 @@ public class Inventory {
         this.timestamp = newInv.timestamp;
         this.category = newInv.category;
     }
+
+    public void setIndex(int pCat, int pInv) {
+        catIdx = pCat;
+        invIdx = pInv;
+    }
+
+    public int getCatIndex() {
+        return catIdx;
+    }
+
+    public int getInvIndex() {
+        return invIdx;
+    }
+
 }

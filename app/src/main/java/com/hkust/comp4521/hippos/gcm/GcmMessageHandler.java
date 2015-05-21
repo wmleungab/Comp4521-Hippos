@@ -18,6 +18,7 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
+import com.hkust.comp4521.hippos.utils.ImageUtils;
 
 public class GcmMessageHandler extends IntentService {
 
@@ -50,9 +51,11 @@ public class GcmMessageHandler extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        inventoryId = Integer.parseInt(extras.getString("id"));
-        statusCode = Integer.parseInt(extras.getString("statusCode"));
-        showToast();
+        if(extras.getString("id") != null) {
+            inventoryId = Integer.parseInt(extras.getString("id"));
+            statusCode = Integer.parseInt(extras.getString("statusCode"));
+            showToast();
+        }
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
 
@@ -64,31 +67,72 @@ public class GcmMessageHandler extends IntentService {
                 // initialize database for updating
                 DatabaseHelper.initDatabase(mContext);
 
-                switch(statusCode) {
+                switch (statusCode) {
                     case INVEN_IMAGE_CHANGED:
-                        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
-                            @Override
-                            public void onSuccess(Inventory inventory) {
-                                // Update database record
-                                InventoryDB inventoryHelper = InventoryDB.getInstance();
-                                inventoryHelper.update(inventory);
-
-                                // Update inventory list if exists
-                                Inventory toUpdateInv = Commons.getInventory(inventory.getId());
-                                if(toUpdateInv != null) {
-                                    toUpdateInv.update(inventory);
-                                    toUpdateInv.setStatus(Inventory.INVENTORY_DIRTY);
-                                }
-
-                                Toast.makeText(mContext, "Inventory image updated!", Toast.LENGTH_SHORT).show();
-                            }
-                            @Override
-                            public void onFailure(int status) {
-
-                            }
-                        });
+                        notifyImageChanged();
+                        break;
+                    case INVEN_TEXT_CHANGED:
+                        notifyTextChanged();
                         break;
                 }
+
+            }
+        });
+    }
+
+    private void notifyTextChanged() {
+        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+            @Override
+            public void onSuccess(Inventory inventory) {
+                // Update database record
+                InventoryDB inventoryHelper = InventoryDB.getInstance();
+                inventoryHelper.update(inventory);
+
+                // Update inventory list if exists
+                Inventory toUpdateInv = Commons.getInventory(inventory.getId());
+                if(toUpdateInv != null) {
+                    toUpdateInv.update(inventory);
+                }
+
+                Toast.makeText(mContext, "Inventory updated!", Toast.LENGTH_SHORT).show();
+
+                // Send message to activity using Bus event
+                Commons.getBusInstance().register(mContext);
+                Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
+                Commons.getBusInstance().unregister(mContext);
+            }
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
+    }
+
+    private void notifyImageChanged() {
+        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+            @Override
+            public void onSuccess(Inventory inventory) {
+                // Update database record
+                InventoryDB inventoryHelper = InventoryDB.getInstance();
+                inventoryHelper.update(inventory);
+
+                // Update inventory list if exists
+                Inventory toUpdateInv = Commons.getInventory(inventory.getId());
+                if(toUpdateInv != null) {
+                    toUpdateInv.update(inventory);
+                    toUpdateInv.setStatus(Inventory.INVENTORY_DIRTY);
+                    ImageUtils.deleteFile(toUpdateInv);
+                }
+
+                Toast.makeText(mContext, "Inventory image updated!", Toast.LENGTH_SHORT).show();
+
+                // Send message to activity using Bus event
+                Commons.getBusInstance().register(mContext);
+                Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
+                Commons.getBusInstance().unregister(mContext);
+            }
+            @Override
+            public void onFailure(int status) {
 
             }
         });

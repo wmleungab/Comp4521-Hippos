@@ -19,14 +19,15 @@ import java.util.List;
 
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.InventoryViewHolder>{
 
-        private int categoryId;
+        private int categoryId, catIndex;
         private Context mContext;
         private List<Inventory> invList;
         private OnInventoryClickListener mOnClickListener;
 
-        public InventoryListAdapter(Context pCon, int cId) {
+        public InventoryListAdapter(Context pCon, int cId, int cIdx) {
             this.mContext = pCon;
             this.categoryId = cId;
+            this.catIndex = cIdx;
             this.invList = Commons.getInventoryList(cId);
         }
          
@@ -38,6 +39,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         @Override
         public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i);
+             ci.setIndex(catIndex, i);
              contactViewHolder.itemName.setText(ci.getName());
              contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
              contactViewHolder.itemStock.setText("Stock: " + ci.getStock());

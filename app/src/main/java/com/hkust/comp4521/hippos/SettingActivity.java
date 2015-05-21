@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
@@ -23,11 +25,14 @@ public class SettingActivity extends PreferenceActivity {
 
     // Intent
     static Intent intent;
+    static Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        mContext = this;
 
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
@@ -99,11 +104,22 @@ public class SettingActivity extends PreferenceActivity {
 
                     return true;
                 }
-            });button = (Preference)findPreference(getString(R.string.clear_cache_prefs));
+            });
+            button = (Preference)findPreference(getString(R.string.clear_cache_prefs));
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     ImageUtils.clearImageCache();
+                    return true;
+                }
+            });
+
+            button = (Preference)findPreference(getString(R.string.clear_db_prefs));
+            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    DatabaseHelper.delete();
+                    startActivity(intent);
                     return true;
                 }
             });

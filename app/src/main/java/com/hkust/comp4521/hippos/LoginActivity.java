@@ -174,7 +174,16 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         protected void onPostExecute (String msg){
                             PreferenceService.saveStringValue("gcm_registration_id", msg);
-                            Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_SHORT).show();
+                            RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
+                                @Override
+                                public void onSuccess(String s) {
+                                    Toast.makeText(LoginActivity.this, "GCM service registered!",Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void onFailure(int status) {
+
+                                }
+                            });
                         }
                     }.execute(null, null, null);
 

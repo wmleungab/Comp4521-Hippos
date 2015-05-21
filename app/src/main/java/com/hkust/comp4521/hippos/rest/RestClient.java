@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -43,10 +44,12 @@ public class RestClient {
     private String authorization;
 
     static {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setConnectTimeout(2, TimeUnit.SECONDS);
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(SERVER_URL)
                 .setErrorHandler(new RetrofitErrorHandler())
-                .setClient(new OkClient(new OkHttpClient()))
+                .setClient(new OkClient(okHttpClient))
                 .setLogLevel(RestAdapter.LogLevel.FULL);
 
         RestAdapter restAdapter = builder.build();

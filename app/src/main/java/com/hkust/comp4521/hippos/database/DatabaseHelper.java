@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
 
+import java.io.File;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "database.db";
@@ -47,4 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public static void delete() {
+        File file = new File(Commons.APP_ROOT_PATH + DATABASE_NAME);
+        if(file.exists()) {
+            file.delete();
+        }
+        file = new File(Commons.APP_ROOT_PATH + DATABASE_NAME + "-journal");
+        if(file.exists()) {
+            file.delete();
+        }
+    }
 }

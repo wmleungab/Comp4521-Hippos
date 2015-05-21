@@ -83,7 +83,7 @@ public class ImageUtils {
             file.delete();
         }
         // Mark info as dirty
-        inv.setStatus(2);
+        inv.setStatus(Inventory.INVENTORY_DIRTY);
     }
 
     public static void clearImageCache() {

@@ -114,7 +114,7 @@ public class EditInventoryActivity extends AppCompatActivity {
                 if(currentMode == MODE_NEW_INVENTORY) {
                     createNewInventory();
                 } else if(currentMode == MODE_EDIT_INVENTORY) {
-                    
+                    editInventory();
                 }
             }
         });
@@ -132,6 +132,28 @@ public class EditInventoryActivity extends AppCompatActivity {
         categorySpinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<Category>(EditInventoryActivity.this, android.R.layout.simple_spinner_dropdown_item, Commons.getCategoryList());
         categorySpinner.setAdapter(spinnerAdapter);
+    }
+
+    private void editInventory() {
+        // get values from view
+        String name = etItemName.getText().toString();
+        Double price = Double.parseDouble(etItemPrice.getText().toString());
+        int stock = Integer.parseInt(etItemStock.getText().toString());
+        int category = ((Category) categorySpinner.getSelectedItem()).getID();
+
+        RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, category, mItem.getStatus(), new RestListener<Inventory>() {
+            @Override
+            public void onSuccess(Inventory inventory) {
+                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                Toast.makeText(mContext, "Failed: status code=" + status, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     private void createNewInventory() {
