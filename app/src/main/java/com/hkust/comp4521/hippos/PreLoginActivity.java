@@ -3,7 +3,6 @@ package com.hkust.comp4521.hippos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.database.CategoryDB;
@@ -62,10 +61,8 @@ public class PreLoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(int status) {
-                    Log.i("PreLogin", InventoryDB.getInstance().getCount() + " && " + CategoryDB.getInstance().getCount());
                     if(status == RestListener.NETWORK_UNREACHABLE) {
                         // Server unreachable, see if local DB exists
-                        Log.i("PreLogin2", InventoryDB.getInstance().getCount() + " && " + CategoryDB.getInstance().getCount());
                         if(InventoryDB.getInstance().getCount() > 0 && CategoryDB.getInstance().getCount() > 0) {
                             // if yes, use the app as usual in offline mode
                             Commons.ONLINE_MODE = false;

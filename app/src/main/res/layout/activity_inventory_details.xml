@@ -150,16 +150,6 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"/>
 
-            <ImageButton
-                android:id="@+id/ib_inventory_add_stock"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/plus_dark" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -199,6 +189,7 @@
 
         <LinearLayout
             android:orientation="horizontal"
+            android:id="@+id/ll_inventory_details_disable_inventory"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="56dp">
