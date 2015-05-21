@@ -1,7 +1,5 @@
 package com.hkust.comp4521.hippos.datastructures;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by Yman on 15/5/2015.
  */
@@ -36,7 +34,6 @@ public class Inventory {
         this.status = status;
         this.timestamp = timestamp;
         this.category = category;
-
     }
 
     public int getId() {
@@ -107,7 +104,14 @@ public class Inventory {
         this.timestamp = timestamp;
     }
 
-    public class DrawableContainer {
-        public Drawable drawable = null;
+    public void update(Inventory newInv) {
+        this.id = newInv.id;
+        this.name = newInv.name;
+        this.price = newInv.price;
+        this.stock = newInv.stock;
+        this.image = newInv.image;
+        this.status = newInv.status;
+        this.timestamp = newInv.timestamp;
+        this.category = newInv.category;
     }
 }

@@ -162,5 +162,8 @@ public class InventoryListActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+
+        // Clear item index
+        InventoryDetailsActivity.itemIndex = -1;
     }
 }
