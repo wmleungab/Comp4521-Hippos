@@ -1,21 +1,17 @@
 <resources>
     <string name="app_name">HiPPoS</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_debug">HiPPoS Debug</string>
+    <!-- App titles-->
     <string name="title_activity_new_invoice">New Invoice</string>
     <string name="title_activity_inventory_list">Item List</string>
     <string name="title_activity_edit_inventory_new">New Inventory</string>
     <string name="title_activity_edit_inventory">Edit Inventory</string>
-
-    <string name="title_activity_inventory_details">InventoryDetailsActivity</string>
+    <string name="title_activity_inventory_details">Inventory Details</string>
     <string name="title_activity_sales_history">Sales History</string>
-    <string name="title_activity_sales_details">SalesDetailsActivity</string>
+    <string name="title_activity_sales_details">Sales Details</string>
     <string name="title_activity_setting">Settings</string>
-    <string name="title_activity_inventory_test">InventoryTestActivity</string>
-    <string name="title_activity_invoice_test">InvoiceTestActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_pre_login">PreLoginActivity</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_pre_login">HiPPoS Launch</string>
 
     <!-- From PerferenceFragment-->
     <string name="user_email_prefs">user_email</string>
@@ -28,7 +24,17 @@
     <string name="logout_prefs">logout</string>
     <string name="clear_cache_prefs">clear_cache</string>
     <string name="clear_db_prefs">clear_db</string>
+    <string name="logout_desc">Logout from current server</string>
+    <string name="clear_cache_desc">Clear image cache of inventory list</string>
+    <string name="clear_db_desc">Clear all database records</string>
 
+
+    <!--For SalesHistoryActivity-->
+    <string name="tab_local_invoice">Local Invoice</string>
+    <string name="tab_remote_invoice">Remote Invoice</string>
+    <string name="tab_statistics">Statistics</string>
+    <string name="tab_revenue">Revenue</string>
+    <string name="invoice_id_text">Invoice #</string>
     <string name="weekly_sales">Weekly Sales</string>
     <string name="monthly_sales">Monthly Sales</string>
 

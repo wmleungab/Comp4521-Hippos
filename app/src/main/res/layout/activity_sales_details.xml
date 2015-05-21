@@ -153,16 +153,38 @@
         android:elevation="6dp"
         android:background="@color/blue_primary" />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/actionBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:background="@color/blue_primary"
         android:tag="@color/blue_primary"
-        android:minHeight="?attr/actionBarSize"
-        android:elevation="6dp"
-        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        android:elevation="6dp" >
 
+        <ImageButton
+            android:id="@+id/ib_back"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/left_arrow" />
+
+        <ImageButton
+            android:id="@+id/ib_sales_details_share"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/share" />
+    </RelativeLayout>
     <!--
     android:layout_marginLeft on FrameLayout seems to be ignored on Android 2.3
     so add a parent RelativeLayout and set padding to it.
@@ -212,4 +234,5 @@
                 android:background="@android:color/transparent" />
         </LinearLayout>
     </RelativeLayout>
+
 </FrameLayout>

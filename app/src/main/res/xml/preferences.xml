@@ -27,17 +27,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="General settings">
-        <Preference android:title="Logout"
-            android:key="@string/logout_prefs"
-            android:summary="Logout from current server"/>
-
         <Preference android:title="Clear Database"
             android:key="@string/clear_db_prefs"
-            android:summary="Clear all database records"/>
+            android:summary="@string/clear_db_desc"/>
 
         <Preference android:title="Clear Cache"
             android:key="@string/clear_cache_prefs"
-            android:summary="Clear image cache of inventory list"/>
+            android:summary="@string/clear_cache_desc"/>
+
+        <Preference android:title="Logout"
+            android:key="@string/logout_prefs"
+            android:summary="@string/logout_desc"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1,8 +1,10 @@
 package com.hkust.comp4521.hippos.datastructures;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -31,7 +33,7 @@ public class Commons {
 
     // ViewPager Tabs
     private static String[] INVENTORY_CATEGORY = {};
-    private static String[] SALESHISTORY_CATEGORY = {"Local invoice", "Remote Invoices", "Statistics", "Revenue"};
+    private static String[] SALESHISTORY_CATEGORY = null;
 
     // Adapter modes
     public static int MODE_NEW_INVOICE = 0;
@@ -46,14 +48,6 @@ public class Commons {
     // Getter for Bus event
     public static Bus getBusInstance() {
         return mBus;
-    }
-
-    public static Inventory getRandomInventory() {
-        int catId = (int) (Math.random() * getCategoryCount());
-        ArrayList<Inventory> list = categorizedinventoryHMList.get(categoryList.get(catId).getID());
-        int invId = (int) (Math.random() * list.size());
-        Inventory toReturn = list.get(invId);
-        return toReturn;
     }
 
     // This method initialize inventory and category list
@@ -221,7 +215,15 @@ public class Commons {
     }
 
     // Getters for ViewPager
-    public static String[] getSalesHistoryTabs() {
+    public static String[] getSalesHistoryTabs(Context context) {
+        // initialize tab from string xml for localization
+        if(SALESHISTORY_CATEGORY == null) {
+            SALESHISTORY_CATEGORY = new String[4];
+            SALESHISTORY_CATEGORY[0] = context.getString(R.string.tab_local_invoice);
+            SALESHISTORY_CATEGORY[1] = context.getString(R.string.tab_remote_invoice);
+            SALESHISTORY_CATEGORY[2] = context.getString(R.string.tab_statistics);
+            SALESHISTORY_CATEGORY[3] = context.getString(R.string.tab_revenue);
+        }
         return SALESHISTORY_CATEGORY;
     }
     public static String[] getCategoryTabs() {

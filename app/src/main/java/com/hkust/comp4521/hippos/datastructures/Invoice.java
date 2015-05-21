@@ -5,7 +5,9 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -94,6 +96,7 @@ public class Invoice {
     }
 
     public List<InvoiceInventory> getInvoiceInventories() {
+        deserializeInvoiceInventories();
         return invoiceInventories;
     }
 
@@ -114,6 +117,26 @@ public class Invoice {
             e.printStackTrace();
         }
         content = jsonObj.toString();
+    }
+
+    private void deserializeInvoiceInventories() {
+        JSONObject jsonObj = null;
+        invoiceInventories = new ArrayList<InvoiceInventory>();
+        try {
+            jsonObj = new JSONObject(content);
+            // Iterate each key-value pair and generate InvoiceInventory items accordingly
+            Iterator<?> keys = jsonObj.keys();
+            while(keys.hasNext()) {
+                String key = (String)keys.next();
+                int value = jsonObj.getInt(key);
+
+                int inventoryId = Integer.parseInt(key);
+
+                invoiceInventories.add(new InvoiceInventory(Commons.getInventory(inventoryId), value));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

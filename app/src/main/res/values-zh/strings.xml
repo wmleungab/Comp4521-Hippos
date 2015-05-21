@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">HiPPoS</string>
+
+    <!-- App titles-->
+    <string name="title_activity_new_invoice">New 發票</string>
+    <string name="title_activity_inventory_list">Item List</string>
+    <string name="title_activity_edit_inventory_new">New Inventory</string>
+    <string name="title_activity_edit_inventory">Edit Inventory</string>
+    <string name="title_activity_inventory_details">Inventory Details</string>
+    <string name="title_activity_sales_history">Sales History</string>
+    <string name="title_activity_sales_details">Sales Details</string>
+    <string name="title_activity_setting">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_pre_login">HiPPoS Launch</string>
+
+    <!--For SalesHistoryActivity-->
+    <string name="tab_local_invoice">Local 發票</string>
+    <string name="tab_remote_invoice">Remote 發票</string>
+    <string name="tab_statistics">Statistics</string>
+    <string name="tab_revenue">Revenue</string>
+    <string name="invoice_id_text">發票 #</string>
+    <string name="weekly_sales">Weekly Sales</string>
+    <string name="monthly_sales">Monthly Sales</string>
+
+</resources>

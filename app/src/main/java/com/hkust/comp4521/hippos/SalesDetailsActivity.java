@@ -2,10 +2,8 @@ package com.hkust.comp4521.hippos;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,8 +16,12 @@ import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
+import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.nineoldandroids.view.ViewHelper;
+
+import java.util.List;
 
 
 public class SalesDetailsActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
@@ -35,9 +37,6 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_details);
-
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Init views
         mFlexibleSpaceView = findViewById(R.id.flexible_space);
@@ -60,14 +59,14 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         setTitle(null);
 
         // Change status bar color
-        mToolbarView = findViewById(R.id.toolbar);
+        mToolbarView = findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mToolbarView));
 
         final ObservableScrollView scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
 
         mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_height);
-        int flexibleSpaceAndToolbarHeight = mFlexibleSpaceHeight + getSupportActionBar().getHeight();
+        int flexibleSpaceAndToolbarHeight = mFlexibleSpaceHeight + mTitleView.getHeight();
 
         findViewById(R.id.body).setPadding(0, flexibleSpaceAndToolbarHeight, 0, 0);
         mFlexibleSpaceView.getLayoutParams().height = flexibleSpaceAndToolbarHeight;
@@ -79,41 +78,29 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
             }
         });
 
-        /*
-                RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
-                recList.setHasFixedSize(true);
-                LinearLayoutManager llm = new LinearLayoutManager(this);
-                llm.setOrientation(LinearLayoutManager.VERTICAL);
-                recList.setLayoutManager(llm);
-
-                final InvoiceInventoryListAdapter adapter = new InvoiceInventoryListAdapter(this, Commons.MODE_SALES_CONFIRM);
-                recList.setAdapter(adapter);
-                recList.setItemAnimator(new DefaultItemAnimator());
-                adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
-                adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
-                adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
-                adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
-                adapter.addItem(new InvoiceInventory(Commons.getRandomInventory(), 1));
-                */
         LinearLayout llInvoiceItems = (LinearLayout) findViewById(R.id.ll_sales_details_invoice_items);
-        for(int i=0; i<5; i++) {
-            Inventory ci = Commons.getRandomInventory();
+        List<InvoiceInventory> invList = currentInvoice.getInvoiceInventories();
+        for(int i=0; i < invList.size(); i++) {
+            InvoiceInventory ci = invList.get(i);
+            Inventory inv = ci.getInventory();
+
+            // set views accordingly
             View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
-            llInvoiceItems.addView(itemView);
             TextView tv = (TextView) itemView.findViewById(R.id.tv_inventory_item_name);
-            tv.setText(ci.getName());
+            tv.setText(inv.getName());
             tv = (TextView) itemView.findViewById(R.id.tv_card_inventory_item_price);
-            tv.setText("$" + ci.getPrice());
+            tv.setText(inv.getFormattedPrice());
             tv = (TextView) itemView.findViewById(R.id.tv_card_inventory_item_stock);
-            tv.setText("x1");
+            tv.setText("x" + ci.getQuantity());
             ImageView heroImage = (ImageView) itemView.findViewById(R.id.iv_inventory);
-            /*
-            try {
-                heroImage.setImageDrawable(Drawable.createFromStream(this.getAssets().open(ci.getFileName() + ".jpg"), null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+            new ImageRetriever(heroImage, inv.getImage(), getResources().getDrawable(R.mipmap.placeholder)).execute();
+            Log.i("SalesDetails", inv.getName() + " inflated");
+            llInvoiceItems.addView(itemView);
         }
+        // Adding padding item
+        View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
+        itemView.setVisibility(View.INVISIBLE);
+        llInvoiceItems.addView(itemView);
     }
 
     @Override
@@ -161,13 +148,6 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         ViewHelper.setTranslationY(mSubTitleView, titleTranslationY - 2*padding);
         ViewHelper.setTranslationY(mTitleView, titleTranslationY);
         ViewHelper.setAlpha(mSubTitleView, heightScale);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_sales_details, menu);
-        return true;
     }
 
 }

@@ -33,7 +33,7 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
         @Override
         public void onBindViewHolder(InvoiceViewHolder contactViewHolder, int i) {
              Invoice ci = invList.get(i);
-             contactViewHolder.itemName.setText("Invoice #" + ci.getId());
+             contactViewHolder.itemName.setText(mContext.getString(R.string.invoice_id_text) + ci.getId());
              contactViewHolder.itemPrice.setText(ci.getFinalPrice()+"");
              contactViewHolder.itemStock.setText(ci.getDateTime());
              contactViewHolder.invIndex = i;

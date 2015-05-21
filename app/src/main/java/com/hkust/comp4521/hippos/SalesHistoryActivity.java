@@ -77,7 +77,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // Initialize ViewPager
         mViewPager = (ViewPager) findViewById(R.id.vp_sales_history);
-        mViewPager.setAdapter(new ViewPagerAdapter(viewList, Commons.getSalesHistoryTabs()));
+        mViewPager.setAdapter(new ViewPagerAdapter(viewList, Commons.getSalesHistoryTabs(this)));
         mViewPager.setCurrentItem(0);
 
         // Bind the tabs to the ViewPager
@@ -112,6 +112,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
 
         // initialize pull-to-refresh listener
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        // retrieve invoice from server
+        mRefreshLayout.setRefreshing(true);
+        refreshInvoiceItems();
         mRefreshLayout.setColorSchemeResources(
                         R.color.refresh_progress_1,
                         R.color.refresh_progress_2,
