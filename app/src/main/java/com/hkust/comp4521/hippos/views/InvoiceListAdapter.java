@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.R;
-import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 
 import java.util.List;
@@ -20,9 +19,9 @@ public class InvoiceListAdapter extends RecyclerView.Adapter<InvoiceListAdapter.
         private List<Invoice> invList;
         private OnInvoiceClickListener mOnClickListener;
 
-        public InvoiceListAdapter(Context pCon) {
+        public InvoiceListAdapter(Context pCon, List<Invoice> inputList) {
             this.mContext = pCon;
-            this.invList = Commons.getInvoiceList();
+            this.invList = inputList;
         }
          
         @Override

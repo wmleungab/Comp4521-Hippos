@@ -47,12 +47,12 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
-            currentInvoice = Commons.getInvoice(invId);
+            currentInvoice = Commons.getRemoteInvoice(invId);
 
             // Setup views
             mTitleView.setText(getResources().getString(R.string.invoice_id_text) + currentInvoice.getId());
             mSubTitleView.setText(getResources().getString(R.string.sales_details_invoice_date) + currentInvoice.getDateTime()+ "\n"
-                                 + getResources().getString(R.string.sales_details_invoice_handled_by) + currentInvoice.getUser());
+                                 + getResources().getString(R.string.sales_details_invoice_handled_by) + Commons.getUser().name);
         }
 
         //mTitleView.setText("Invoice #001");

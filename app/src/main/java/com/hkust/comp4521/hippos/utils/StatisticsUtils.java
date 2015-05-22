@@ -26,7 +26,7 @@ public class StatisticsUtils {
         for(int i=0; i < weeklyDP.length; i++)
             weeklyDP[i] = 0;
 
-        List<Invoice> invoiceList = Commons.getInvoiceList();
+        List<Invoice> invoiceList = Commons.getRemoteInvoiceList();
         // For each invoice, look the respective weekday from date
         // then add count to weekday
         for (Invoice invoice : invoiceList) {
@@ -43,8 +43,6 @@ public class StatisticsUtils {
             weeklyDP[dayOfWeek]++;
         }
 
-        for (int j = 0; j < weeklyDP.length; j++)
-            Log.i("StatisticsUtils:", "week (mon is 0)  " + (j) + ": " + weeklyDP[j]);
         return weeklyDP;
     }
 
@@ -53,7 +51,7 @@ public class StatisticsUtils {
         for(int i=0; i < monthlyDP.length; i++)
             monthlyDP[i] = 0;
 
-        List<Invoice> invoiceList = Commons.getInvoiceList();
+        List<Invoice> invoiceList = Commons.getRemoteInvoiceList();
         // For each invoice, look the respective month from date
         // then add count to month
 

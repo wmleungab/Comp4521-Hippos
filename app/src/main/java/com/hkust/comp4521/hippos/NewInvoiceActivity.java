@@ -116,16 +116,16 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 mSalesConfirmDialog =  new MaterialDialog.Builder(mActivity)
                                         .customView(vv, false)
                                         .autoDismiss(false)
-                                        .positiveText("Confirm")
-                                        .negativeText("Cancel")
+                                        .positiveText(mContext.getString(R.string.dialog_okay))
+                                        .negativeText(mContext.getString(R.string.dialog_cancel))
                                         .callback(new MaterialDialog.ButtonCallback() {
                                             @Override
                                             public void onPositive(MaterialDialog dialog) {
-                                                if(etPaid.getText().toString().trim().length() > 0) {
+                                                if (etPaid.getText().toString().trim().length() > 0) {
                                                     // check if price is valid first
                                                     double totalPrice = Double.parseDouble(etPrice.getText().toString());
                                                     double paidPrice = Double.parseDouble(etPaid.getText().toString());
-                                                    if(totalPrice > paidPrice) {
+                                                    if (totalPrice > paidPrice) {
                                                         etPaid.setError("Please input a valid price");
                                                     } else {
                                                         generateInvoiceRecord(totalPrice, paidPrice);
@@ -135,6 +135,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
                                                     etPaid.setError("Please input a price!");
                                                 }
                                             }
+
                                             @Override
                                             public void onNegative(MaterialDialog dialog) {
                                                 dialog.dismiss();
@@ -158,8 +159,11 @@ public class NewInvoiceActivity extends AppCompatActivity {
         InvoiceDB invoiceHelper = InvoiceDB.getInstance();
         List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
         Invoice invoice = new Invoice();
-        invoice.setFinalPrice(totalPrice);
         invoice.setInvoiceInventories(invList);
+        invoice.setTotalPrice(mAdapter.getInvoiceInventoriesTotal());
+        invoice.setFinalPrice(totalPrice);
+        invoice.setPaid(paidPrice);
+        invoice.setDateTime("2015-05-24 21:16:22");
     }
 
     @Override
@@ -189,12 +193,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
                         mAdapter.addItem(new InvoiceInventory(inv, 1));
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(mContext, "NFC tag is invalid", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, mContext.getString(R.string.nfc_error_msg), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void onError() {
-                    Toast.makeText(mContext, "NFC tag is invalid", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContext.getString(R.string.nfc_error_msg), Toast.LENGTH_SHORT).show();
                 }
             });
         }

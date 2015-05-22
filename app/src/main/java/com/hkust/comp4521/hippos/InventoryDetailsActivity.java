@@ -16,9 +16,11 @@ import android.transition.Fade;
 import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     public static final String VIEW_NAME_HEADER_TITLE = "detail:header:title";
 
     // Views
+    private RelativeLayout mHeaderLayout;
     private ImageView mHeaderImageView;
     private TextView mHeaderTitle, tvItemDesc, tvItemPrice, tvItemStock;
     private ImageButton btnBack, btnEdit;
@@ -88,7 +91,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         initViews();
 
         // set view transitions
-        ViewCompat.setTransitionName(mHeaderImageView, VIEW_NAME_HEADER_IMAGE);
+        ViewCompat.setTransitionName(mHeaderLayout, VIEW_NAME_HEADER_IMAGE);
         ViewCompat.setTransitionName(mHeaderTitle, VIEW_NAME_HEADER_TITLE);
 
         // Avoid "blinking" effect when involving scene transition
@@ -107,6 +110,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         mHeaderImageView = (ImageView) findViewById(R.id.iv_inventory);
         if(heroImageDrawable != null)
             setupHeroImageFromDrawable();
+        mHeaderLayout = (RelativeLayout) findViewById(R.id.rl_inventory_header);
         // setup textviews
         mHeaderTitle = (TextView) findViewById(R.id.tv_inventory_item_name);
         mHeaderTitle.setText(mItem.getName());
@@ -115,7 +119,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
         tvItemPrice = (TextView) findViewById(R.id.tv_inventory_item_price);
         tvItemPrice.setText(mItem.getFormattedPrice());
         tvItemStock = (TextView) findViewById(R.id.tv_inventory_item_stock);
-        tvItemStock.setText("Stock: " + mItem.getStock());
+        tvItemStock.setText(mContext.getString(R.string.stock) + mItem.getStock());
         // actionBar buttons
         btnBack = (ImageButton) findViewById(R.id.ib_actionBar_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +139,13 @@ public class InventoryDetailsActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+        // animate actionBar buttons
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        alphaAnimation.setDuration(300);
+        btnBack.setAnimation(alphaAnimation);
+        btnEdit.setAnimation(alphaAnimation);
+        alphaAnimation.setStartOffset(300);
+        alphaAnimation.start();
         // NFC assign button and its dialog
         btnNFCAssign = (LinearLayout) findViewById(R.id.ll_inventory_details_nfc_assign);
         btnNFCAssign.setOnClickListener(new View.OnClickListener() {
@@ -216,6 +227,13 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             Commons.getBusInstance().unregister(this);
             busRegistered = false;
         }
+        // animate actionBar buttons
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+        alphaAnimation.setDuration(150);
+        btnBack.setAnimation(alphaAnimation);
+        btnEdit.setAnimation(alphaAnimation);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.start();
     }
 
 
@@ -234,7 +252,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             mNFC.writeTag(jsonStr, new NFCService.NFCWriteTagListener() {
                 @Override
                 public void onTagWrite(String writeStr) {
-                    Toast.makeText(mContext, "NFC write successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContext.getString(R.string.nfc_success_msg), Toast.LENGTH_SHORT).show();
                     //mNFC.WriteModeOff();
                     mNFCDialog.dismiss();
                 }
@@ -270,7 +288,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             mHeaderTitle.setText(updatedItem.getName());
             tvItemDesc.setText(updatedItem.getTimeStamp());
             tvItemPrice.setText(updatedItem.getFormattedPrice());
-            tvItemStock.setText("Stock: " + updatedItem.getStock());
+            tvItemStock.setText(mContext.getString(R.string.stock) + updatedItem.getStock());
             if(updatedItem.getStatus() == Inventory.INVENTORY_DISABLED)
                 disableInventory();
             new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
@@ -278,6 +296,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     }
 
     public void disableInventory() {
+        // Change views when inventory is disabled
         mHeaderTitle.setText(mItem.getName() + getString(R.string.inventory_details_disabled));
         btnNFCAssign.setVisibility(View.GONE);
         btnDisableInventory.setVisibility(View.GONE);

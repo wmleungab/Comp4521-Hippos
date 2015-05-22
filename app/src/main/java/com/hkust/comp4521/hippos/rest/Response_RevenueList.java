@@ -1,5 +1,7 @@
 package com.hkust.comp4521.hippos.rest;
 
+import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
+
 import java.util.List;
 
 /**

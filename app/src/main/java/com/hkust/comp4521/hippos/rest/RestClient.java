@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.hkust.comp4521.hippos.datastructures.Category;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.squareup.okhttp.OkHttpClient;

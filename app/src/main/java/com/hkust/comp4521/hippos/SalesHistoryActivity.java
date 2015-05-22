@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,8 +15,12 @@ import android.widget.RelativeLayout;
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.StatisticsUtils;
+import com.hkust.comp4521.hippos.views.InventoryRevenueListAdapter;
 import com.hkust.comp4521.hippos.views.InvoiceListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 
@@ -39,13 +44,16 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 public class SalesHistoryActivity extends AppCompatActivity {
 
+    // Application
+    private Context mContext;
+
     // Views
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
     private SwipeRefreshLayout mRefreshLayout;
     private LineChartView chartTop;
     private ColumnChartView chartBottom;
-    RecyclerView recList;
+    private RecyclerView localRecList, remoteRecList, revenueRecList;
 
     // Chart data
     private LineChartData lineData;
@@ -59,6 +67,8 @@ public class SalesHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_history);
 
+        mContext = this;
+
         // Change action bar theme
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mActionBar));
@@ -66,7 +76,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
         // Setup pages of inventories
         LayoutInflater mInflater = getLayoutInflater().from(this);
         viewList = new ArrayList<View>();
-        View v = mInflater.inflate(R.layout.view_revenue, null);
+        View v = mInflater.inflate(R.layout.view_invoice, null);
         viewList.add(v);
         v = mInflater.inflate(R.layout.view_invoice, null);
         viewList.add(v);
@@ -85,8 +95,80 @@ public class SalesHistoryActivity extends AppCompatActivity {
         tabs.setViewPager(mViewPager);
 
         // setup data for each page
-        setupInvoicePage();
+        setupLocalInvoicePage();
+        setupRemoteInvoicePage();
+        setupRevenuePage();
 
+    }
+
+    private void setupLocalInvoicePage() {
+        View view = viewList.get(0);
+
+        // initialize RecyclerView
+        localRecList = (RecyclerView) view.findViewById(R.id.cardList);
+        localRecList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        localRecList.setLayoutManager(llm);
+
+        // initialize pull-to-refresh listener
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        // retrieve invoice from server
+        mRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                refreshLocalInvoiceItems();
+            }
+        });
+        mRefreshLayout.setRefreshing(true);
+        refreshLocalInvoiceItems();
+    }
+
+    private void refreshLocalInvoiceItems() {
+        Commons.initializeLocalInvoiceList();
+        // setup list adapter
+        InvoiceListAdapter adapter = new InvoiceListAdapter(SalesHistoryActivity.this, Commons.getLocalInvoiceList());
+        adapter.setOnClickListener(new InvoiceListAdapter.OnInvoiceClickListener() {
+            @Override
+            public void onClick(View v, int invIndex) {
+                /*Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
+                                Bundle b = new Bundle();
+                                b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
+                                i.putExtras(b);
+                                startActivity(i);*/
+            }
+        });
+        localRecList.setAdapter(adapter);
+    }
+
+    private void setupRevenuePage() {
+        View view = viewList.get(3);
+
+        // initialize RecyclerView
+        revenueRecList = (RecyclerView) view.findViewById(R.id.cardList);
+        revenueRecList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        revenueRecList.setLayoutManager(llm);
+
+        RestClient.getInstance().getRevenueList(new RestListener<List<InventoryRevenue>>() {
+            @Override
+            public void onSuccess(List<InventoryRevenue> inventoryRevenues) {
+                // setup list adapter
+                InventoryRevenueListAdapter adapter = new InventoryRevenueListAdapter(SalesHistoryActivity.this, inventoryRevenues);
+                revenueRecList.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
     }
 
     private void setupStatisticsPage() {
@@ -99,39 +181,41 @@ public class SalesHistoryActivity extends AppCompatActivity {
         generateMonthData();
     }
 
-    private void setupInvoicePage() {
+    private void setupRemoteInvoicePage() {
         View view = viewList.get(1);
 
         // initialize RecyclerView
-        recList = (RecyclerView) view.findViewById(R.id.cardList);
-        recList.setHasFixedSize(true);
+        remoteRecList = (RecyclerView) view.findViewById(R.id.cardList);
+        remoteRecList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
+        remoteRecList.setLayoutManager(llm);
 
         // initialize pull-to-refresh listener
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         // retrieve invoice from server
-        mRefreshLayout.setRefreshing(true);
-        refreshInvoiceItems();
         mRefreshLayout.setColorSchemeResources(
-                        R.color.refresh_progress_1,
-                        R.color.refresh_progress_2,
-                        R.color.refresh_progress_3);
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh items
-                refreshInvoiceItems();
+                refreshRemoteInvoiceItems();
             }
         });
+        mRefreshLayout.setRefreshing(true);
+        refreshRemoteInvoiceItems();
+
     }
 
-    private void refreshInvoiceItems() {
+    private void refreshRemoteInvoiceItems() {
         Commons.initializeInvoiceList(new Commons.onInitializedListener() {
             @Override
             public void onInitialized() {
-                InvoiceListAdapter adapter = new InvoiceListAdapter(SalesHistoryActivity.this);
+                // setup list adapter
+                InvoiceListAdapter adapter = new InvoiceListAdapter(SalesHistoryActivity.this, Commons.getRemoteInvoiceList());
                 adapter.setOnClickListener(new InvoiceListAdapter.OnInvoiceClickListener() {
                     @Override
                     public void onClick(View v, int invIndex) {
@@ -142,11 +226,9 @@ public class SalesHistoryActivity extends AppCompatActivity {
                         startActivity(i);
                     }
                 });
-                recList.setAdapter(adapter);
-
+                remoteRecList.setAdapter(adapter);
                 // Stop refresh animation
                 mRefreshLayout.setRefreshing(false);
-
                 setupStatisticsPage();
             }
         });

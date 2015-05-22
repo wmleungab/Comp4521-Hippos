@@ -47,7 +47,6 @@
     <string name="sales_details_invoice_handled_by">處理者: </string>
 
     <!--For  dialogs-->
-    <string name="dialog_nfc_hint">Tap to a NFC tag</string>
     <string name="dialog_sales_confirm_title">確認</string>
     <string name="dialog_sales_confirm_item_total">物品總計</string>
     <string name="dialog_sales_confirm_final_charge">累計</string>

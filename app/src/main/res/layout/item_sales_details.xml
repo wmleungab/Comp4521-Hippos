@@ -18,17 +18,6 @@
        android:layout_alignParentStart="true"
        app:border_width="0dp"
        app:border_color="#FF000000"/>
-   <TextView
-       android:layout_width="128dp"
-       android:layout_height="wrap_content"
-       android:textAppearance="?android:attr/textAppearanceMedium"
-       android:text="Item Name"
-       android:id="@+id/tv_inventory_item_name"
-       android:layout_centerVertical="true"
-       android:layout_marginLeft="16dp"
-       android:textColor="@color/text_primary"
-       android:layout_toRightOf="@+id/iv_inventory"
-       android:layout_toEndOf="@+id/iv_inventory" />
 
    <TextView
        android:layout_width="wrap_content"
@@ -54,4 +43,16 @@
        android:layout_centerVertical="true"
        android:layout_alignParentRight="true"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Item Name"
+        android:id="@+id/tv_inventory_item_name"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_toLeftOf="@id/tv_card_inventory_item_price"
+        android:textColor="@color/text_primary"
+        android:layout_toRightOf="@+id/iv_inventory"
+        android:layout_toEndOf="@+id/iv_inventory" />
 </RelativeLayout>

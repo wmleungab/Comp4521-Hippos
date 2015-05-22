@@ -8,6 +8,7 @@ import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
+import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.squareup.otto.Bus;
@@ -44,7 +45,8 @@ public class Commons {
     private static List<Category> categoryList = null;
     private static HashMap<Integer, Inventory> inventoryHM = null;
     private static HashMap<Integer, ArrayList<Inventory>> categorizedinventoryHMList = null;
-    private static List<Invoice> invoiceList = null;
+    private static List<Invoice> localInvoiceList = null;
+    private static List<Invoice> remoteInvoiceList = null;
 
     // Getter for Bus event
     public static Bus getBusInstance() {
@@ -188,7 +190,7 @@ public class Commons {
         RestClient.getInstance().getAllInvoice(new RestListener<List<Invoice>>() {
             @Override
             public void onSuccess(List<Invoice> invoices) {
-                invoiceList = invoices;
+                remoteInvoiceList = invoices;
                 mListener.onInitialized();
             }
 
@@ -198,13 +200,27 @@ public class Commons {
             }
         });
     }
-    public static List<Invoice> getInvoiceList() {
-        return invoiceList;
+    public static void initializeLocalInvoiceList() {
+        // Retrieve recotds from local DB
+        InvoiceDB invoiceHelper = InvoiceDB.getInstance();
+        List<Invoice> invoiceList = invoiceHelper.getAll();
+        localInvoiceList = invoiceList;
     }
-    public static Invoice getInvoice(int invoiceIdx) {
-        if(invoiceList == null)
+    public static List<Invoice> getLocalInvoiceList() {
+        return localInvoiceList;
+    }
+    public static Invoice getLocalInvoice(int invoiceIdx) {
+        if(localInvoiceList == null)
             return null;
-        return invoiceList.get(invoiceIdx);
+        return localInvoiceList.get(invoiceIdx);
+    }
+    public static List<Invoice> getRemoteInvoiceList() {
+        return remoteInvoiceList;
+    }
+    public static Invoice getRemoteInvoice(int invoiceIdx) {
+        if(remoteInvoiceList == null)
+            return null;
+        return remoteInvoiceList.get(invoiceIdx);
     }
 
     // User getter/setter for RestClient

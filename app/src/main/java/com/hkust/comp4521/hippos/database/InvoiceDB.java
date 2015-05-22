@@ -28,7 +28,7 @@ public class InvoiceDB {
     public static final String COLUMN_STATUS = "status";
     public static final String CREATE_TABLE = "create table "
             + TABLE_NAME + "("
-            + COLUMN_ID + " integer primary key, "
+            + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_TOTAL_PRICE + " real not null, "
             + COLUMN_FINAL_PRICE + " real not null, "
             + COLUMN_PAID + " real not null, "
@@ -70,7 +70,6 @@ public class InvoiceDB {
             return null;
 
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, invoice.getId());
         cv.put(COLUMN_TOTAL_PRICE, invoice.getTotalPrice());
         cv.put(COLUMN_FINAL_PRICE, invoice.getFinalPrice());
         cv.put(COLUMN_PAID, invoice.getPaid());
@@ -100,7 +99,6 @@ public class InvoiceDB {
             return false;
 
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, invoice.getId());
         cv.put(COLUMN_TOTAL_PRICE, invoice.getTotalPrice());
         cv.put(COLUMN_FINAL_PRICE, invoice.getFinalPrice());
         cv.put(COLUMN_PAID, invoice.getPaid());
