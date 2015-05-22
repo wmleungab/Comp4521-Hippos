@@ -1,10 +1,13 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +20,8 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.nineoldandroids.view.ViewHelper;
@@ -26,10 +31,13 @@ import java.util.List;
 
 public class SalesDetailsActivity extends AppCompatActivity implements ObservableScrollViewCallbacks {
 
+    private Context mContext;
+
     private View mFlexibleSpaceView;
     private View mToolbarView;
     private TextView mTitleView, mSubTitleView;
     private int mFlexibleSpaceHeight;
+    private ImageButton btnBack, btnShare, btnQR;
 
     private Invoice currentInvoice;
 
@@ -38,10 +46,41 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_details);
 
+        mContext = this;
+
         // Init views
         mFlexibleSpaceView = findViewById(R.id.flexible_space);
         mTitleView = (TextView) findViewById(R.id.tv_sales_details_title);
         mSubTitleView = (TextView) findViewById(R.id.tv_sales_details_subtitle);
+        btnBack = (ImageButton) findViewById(R.id.ib_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnQR = (ImageButton) findViewById(R.id.ib_sales_details_qr);
+        btnQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnShare = (ImageButton) findViewById(R.id.ib_sales_details_share);
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               String companyName =  PreferenceService.getStringValue(mContext.getString(R.string.company_name_prefs));
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/html");
+                intent.putExtra(Intent.EXTRA_EMAIL, currentInvoice.getEmail());
+                intent.putExtra(Intent.EXTRA_SUBJECT,  mContext.getString(R.string.email_subject_text)+companyName);
+                intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_text_msg)+ RestClient.SERVER_URL+RestClient.SERVER_RECEIPT+currentInvoice.getId());
+
+                startActivity(Intent.createChooser(intent, "Send Email"));
+            }
+        });
 
         // get information from previous activity (for retrieving sales info)
         Bundle bundle = this.getIntent().getExtras();

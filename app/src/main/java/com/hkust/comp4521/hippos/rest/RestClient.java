@@ -36,6 +36,7 @@ public class RestClient {
 
     public static final String SERVER_ID = "124.244.57.81:80/hippos/v1";
     public static final String SERVER_URL = "http://" + SERVER_ID;
+    public static final String SERVER_RECEIPT = "/receipt.php?id=";
     public static final String DEFAULF_INVEN_PIC = "null";//"./uploads/default.jpg";
 
     public static File file;

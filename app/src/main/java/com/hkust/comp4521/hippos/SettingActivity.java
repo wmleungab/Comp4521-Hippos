@@ -11,15 +11,20 @@ import android.preference.PreferenceFragment;
 import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.gcm.CompanyInfoChangedEvent;
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
+import com.squareup.otto.Subscribe;
 
 
 public class SettingActivity extends PreferenceActivity {
@@ -30,6 +35,9 @@ public class SettingActivity extends PreferenceActivity {
     // Intent
     static Intent intent;
     static Context mContext;
+
+    // Bus
+    private boolean busRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,32 @@ public class SettingActivity extends PreferenceActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+
+        // Always unregister when an object no longer should be on the bus.
+        if(busRegistered == true) {
+            Commons.getBusInstance().unregister(this);
+            busRegistered = false;
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register for bus
+        if(busRegistered == false) {
+            Commons.getBusInstance().register(this);
+            busRegistered = true;
+        }
+    }
+
+
+    @Subscribe
+    public void onCompanyInfoChanged(CompanyInfoChangedEvent event) {
+        // Update settings view from bus message
+        if(event != null) {
+
+        }
     }
 
     /*SharedPreferences preferences = getActivity().getSharedPreferences(
@@ -134,6 +168,9 @@ public class SettingActivity extends PreferenceActivity {
                     return true;
                 }
             });
+        }
+
+        public void companyInfoUpdateView() {
 
         }
 
@@ -157,6 +194,22 @@ public class SettingActivity extends PreferenceActivity {
             if (pref instanceof EditTextPreference) {
                 EditTextPreference editTextPreferencePref = (EditTextPreference) pref;
                 pref.setSummary(editTextPreferencePref.getText());
+
+                String name = PreferenceService.getStringValue(mContext.getString(R.string.company_name_prefs));
+                String email = PreferenceService.getStringValue(mContext.getString(R.string.company_email_prefs));
+                String phone = PreferenceService.getStringValue(mContext.getString(R.string.company_phone_prefs));
+                String address = PreferenceService.getStringValue(mContext.getString(R.string.company_address_prefs));
+                RestClient.getInstance().updateCompanyDetail(name, email, phone, address, new RestListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Toast.makeText(mContext, mContext.getString(R.string.company_info_updated_msg),Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+
+                    }
+                });
             }
         }
 

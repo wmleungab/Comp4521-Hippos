@@ -180,6 +180,17 @@
             android:padding="16dp"
             android:scaleType="fitCenter"
             android:src="@mipmap/share" />
+
+        <ImageButton
+            android:id="@+id/ib_sales_details_qr"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_toLeftOf="@id/ib_sales_details_share"
+            android:layout_centerVertical="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/qr_code" />
     </RelativeLayout>
     <!--
     android:layout_marginLeft on FrameLayout seems to be ignored on Android 2.3

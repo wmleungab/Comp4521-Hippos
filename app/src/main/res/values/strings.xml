@@ -18,6 +18,9 @@
     <string name="nfc_success_msg">NFC tag write successfully</string>
     <string name="nfc_error_msg">NFC tag unreadable, please try again</string>
 
+    <!-- Email message-->
+    <string name="email_text_msg">Dear customer\nPlease find the detail receipt in the following link:\n</string>
+    <string name="email_subject_text">Receipt from </string>
 
     <!-- For MainActivity-->
     <string name="main_greeting_msg">Welcome to HiPPoS!</string>
@@ -74,6 +77,7 @@
     <string name="logout_desc">Logout from current server</string>
     <string name="clear_cache_desc">Clear image cache of inventory list</string>
     <string name="clear_db_desc">Clear all database records</string>
+    <string name="company_info_updated_msg">Information updated</string>
 
     <!--For SalesHistoryActivity-->
     <string name="tab_local_invoice">Local Invoice</string>

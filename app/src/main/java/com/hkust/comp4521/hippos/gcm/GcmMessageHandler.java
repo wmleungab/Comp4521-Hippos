@@ -12,12 +12,15 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.rest.Response_Company;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
 public class GcmMessageHandler extends IntentService {
@@ -30,12 +33,6 @@ public class GcmMessageHandler extends IntentService {
 
     private int inventoryId;
     private int statusCode = -1;
-
-    // Status codes
-    public static final int INVEN_IMAGE_CHANGED = 1;
-    public static final int INVEN_TEXT_CHANGED = 2;
-    public static final int BOTH_INVEN_IMAGE_TEXT_CHANGED = 3;
-    public static final int COMPANY_CHANGED = 4;
 
     @Override
     public void onCreate() {
@@ -69,15 +66,44 @@ public class GcmMessageHandler extends IntentService {
 
                 // perform action on different status code
                 switch (statusCode) {
-                    case INVEN_IMAGE_CHANGED:
+                    case RestClient.ONLY_INVEN_IMAGE_CHANGED:
                         notifyImageChanged();
                         break;
-                    case INVEN_TEXT_CHANGED:
+                    case RestClient.ONLY_INVEN_TEXT_CHANGED:
                         notifyTextChanged();
                         break;
-                    case BOTH_INVEN_IMAGE_TEXT_CHANGED:
+                    case RestClient.BOTH_INVEN_IMAGE_TEXT_CHANGED:
                         notifyNewInventory();
+                        break;
+                    case RestClient.COMPANY_CHANGED:
+                        notifyCompanyChanged();
+                        break;
                 }
+
+            }
+        });
+    }
+
+    private void notifyCompanyChanged() {
+        RestClient.getInstance().getCompanyDetail(new RestListener<Response_Company>() {
+            @Override
+            public void onSuccess(Response_Company response_company) {
+                String nameKey = mContext.getString(R.string.company_name_prefs);
+                PreferenceService.saveStringValue(nameKey, response_company.name);
+                String emailKey = mContext.getString(R.string.company_email_prefs);
+                PreferenceService.saveStringValue(emailKey, response_company.email);
+                String phoneKey = mContext.getString(R.string.company_phone_prefs);
+                PreferenceService.saveStringValue(phoneKey, response_company.phone);
+                String addKey = mContext.getString(R.string.company_address_prefs);
+                PreferenceService.saveStringValue(addKey, response_company.address);
+
+                Commons.getBusInstance().register(mContext);
+                Commons.getBusInstance().post(new CompanyInfoChangedEvent(response_company.name, response_company.email, response_company.phone, response_company.address));
+                Commons.getBusInstance().unregister(mContext);
+            }
+
+            @Override
+            public void onFailure(int status) {
 
             }
         });

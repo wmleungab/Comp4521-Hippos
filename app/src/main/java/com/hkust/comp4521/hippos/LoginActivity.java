@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.User;
+import com.hkust.comp4521.hippos.rest.Response_Company;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
@@ -29,6 +31,9 @@ import java.io.IOException;
 
 
 public class LoginActivity extends AppCompatActivity {
+
+    //Application
+    private Context mContext;
 
     // Views
     private LinearLayout loginLayout;
@@ -43,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mContext = this;
 
         // init views
         serverAddr = (EditText) findViewById(R.id.et_login_server);
@@ -149,6 +156,24 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute (String msg){
+                            RestClient.getInstance().getCompanyDetail(new RestListener<Response_Company>() {
+                                @Override
+                                public void onSuccess(Response_Company response_company) {
+                                    String nameKey = mContext.getString(R.string.company_name_prefs);
+                                    PreferenceService.saveStringValue(nameKey, response_company.name);
+                                    String emailKey = mContext.getString(R.string.company_email_prefs);
+                                    PreferenceService.saveStringValue(emailKey, response_company.email);
+                                    String phoneKey = mContext.getString(R.string.company_phone_prefs);
+                                    PreferenceService.saveStringValue(phoneKey, response_company.phone);
+                                    String addKey = mContext.getString(R.string.company_address_prefs);
+                                    PreferenceService.saveStringValue(addKey, response_company.address);
+                                }
+
+                                @Override
+                                public void onFailure(int status) {
+
+                                }
+                            });
                             PreferenceService.saveStringValue("gcm_registration_id", msg);
                             RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
                                 @Override

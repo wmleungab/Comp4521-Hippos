@@ -75,5 +75,6 @@
     <string name="tab_revenue">收入</string>
     <string name="weekly_sales">每週銷售</string>
     <string name="monthly_sales">每月銷售</string>
+    <string name="dialog_disable_inventory_content"></string>
 
 </resources>
