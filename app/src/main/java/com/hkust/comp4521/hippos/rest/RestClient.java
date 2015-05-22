@@ -79,9 +79,11 @@ public class RestClient {
                 if (!responseUser.error) {
                     authorization = responseUser.apiKey;
                     rl.onSuccess(responseUser.getUser());
+                    return;
                 } else {
                     authorization = "";
                     rl.onFailure(RestListener.AUTHORIZATION_FAIL);
+                    return;
                 }
             }
 
@@ -316,6 +318,7 @@ public class RestClient {
                         @Override
                         public void onSuccess(Inventory Inventory) {
                             restListener.onSuccess(Inventory);
+                            return;
                         }
 
                         @Override
@@ -524,12 +527,38 @@ public class RestClient {
             public void success(Response_Invoice response_invoice, Response response) {
                 Invoice invoice = response_invoice.getInvoice();
                 restListener.onSuccess(invoice);
+                return;
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse().getStatus() == 404)
                     restListener.onFailure(RestListener.NOT_EXIST_OR_SAME_VALUE);
+                return;
+            }
+        });
+    }
+
+    public void getInvoiceByUser(final String user, final RestListener<List<Invoice>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        } else if (user == null | user.equals("")) {
+            restListener.onFailure(RestListener.INVALID_PARA);
+            return;
+        }
+        serverAPI.getInvoiceByUser(authorization, user, new Callback<Response_InvoiceList>() {
+            @Override
+            public void success(Response_InvoiceList response_invoiceList, Response response) {
+                if (!response_invoiceList.error) {
+                    restListener.onSuccess(response_invoiceList.getInvoiceList());
+                    return;
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                restListener.onFailure(RestListener.HIPPOS_SERVER_ERROR);
                 return;
             }
         });
@@ -545,6 +574,7 @@ public class RestClient {
             public void success(Response_InvoiceList response_invoiceList, Response response) {
                 if (!response_invoiceList.error) {
                     restListener.onSuccess(response_invoiceList.getInvoiceList());
+                    return;
                 }
             }
 
@@ -566,6 +596,7 @@ public class RestClient {
             public void success(Response_InvoiceList response_invoiceList, Response response) {
                 if (!response_invoiceList.error) {
                     restListener.onSuccess(response_invoiceList.getInvoiceList());
+                    return;
                 }
             }
 
@@ -587,6 +618,7 @@ public class RestClient {
             public void success(Response_InvoiceList response_invoiceList, Response response) {
                 if (!response_invoiceList.error) {
                     restListener.onSuccess(response_invoiceList.getInvoiceList());
+                    return;
                 }
             }
 
@@ -616,13 +648,20 @@ public class RestClient {
                         @Override
                         public void onSuccess(Invoice invoice) {
                             restListener.onSuccess(invoice);
+                            return;
                         }
 
                         @Override
                         public void onFailure(int status) {
-
+                            restListener.onFailure(status);
+                            return;
                         }
                     });
+                } else {
+                    if (response_invoice.message.contains("Inventory"))
+                        restListener.onFailure(RestListener.INVENTORY_NOT_EXIST_OR_ERROR);
+                    else restListener.onFailure(RestListener.DATABASE_ERROR);
+                    return;
                 }
 
             }
@@ -819,6 +858,10 @@ public class RestClient {
     }
 
     public void getRevenueList(final RestListener<List<InventoryRevenue>> restListener) {
+        if (authorization.equals("")) {
+            restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
+            return;
+        }
         serverAPI.getRevenueList(authorization, new Callback<Response_RevenueList>() {
             @Override
             public void success(Response_RevenueList response_revenueList, Response response) {
@@ -826,7 +869,7 @@ public class RestClient {
                     restListener.onSuccess(response_revenueList.inventoryRevenue);
                     return;
                 } else {
-                    restListener.onFailure(RestListener.NO_INVENTORY);
+                    restListener.onFailure(RestListener.INVENTORY_NOT_EXIST_OR_ERROR);
                     return;
                 }
             }

@@ -11,10 +11,12 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <permission android:name="com.hkust.comp4521.hippos.gcm.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
-    <uses-permission android:name="com.hkust.comp4521.hippos.gcm.permission.C2D_MESSAGE" />
 
+    <permission
+        android:name="com.hkust.comp4521.hippos.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.hkust.comp4521.hippos.gcm.permission.C2D_MESSAGE" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -36,6 +38,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
                 <category android:name="com.hkust.comp4521.hippos" />
             </intent-filter>
         </receiver>
@@ -80,6 +83,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".GenerateQRCodeActivity"
+            android:label="@string/title_activity_generate_qrcode"></activity>
     </application>
 
 </manifest>

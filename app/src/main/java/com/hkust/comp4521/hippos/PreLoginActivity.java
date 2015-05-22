@@ -3,17 +3,21 @@ package com.hkust.comp4521.hippos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
+
+import java.util.List;
 
 
 public class PreLoginActivity extends AppCompatActivity {
@@ -35,7 +39,7 @@ public class PreLoginActivity extends AppCompatActivity {
         String server = PreferenceService.getStringValue(this, PreferenceService.KEY_SERVER_LOCATION);
 
         // if all info is here, try to login with that
-        if(email != null && pw != null && server != null) {
+        if (email != null && pw != null && server != null) {
             RestClient.getInstance().login(email, pw, new RestListener<User>() {
                 @Override
                 public void onSuccess(User user) {
@@ -62,9 +66,9 @@ public class PreLoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(int status) {
-                    if(status == RestListener.NETWORK_UNREACHABLE) {
+                    if (status == RestListener.NETWORK_UNREACHABLE) {
                         // Server unreachable, see if local DB exists
-                        if(InventoryDB.getInstance().getCount() > 0 && CategoryDB.getInstance().getCount() > 0) {
+                        if (InventoryDB.getInstance().getCount() > 0 && CategoryDB.getInstance().getCount() > 0) {
                             // if yes, use the app as usual in offline mode
                             Commons.ONLINE_MODE = false;
                             Commons.initializeInventoryList(new Commons.onInitializedListener() {
@@ -87,6 +91,31 @@ public class PreLoginActivity extends AppCompatActivity {
             // not enough info for login, jump to loginActivity
             launchActivity(LoginActivity.class);
         }
+
+        List<InventoryRevenue> list;
+        RestClient.getInstance().login("wmleungab@gmail.com", "456123", new RestListener<User>() {
+            @Override
+            public void onSuccess(User user) {
+                RestClient.getInstance().getRevenueList(new RestListener<List<InventoryRevenue>>() {
+                    @Override
+                    public void onSuccess(List<InventoryRevenue> inventoryRevenues) {
+                        Log.i("testREve", "" + inventoryRevenues.size());
+
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int status) {
+
+            }
+        });
+
     }
 
     private void launchActivity(Class<?> activityClass) {

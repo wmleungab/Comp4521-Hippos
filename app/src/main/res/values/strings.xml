@@ -99,5 +99,9 @@
     <string name="logout_prefs" translatable="false">logout</string>
     <string name="clear_cache_prefs" translatable="false">clear_cache</string>
     <string name="clear_db_prefs" translatable="false">clear_db</string>
+    <string name="title_activity_generate_qrcode">GenerateQRCodeActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

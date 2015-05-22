@@ -6,86 +6,101 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/main_bg"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:scaleType="centerCrop" />
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/main_bg" />
 
     <GridLayout
         android:id="@+id/gl_main_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+
         <Button
-            android:layout_width="@dimen/main_icon_size"
-            android:layout_height="@dimen/main_icon_size"
-            android:text=" "
             android:id="@+id/btn_main_newinvoice"
-            android:tag="@color/blue_primary"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
+            android:layout_column="0"
+            android:layout_row="0"
             android:background="@mipmap/menu_btn_tl"
-            android:layout_row="0"
-            android:layout_column="0" />
+            android:tag="@color/blue_primary"
+            android:text=" " />
+
         <Button
-            android:layout_width="@dimen/main_icon_size"
-            android:layout_height="@dimen/main_icon_size"
-            android:text=" "
             android:id="@+id/btn_main_invlist"
-            android:tag="@color/green_primary"
-            android:background="@mipmap/menu_btn_tr"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
+            android:layout_column="1"
             android:layout_row="0"
-            android:layout_column="1" />
+            android:background="@mipmap/menu_btn_tr"
+            android:tag="@color/green_primary"
+            android:text=" " />
+
         <Button
-            android:layout_width="@dimen/main_icon_size"
-            android:layout_height="@dimen/main_icon_size"
-            android:text=" "
             android:id="@+id/btn_main_saleshistory"
-            android:tag="@color/red_primary"
-            android:background="@mipmap/menu_btn_bl"
-            android:layout_row="1"
-            android:layout_column="0" />
-        <Button
             android:layout_width="@dimen/main_icon_size"
             android:layout_height="@dimen/main_icon_size"
-            android:text=" "
-            android:id="@+id/btn_main_settings"
-            android:tag="@color/yellow_primary"
-            android:background="@mipmap/menu_btn_br"
+            android:layout_column="0"
             android:layout_row="1"
-            android:layout_column="1" />
+            android:background="@mipmap/menu_btn_bl"
+            android:tag="@color/red_primary"
+            android:text=" " />
+
+        <Button
+            android:id="@+id/btn_main_settings"
+            android:layout_width="@dimen/main_icon_size"
+            android:layout_height="@dimen/main_icon_size"
+            android:layout_column="1"
+            android:layout_row="1"
+            android:background="@mipmap/menu_btn_br"
+            android:tag="@color/yellow_primary"
+            android:text=" " />
     </GridLayout>
 
     <TextView
+        android:id="@+id/tv_main_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_greeting_msg"
-        android:id="@+id/tv_main_title"
-        android:textColor="@color/text_description"
-        android:textSize="32dp"
-        android:layout_marginBottom="32dp"
         android:layout_above="@+id/gl_main_buttons"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="@string/main_greeting_msg"
+        android:textColor="@color/text_description"
+        android:textSize="32dp" />
 
     <ImageView
         android:id="@+id/iv_main_logo"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:src="@mipmap/ic_logo"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_logo" />
 
-    <TextView
+
+    <!--Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        android:id="@+id/tv_main_offline_mode"
+        android:text="qr_test_btn"
+        android:id="@+id/qr_test_btn"
+
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"/-->
+
+    <TextView
+        android:id="@+id/tv_main_offline_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="16dp"
+        android:paddingRight="16dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <at.markushi.ui.RevealColorView
         android:id="@+id/revealview_main_bg"

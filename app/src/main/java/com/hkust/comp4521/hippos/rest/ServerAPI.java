@@ -59,6 +59,9 @@ public interface ServerAPI {
     @GET("/invoice/{id}")
     void getInvoice(@Header("Authorization") String authorization, @Path("id") int id, Callback<Response_Invoice> callback);
 
+    @GET("/invoice/user/{user}")
+    void getInvoiceByUser(@Header("Authorization") String authorization, @Path("user") String user, Callback<Response_InvoiceList> callback);
+
     @GET("/invoice/")
     void getAllInvoice(@Header("Authorization") String authorization, Callback<Response_InvoiceList> callback);
 
