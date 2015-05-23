@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -112,45 +114,69 @@ public class NewInvoiceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // inflate view for dialog
                 LayoutInflater mInflater = getLayoutInflater().from(mContext);
-                View vv = mInflater.inflate(R.layout.dialog_sales_confirm, null);
-                mSalesConfirmDialog =  new MaterialDialog.Builder(mActivity)
-                                        .customView(vv, false)
-                                        .autoDismiss(false)
-                                        .positiveText(mContext.getString(R.string.dialog_okay))
-                                        .negativeText(mContext.getString(R.string.dialog_cancel))
-                                        .callback(new MaterialDialog.ButtonCallback() {
-                                            @Override
-                                            public void onPositive(MaterialDialog dialog) {
-                                                if (etPaid.getText().toString().trim().length() > 0) {
-                                                    // check if price is valid first
-                                                    double totalPrice = Double.parseDouble(etPrice.getText().toString());
-                                                    double paidPrice = Double.parseDouble(etPaid.getText().toString());
-                                                    if (totalPrice > paidPrice) {
-                                                        etPaid.setError("Please input a valid price");
-                                                    } else {
-                                                        generateInvoiceRecord(totalPrice, paidPrice);
-                                                        dialog.dismiss();
-                                                    }
-                                                } else {
-                                                    etPaid.setError("Please input a price!");
-                                                }
-                                            }
+                View vv = mInflater.inflate(R.layout.dialog_sales_confirm_new, null);
+                mSalesConfirmDialog = new MaterialDialog.Builder(mActivity)
+                        .customView(vv, false)
+                        .autoDismiss(false)
+                        .positiveText(mContext.getString(R.string.dialog_okay))
+                        .negativeText(mContext.getString(R.string.dialog_cancel))
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                if (etPaid.getText().toString().trim().length() > 0) {
+                                    // check if price is valid first
+                                    double totalPrice = Double.parseDouble(etPrice.getText().toString());
+                                    double paidPrice = Double.parseDouble(etPaid.getText().toString());
+                                    if (totalPrice > paidPrice) {
+                                        etPaid.setError("Please input a valid price");
+                                    } else {
+                                        generateInvoiceRecord(totalPrice, paidPrice);
+                                        dialog.dismiss();
+                                    }
+                                } else {
+                                    etPaid.setError("Please input a price!");
+                                }
+                            }
 
-                                            @Override
-                                            public void onNegative(MaterialDialog dialog) {
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .show();
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
                 // Put price data into the view
                 double price = mAdapter.getInvoiceInventoriesTotal();
                 TextView tvTotal = (TextView) vv.findViewById(R.id.tv_sales_confirms_item_total);
-                tvTotal.setText(price+"");
+                tvTotal.setText(price + "");
                 etPrice = (EditText) vv.findViewById(R.id.et_sales_confirm_final_charge);
-                etPrice.setText(price+"");
+                etPrice.setText(price + "");
                 etPaid = (EditText) vv.findViewById(R.id.et_sales_confirm_paid);
                 etPaid.setText("");
 
+                List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
+                LinearLayout tableLayout1 = (LinearLayout) vv.findViewById(R.id.tableLayout1);
+                for(InvoiceInventory inv : invList) {
+                    String iName = inv.getInventory().getName();
+                    double iPrice = inv.getPrice();
+                    int iQuant = inv.getQuantity();
+
+                    TableRow tR = new TableRow(mContext);
+                    tR.setPadding(5, 5, 5, 5);
+
+                    TextView tV_txt1 = new TextView(mContext);
+                    TextView tV_txt2 = new TextView(mContext);
+                    TextView tV_txt3 = new TextView(mContext);
+
+
+                    tV_txt1.setText(iName);
+                    tV_txt2.setText(iPrice+"");
+                    tV_txt2.setText(iQuant+"");
+
+                    tR.addView(tV_txt1);
+                    tR.addView(tV_txt2);
+
+                    tableLayout1.addView(tR);
+                }
             }
         });
     }
