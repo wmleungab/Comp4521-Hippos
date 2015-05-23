@@ -1,7 +1,10 @@
 package com.hkust.comp4521.hippos;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +19,9 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.android.Contents;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
@@ -24,6 +30,7 @@ import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
+import com.hkust.comp4521.hippos.utils.QRCodeEncoder;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
@@ -63,7 +70,34 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         btnQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_qrcode_layout, null);
+                int id = currentInvoice.getId();
+                String link = RestClient.SERVER_URL + RestClient.SERVER_RECEIPT + id;
+                //Encode with a QR Code image
+                QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(link,
+                        null,
+                        Contents.Type.TEXT,
+                        BarcodeFormat.QR_CODE.toString(),
+                        500);
+                try {
+                    Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+                    ImageView myImage = (ImageView) dialogView.findViewById(R.id.qr_dialog_image);
+                    myImage.setImageBitmap(bitmap);
 
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+                new AlertDialog.Builder(mContext)
+                        .setTitle(R.string.QR_Dialog_title)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setView(dialogView)
+                        .show();
             }
         });
         btnShare = (ImageButton) findViewById(R.id.ib_sales_details_share);
