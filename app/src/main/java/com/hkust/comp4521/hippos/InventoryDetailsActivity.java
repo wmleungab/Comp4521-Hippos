@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
+import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.NFCService;
@@ -220,7 +220,6 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mNFC.WriteModeOff();
         TintedStatusBar.changeStatusBarColor(this, this.getResources().getColor(R.color.green_primary));
         // Always unregister when an object no longer should be on the bus.
         if(busRegistered == true) {

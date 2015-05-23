@@ -85,13 +85,17 @@ public class NFCService {
 
 
 	public void WriteModeOn() {
-		writeMode = true;
-		adapter.enableForegroundDispatch(aty, pendingIntent, writeTagFilters, null);
+		if(writeMode == false && adapter != null) {
+			writeMode = true;
+			adapter.enableForegroundDispatch(aty, pendingIntent, writeTagFilters, null);
+		}
 	}
 
 	public void WriteModeOff() {
-		writeMode = false;
-		adapter.disableForegroundDispatch(aty);
+		if(writeMode == true && adapter != null) {
+			writeMode = false;
+			adapter.disableForegroundDispatch(aty);
+		}
 	}
 
 	/**

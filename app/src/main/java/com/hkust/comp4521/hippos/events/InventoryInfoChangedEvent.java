@@ -1,4 +1,4 @@
-package com.hkust.comp4521.hippos.gcm;
+package com.hkust.comp4521.hippos.events;
 
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 

@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hkust.comp4521.hippos.datastructures.Commons;
+import com.hkust.comp4521.hippos.events.ConnectivitiyChangedEvent;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.squareup.otto.Subscribe;
 
 import at.markushi.ui.RevealColorView;
 
@@ -49,40 +51,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.btn_main_settings).setOnClickListener(this);
         //findViewById(R.id.qr_test_btn).setOnClickListener(this);
         offlineModeText = (TextView) findViewById(R.id.tv_main_offline_mode);
-        if(Commons.ONLINE_MODE == false) {
-            offlineModeText.setText("Offline Mode");
+        if(Commons.ONLINE_MODE) {
+            offlineModeText.setText("");
+        } else {
+            offlineModeText.setText(getString(R.string.offline_mode_msg));
         }
-    }
-
-    private void setupGCMButtons() {
-        /*findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>(){
-                    @Override
-                    public void onSuccess(String s) {
-                        Toast.makeText(mContext, "GCM registered!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-
-                    }
-                });
-            }
-        });
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RestClient.getInstance().sendGCM(1, true, false);
-            }
-        });
-        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RestClient.getInstance().sendGCM(2, false, true);
-            }
-        });*/
     }
 
     @Override
@@ -181,6 +154,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             }, 600);
         }
+
+        // Register Bus event
+        Commons.getBusInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Unregister Bus event
+        Commons.getBusInstance().unregister(this);
     }
 
 
@@ -193,6 +177,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             TintedStatusBar.changeStatusBarColor(this, backgroundColor);
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    @Subscribe
+    public void onConnectivityChanged(ConnectivitiyChangedEvent event) {
+        // Update online status
+        Commons.ONLINE_MODE = event.onlineMode;
+        if(Commons.ONLINE_MODE) {
+            offlineModeText.setText("");
+        } else {
+            offlineModeText.setText(getString(R.string.offline_mode_msg));
         }
     }
 }

@@ -18,7 +18,7 @@ import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.gcm.CompanyInfoChangedEvent;
+import com.hkust.comp4521.hippos.events.CompanyInfoChangedEvent;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;

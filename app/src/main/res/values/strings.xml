@@ -24,6 +24,7 @@
 
     <!-- For MainActivity-->
     <string name="main_greeting_msg">Welcome to HiPPoS!</string>
+    <string name="offline_mode_msg">Offline Mode</string>
 
     <!-- For Inventory tags-->
     <string name="inventory_name">Item Name</string>

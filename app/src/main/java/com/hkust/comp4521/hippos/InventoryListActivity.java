@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import com.astuetz.PagerSlidingTabStrip;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.gcm.InventoryInfoChangedEvent;
+import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
