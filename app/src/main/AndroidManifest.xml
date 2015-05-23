@@ -51,6 +51,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <service android:name=".utils.InvoiceHandler" />
 
         <activity
             android:name=".MainActivity"
