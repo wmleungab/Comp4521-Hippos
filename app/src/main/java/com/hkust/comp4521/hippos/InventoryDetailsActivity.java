@@ -290,6 +290,8 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             tvItemStock.setText(mContext.getString(R.string.stock) + updatedItem.getStock());
             if(updatedItem.getStatus() == Inventory.INVENTORY_DISABLED)
                 disableInventory();
+
+            Toast.makeText(mContext, "Inventory image updated!", Toast.LENGTH_SHORT).show();
             new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
         }
     }

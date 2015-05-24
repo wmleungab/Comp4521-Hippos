@@ -175,6 +175,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
                             public void onFailure(int status) {
                                 inv.setStatus(Invoice.INVOICE_LOCAL);
                                 invoiceHelper.update(inv);
+                                mLocalRefreshLayout.setRefreshing(false);
                             }
                         });
                     }
@@ -191,10 +192,8 @@ public class SalesHistoryActivity extends AppCompatActivity {
         adapter.setOnClickListener(new InvoiceListAdapter.OnInvoiceClickListener() {
             @Override
             public void onClick(View v, int invIndex) {
-                Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
-                Bundle b = new Bundle();
-                b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
-                i.putExtras(b);
+                Intent i = new Intent(mContext, SalesDetailsActivity.class);
+                SalesDetailsActivity.setCurrentInvoice(Commons.getLocalInvoiceList().get(invIndex));
                 startActivity(i);
             }
         });

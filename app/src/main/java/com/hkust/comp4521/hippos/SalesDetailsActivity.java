@@ -76,60 +76,66 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         mGrandTotal.setText(currentInvoice.getFormattedFinalPrice());
         mPaid.setText(currentInvoice.getFormattedPaid());
         mChanges.setText(currentInvoice.getFormattedChange());
+        btnQR = (ImageButton) findViewById(R.id.ib_sales_details_qr);
+        btnShare = (ImageButton) findViewById(R.id.ib_sales_details_share);
+        if(currentInvoice.getStatus() == Invoice.INVOICE_REMOTE) {
+            btnQR.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_qrcode_layout, null);
+                    int id = currentInvoice.getId();
+                    String link = RestClient.SERVER_URL + RestClient.SERVER_RECEIPT + id;
+                    //Encode with a QR Code image
+                    QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(link,
+                            null,
+                            Contents.Type.TEXT,
+                            BarcodeFormat.QR_CODE.toString(),
+                            getResources().getDimensionPixelSize(R.dimen.qr_code_dimension));
+                    try {
+                        Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+                        ImageView myImage = (ImageView) dialogView.findViewById(R.id.qr_dialog_image);
+                        myImage.setImageBitmap(bitmap);
+
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(R.string.QR_Dialog_title)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                }
+                            })
+                            .setView(dialogView)
+                            .show();
+                }
+            });
+            btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String companyName =  PreferenceService.getStringValue(mContext.getString(R.string.company_name_prefs));
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/html");
+                    intent.putExtra(Intent.EXTRA_EMAIL, currentInvoice.getEmail());
+                    intent.putExtra(Intent.EXTRA_SUBJECT,  mContext.getString(R.string.email_subject_text)+companyName);
+                    intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_text_msg)+ RestClient.SERVER_URL+RestClient.SERVER_RECEIPT+currentInvoice.getId());
+
+                    startActivity(Intent.createChooser(intent, getString(R.string.sales_details_shared_via)));
+                }
+            });
+        } else {
+            btnQR.setVisibility(View.GONE);
+            btnShare.setVisibility(View.GONE);
+        }
+
         btnBack = (ImageButton) findViewById(R.id.ib_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-            }
-        });
-        btnQR = (ImageButton) findViewById(R.id.ib_sales_details_qr);
-        btnQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_qrcode_layout, null);
-                int id = currentInvoice.getId();
-                String link = RestClient.SERVER_URL + RestClient.SERVER_RECEIPT + id;
-                //Encode with a QR Code image
-                QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(link,
-                        null,
-                        Contents.Type.TEXT,
-                        BarcodeFormat.QR_CODE.toString(),
-                        getResources().getDimensionPixelSize(R.dimen.qr_code_dimension));
-                try {
-                    Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-                    ImageView myImage = (ImageView) dialogView.findViewById(R.id.qr_dialog_image);
-                    myImage.setImageBitmap(bitmap);
-
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-                new AlertDialog.Builder(mContext)
-                        .setTitle(R.string.QR_Dialog_title)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                            }
-                        })
-                        .setView(dialogView)
-                        .show();
-            }
-        });
-        btnShare = (ImageButton) findViewById(R.id.ib_sales_details_share);
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               String companyName =  PreferenceService.getStringValue(mContext.getString(R.string.company_name_prefs));
-
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/html");
-                intent.putExtra(Intent.EXTRA_EMAIL, currentInvoice.getEmail());
-                intent.putExtra(Intent.EXTRA_SUBJECT,  mContext.getString(R.string.email_subject_text)+companyName);
-                intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_text_msg)+ RestClient.SERVER_URL+RestClient.SERVER_RECEIPT+currentInvoice.getId());
-
-                startActivity(Intent.createChooser(intent, getString(R.string.sales_details_shared_via)));
             }
         });
 
