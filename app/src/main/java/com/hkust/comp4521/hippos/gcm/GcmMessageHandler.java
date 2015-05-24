@@ -16,7 +16,6 @@ import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.events.CompanyInfoChangedEvent;
 import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.rest.Response_Company;
 import com.hkust.comp4521.hippos.rest.RestClient;
@@ -91,7 +90,7 @@ public class GcmMessageHandler extends IntentService {
     }
 
     private void notifyCompanyChanged() {
-        RestClient.getInstance().getCompanyDetail(new RestListener<Response_Company>() {
+        RestClient.getInstance(mContext).getCompanyDetail(new RestListener<Response_Company>() {
             @Override
             public void onSuccess(Response_Company response_company) {
                 String nameKey = mContext.getString(R.string.company_name_prefs);
@@ -102,10 +101,6 @@ public class GcmMessageHandler extends IntentService {
                 PreferenceService.saveStringValue(phoneKey, response_company.phone);
                 String addKey = mContext.getString(R.string.company_address_prefs);
                 PreferenceService.saveStringValue(addKey, response_company.address);
-
-                Commons.getBusInstance().register(mContext);
-                Commons.getBusInstance().post(new CompanyInfoChangedEvent(response_company.name, response_company.email, response_company.phone, response_company.address));
-                Commons.getBusInstance().unregister(mContext);
             }
 
             @Override
@@ -116,7 +111,7 @@ public class GcmMessageHandler extends IntentService {
     }
 
     private void notifyNewInventory() {
-        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+        RestClient.getInstance(mContext).getInventory(inventoryId, new RestListener<Inventory>(){
             @Override
             public void onSuccess(Inventory inventory) {
                 // Create database record
@@ -141,7 +136,7 @@ public class GcmMessageHandler extends IntentService {
     }
 
     private void notifyTextChanged() {
-        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+        RestClient.getInstance(mContext).getInventory(inventoryId, new RestListener<Inventory>(){
             @Override
             public void onSuccess(Inventory inventory) {
                 // Update database record
@@ -183,7 +178,7 @@ public class GcmMessageHandler extends IntentService {
     }
 
     private void notifyImageChanged() {
-        RestClient.getInstance().getInventory(inventoryId, new RestListener<Inventory>(){
+        RestClient.getInstance(mContext).getInventory(inventoryId, new RestListener<Inventory>(){
             @Override
             public void onSuccess(Inventory inventory) {
                 // Update database record

@@ -1,30 +1,32 @@
 package com.hkust.comp4521.hippos;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.hkust.comp4521.hippos.database.CategoryDB;
 import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
 import com.hkust.comp4521.hippos.datastructures.User;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
 
-import java.util.List;
-
 
 public class PreLoginActivity extends AppCompatActivity {
+
+    // Application
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
 
         // ensure app folders exist
         ImageUtils.checkAppFolderStructure();
@@ -40,7 +42,7 @@ public class PreLoginActivity extends AppCompatActivity {
 
         // if all info is here, try to login with that
         if (email != null && pw != null && server != null) {
-            RestClient.getInstance().login(email, pw, new RestListener<User>() {
+            RestClient.getInstance(mContext).login(email, pw, new RestListener<User>() {
                 @Override
                 public void onSuccess(User user) {
                     Commons.setUser(user);
@@ -48,7 +50,7 @@ public class PreLoginActivity extends AppCompatActivity {
                     Commons.initializeInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {
-                            RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
+                            RestClient.getInstance(mContext).registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
                                 @Override
                                 public void onSuccess(String s) {
                                     Toast.makeText(PreLoginActivity.this, "GCM service registered!", Toast.LENGTH_SHORT).show();
@@ -91,31 +93,6 @@ public class PreLoginActivity extends AppCompatActivity {
             // not enough info for login, jump to loginActivity
             launchActivity(LoginActivity.class);
         }
-
-        List<InventoryRevenue> list;
-        RestClient.getInstance().login("wmleungab@gmail.com", "456123", new RestListener<User>() {
-            @Override
-            public void onSuccess(User user) {
-                RestClient.getInstance().getRevenueList(new RestListener<List<InventoryRevenue>>() {
-                    @Override
-                    public void onSuccess(List<InventoryRevenue> inventoryRevenues) {
-                        Log.i("testREve", "" + inventoryRevenues.size());
-
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(int status) {
-
-            }
-        });
-
     }
 
     private void launchActivity(Class<?> activityClass) {

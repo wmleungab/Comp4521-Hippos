@@ -18,13 +18,11 @@ import com.hkust.comp4521.hippos.database.DatabaseHelper;
 import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.events.CompanyInfoChangedEvent;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageUtils;
-import com.squareup.otto.Subscribe;
 
 
 public class SettingActivity extends PreferenceActivity {
@@ -78,19 +76,6 @@ public class SettingActivity extends PreferenceActivity {
         }
     }
 
-
-    @Subscribe
-    public void onCompanyInfoChanged(CompanyInfoChangedEvent event) {
-        // Update settings view from bus message
-        if(event != null) {
-
-        }
-    }
-
-    /*SharedPreferences preferences = getActivity().getSharedPreferences(
-            SettingActivity.PrefsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
-            Context.MODE_PRIVATE);
-            */
     public static class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         @Override
@@ -156,10 +141,11 @@ public class SettingActivity extends PreferenceActivity {
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    DatabaseHelper.getDatabase().delete(InventoryDB.TABLE_NAME, null, null);
-                    DatabaseHelper.getDatabase().delete(InvoiceDB.TABLE_NAME, null, null);
-                    DatabaseHelper.getDatabase().delete(CategoryDB.TABLE_NAME, null, null);
-                    Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                    DatabaseHelper.getDatabase().delete(InventoryDB.TABLE_NAME, "1", null);
+                    DatabaseHelper.getDatabase().delete(InvoiceDB.TABLE_NAME, "1", null);
+                    DatabaseHelper.getDatabase().delete(CategoryDB.TABLE_NAME, "1", null);
+                    Commons.resetInventoryList();
+                    Commons.forceUpdateInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {
                             startActivity(intent);
@@ -199,7 +185,7 @@ public class SettingActivity extends PreferenceActivity {
                 String email = PreferenceService.getStringValue(mContext.getString(R.string.company_email_prefs));
                 String phone = PreferenceService.getStringValue(mContext.getString(R.string.company_phone_prefs));
                 String address = PreferenceService.getStringValue(mContext.getString(R.string.company_address_prefs));
-                RestClient.getInstance().updateCompanyDetail(name, email, phone, address, new RestListener<String>() {
+                RestClient.getInstance(mContext).updateCompanyDetail(name, email, phone, address, new RestListener<String>() {
                     @Override
                     public void onSuccess(String s) {
                         Toast.makeText(mContext, mContext.getString(R.string.company_info_updated_msg),Toast.LENGTH_SHORT).show();

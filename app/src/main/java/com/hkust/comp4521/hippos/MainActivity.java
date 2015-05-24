@@ -157,6 +157,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         // Register Bus event
         Commons.getBusInstance().register(this);
+
+        // Check for online mode
+        if(Commons.ONLINE_MODE) {
+            offlineModeText.setText("");
+        } else {
+            offlineModeText.setText(getString(R.string.offline_mode_msg));
+        }
     }
 
     @Override
@@ -179,7 +186,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             super.onBackPressed();
         }
     }
-
 
     @Subscribe
     public void onConnectivityChanged(ConnectivitiyChangedEvent event) {

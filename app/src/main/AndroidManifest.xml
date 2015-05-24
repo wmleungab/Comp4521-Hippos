@@ -39,16 +39,14 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
                 <category android:name="com.hkust.comp4521.hippos" />
             </intent-filter>
         </receiver>
-
         <service android:name=".gcm.GcmMessageHandler" />
 
         <receiver android:name=".utils.NetworkChangeReceiver" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
         <service android:name=".utils.InvoiceHandler" />

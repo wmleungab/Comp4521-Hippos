@@ -183,7 +183,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
-                                RestClient.getInstance().updateInventory(mItem.getId(), mItem.getName(), mItem.getPrice(), mItem.getStock(), Inventory.INVENTORY_DISABLED, mItem.getCategory(), new RestListener<Inventory>() {
+                                RestClient.getInstance(mContext).updateInventory(mItem.getId(), mItem.getName(), mItem.getPrice(), mItem.getStock(), Inventory.INVENTORY_DISABLED, mItem.getCategory(), new RestListener<Inventory>() {
                                     @Override
                                     public void onSuccess(Inventory inventory) {
                                         Toast.makeText(mContext, "Inventory " + inventory.getName() + " disabled!", Toast.LENGTH_SHORT).show();

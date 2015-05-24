@@ -50,6 +50,7 @@
     <string name="sales_details_item_total_title">Item Total</string>
     <string name="sales_details_adjustment_title">Adjustment</string>
     <string name="sales_details_grand_totals_title">Grand Total</string>
+    <string name="sales_details_paid_title">Paid</string>
     <string name="sales_details_changes_title">Changes</string>
     <string name="sales_details_invoice_items_title">Invoice Items</string>
     <string name="sales_details_invoice_date">Date: </string>

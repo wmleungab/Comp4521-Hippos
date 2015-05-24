@@ -53,7 +53,7 @@ public class InventoryRevenueListAdapter extends ImageListBaseAdapter<InventoryR
             contactViewHolder.itemName.setText(ci.getName());
             contactViewHolder.itemPrice.setText(cii.getFormattedRevenue());
             contactViewHolder.itemStock.setText("x" + cii.getQuantity());
-            setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 32);
+            setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 128);
         }
 
         public static class InventoryViewHolder extends RecyclerView.ViewHolder {

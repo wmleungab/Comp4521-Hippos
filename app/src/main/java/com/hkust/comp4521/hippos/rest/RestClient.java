@@ -1,5 +1,6 @@
 package com.hkust.comp4521.hippos.rest;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -9,6 +10,7 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.User;
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
@@ -34,16 +36,14 @@ public class RestClient {
     public static final int BOTH_INVEN_IMAGE_TEXT_CHANGED = 3;
     public static final int COMPANY_CHANGED = 4;
 
-    public static final String SERVER_ID = "124.244.57.81:80/hippos/v1";
-    public static final String SERVER_URL = "http://" + SERVER_ID;
+    public static String SERVER_ID = "124.244.57.81:80/hippos/v1";
+    public static String SERVER_URL = "http://" + SERVER_ID;
     public static final String SERVER_RECEIPT = "/receipt.php?id=";
     public static final String DEFAULF_INVEN_PIC = "null";//"./uploads/default.jpg";
 
-    public static File file;
-
     private static RestClient instance;
     private static ServerAPI serverAPI;
-    private String authorization;
+    public static String authorization;
 
     static {
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -58,15 +58,22 @@ public class RestClient {
         serverAPI = restAdapter.create(ServerAPI.class);
     }
 
-    //public static ServerAPI get() {
-    //return serverAPI;
-    // }
     private RestClient() {
         authorization = "";
     }
 
     public static RestClient getInstance() {
         if (instance == null) {
+            instance = new RestClient();
+        }
+        return instance;
+    }
+
+    public static RestClient getInstance(Context mContext) {
+        if (instance == null) {
+            PreferenceService.initPreference(mContext);
+            SERVER_ID = PreferenceService.getStringValue(PreferenceService.KEY_SERVER_LOCATION);
+            SERVER_URL = "http://" + SERVER_ID;
             instance = new RestClient();
         }
         return instance;
@@ -673,7 +680,9 @@ public class RestClient {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse().getStatus() == 400)
+                if (error.getResponse() == null)
+                    restListener.onFailure(RestListener.NETWORK_UNREACHABLE);
+                else if (error.getResponse().getStatus() == 400)
                     restListener.onFailure(RestListener.INVALID_EMAIL);
                 return;
             }

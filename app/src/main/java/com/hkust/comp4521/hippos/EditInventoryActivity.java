@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -139,26 +138,28 @@ public class EditInventoryActivity extends AppCompatActivity {
 
     private void editInventory() {
         // get values from view
-        String name = etItemName.getText().toString();
-        Double price = Double.parseDouble(etItemPrice.getText().toString());
-        int stock = Integer.parseInt(etItemStock.getText().toString());
-        final int category = ((Category) categorySpinner.getSelectedItem()).getID();
+        try {
+            String name = etItemName.getText().toString();
+            Double price = Double.parseDouble(etItemPrice.getText().toString());
+            int stock = Integer.parseInt(etItemStock.getText().toString());
+            final int category = ((Category) categorySpinner.getSelectedItem()).getID();
 
-        Log.i("EditInventory", "Category: " + category);
+            RestClient.getInstance(mContext).updateInventory(mItem.getId(), name, price, stock, mItem.getStatus(), category, new RestListener<Inventory>() {
+                @Override
+                public void onSuccess(Inventory inventory) {
+                    Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
 
-        RestClient.getInstance().updateInventory(mItem.getId(), name, price, stock, mItem.getStatus(), category, new RestListener<Inventory>() {
-            @Override
-            public void onSuccess(Inventory inventory) {
-                Toast.makeText(mContext, "Inventory " + inventory.getName() + " updated!", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-
-            @Override
-            public void onFailure(int status) {
-                Toast.makeText(mContext, "Failed: status code=" + status, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+                @Override
+                public void onFailure(int status) {
+                    Toast.makeText(mContext, "Failed: status code=" + status, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        } catch(NumberFormatException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void createNewInventory() {
@@ -168,7 +169,7 @@ public class EditInventoryActivity extends AppCompatActivity {
         int stock = Integer.parseInt(etItemStock.getText().toString());
         int category = ((Category) categorySpinner.getSelectedItem()).getID();
 
-        RestClient.getInstance().createInventory(name, price, stock, selectedFile, category, new RestListener<Inventory>() {
+        RestClient.getInstance(mContext).createInventory(name, price, stock, selectedFile, category, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
                 Toast.makeText(mContext, "Inventory " + inventory.getName() + " created!", Toast.LENGTH_SHORT).show();
@@ -272,7 +273,7 @@ public class EditInventoryActivity extends AppCompatActivity {
     }
 
     private void uploadImageToServer() {
-        RestClient.getInstance().updateInventoryImage(mItem.getId(), selectedFile, new RestListener<Inventory>() {
+        RestClient.getInstance(mContext).updateInventoryImage(mItem.getId(), selectedFile, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
                 // Delete the old image

@@ -11,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,7 +73,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        mAdapter = new InvoiceInventoryListAdapter(mContext, Commons.MODE_NEW_INVOICE);
+        mAdapter = new InvoiceInventoryListAdapter(mContext);
         recList.setAdapter(mAdapter);
         //recList.setItemAnimator(new DefaultItemAnimator());
         recList.setItemAnimator(null);
@@ -117,7 +115,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // inflate view for dialog
                 LayoutInflater mInflater = getLayoutInflater().from(mContext);
-                View vv = mInflater.inflate(R.layout.dialog_sales_confirm_new, null);
+                View vv = mInflater.inflate(R.layout.dialog_sales_confirm, null);
                 mSalesConfirmDialog = new MaterialDialog.Builder(mActivity)
                         .customView(vv, false)
                         .autoDismiss(false)
@@ -155,31 +153,6 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 etPrice.setText(price + "");
                 etPaid = (EditText) vv.findViewById(R.id.et_sales_confirm_paid);
                 etPaid.setText("");
-
-                List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
-                LinearLayout tableLayout1 = (LinearLayout) vv.findViewById(R.id.tableLayout1);
-                for(InvoiceInventory inv : invList) {
-                    String iName = inv.getInventory().getName();
-                    double iPrice = inv.getPrice();
-                    int iQuant = inv.getQuantity();
-
-                    TableRow tR = new TableRow(mContext);
-                    tR.setPadding(5, 5, 5, 5);
-
-                    TextView tV_txt1 = new TextView(mContext);
-                    TextView tV_txt2 = new TextView(mContext);
-                    TextView tV_txt3 = new TextView(mContext);
-
-
-                    tV_txt1.setText(iName);
-                    tV_txt2.setText(iPrice+"");
-                    tV_txt2.setText(iQuant+"");
-
-                    tR.addView(tV_txt1);
-                    tR.addView(tV_txt2);
-
-                    tableLayout1.addView(tR);
-                }
             }
         });
 
@@ -200,7 +173,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
     private void generateInvoiceRecord(double totalPrice, double paidPrice) {
         // Setup new invoice object
         List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
-        Invoice invoice = new Invoice();
+        final Invoice invoice = new Invoice();
         invoice.setInvoiceInventories(invList);
         invoice.setUser(Commons.getUser().name);
         invoice.setEmail(Commons.getUser().email);
@@ -210,23 +183,34 @@ public class NewInvoiceActivity extends AppCompatActivity {
         invoice.setDateTime(invoice.generateCurrentDatetimeString());
         // if the device is online, try to upload to server first
         if(Commons.ONLINE_MODE) {
-            RestClient.getInstance().createInvoice(invoice, new RestListener<Invoice>() {
+            RestClient.getInstance(mContext).createInvoice(invoice, new RestListener<Invoice>() {
                 @Override
                 public void onSuccess(Invoice invoice) {
                     Toast.makeText(mContext, "Invoice created!", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(mContext, SalesDetailsActivity.class);
                     SalesDetailsActivity.setCurrentInvoice(invoice);
+                    invoice.setStatus(Invoice.INVOICE_REMOTE);
                     startActivity(i);
                 }
 
                 @Override
                 public void onFailure(int status) {
-
+                    storeInvoiceToLocalDB(invoice);
                 }
             });
+        } else {
+            storeInvoiceToLocalDB(invoice);
         }
+    }
+
+    private void storeInvoiceToLocalDB(Invoice invoice) {
         InvoiceDB invoiceHelper = InvoiceDB.getInstance();
-        //invoiceHelper.insert(invoice);
+        invoiceHelper.insert(invoice);
+        Toast.makeText(mContext, "Invoice cached!", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(mContext, SalesDetailsActivity.class);
+        SalesDetailsActivity.setCurrentInvoice(invoice);
+        invoice.setStatus(Invoice.INVOICE_LOCAL);
+        startActivity(i);
     }
 
     @Override
@@ -253,7 +237,10 @@ public class NewInvoiceActivity extends AppCompatActivity {
                         JSONObject nfcJSON = new JSONObject(readStr);
                         Toast.makeText(mContext, readStr, Toast.LENGTH_SHORT).show();
                         Inventory inv = Commons.getInventory(nfcJSON.getInt(Inventory.INVENTORY_INV_ID));
-                        mAdapter.addItem(new InvoiceInventory(inv, 1));
+                        if(inv != null)
+                            mAdapter.addItem(new InvoiceInventory(inv, 1));
+                        else
+                            Toast.makeText(mContext, mContext.getString(R.string.nfc_error_msg), Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(mContext, mContext.getString(R.string.nfc_error_msg), Toast.LENGTH_SHORT).show();

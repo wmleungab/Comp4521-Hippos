@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         // login to slim server
-        RestClient instance = RestClient.getInstance();
+        RestClient instance = RestClient.getInstance(mContext);
         final String email = userName.getText().toString();
         final String pw = password.getText().toString();
 
@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute (String msg){
-                            RestClient.getInstance().getCompanyDetail(new RestListener<Response_Company>() {
+                            RestClient.getInstance(mContext).getCompanyDetail(new RestListener<Response_Company>() {
                                 @Override
                                 public void onSuccess(Response_Company response_company) {
                                     String nameKey = mContext.getString(R.string.company_name_prefs);
@@ -177,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                             PreferenceService.saveStringValue("gcm_registration_id", msg);
-                            RestClient.getInstance().registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
+                            RestClient.getInstance(mContext).registerGCM(PreferenceService.getStringValue(PreferenceService.KEY_GCM_REGISTRATION_ID), new RestListener<String>() {
                                 @Override
                                 public void onSuccess(String s) {
                                     Toast.makeText(LoginActivity.this, "GCM service registered!",Toast.LENGTH_SHORT).show();

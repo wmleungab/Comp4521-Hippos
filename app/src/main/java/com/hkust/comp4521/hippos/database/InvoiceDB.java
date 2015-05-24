@@ -84,8 +84,7 @@ public class InvoiceDB {
         return invoice;
     }
 
-    //there should not be a update on invoice ?
-    private boolean update(Invoice invoice) {
+    public boolean update(Invoice invoice) {
         //set the time stamp
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -113,7 +112,7 @@ public class InvoiceDB {
     }
 
 
-    public boolean delete(long id) {
+    public boolean delete(final long id) {
         String where = COLUMN_ID + "=" + id;
         return db.delete(TABLE_NAME, where, null) > 0;
     }

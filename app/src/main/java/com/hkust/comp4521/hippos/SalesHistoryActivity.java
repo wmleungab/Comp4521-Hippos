@@ -8,14 +8,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.hkust.comp4521.hippos.database.DatabaseHelper;
+import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.InventoryRevenue;
+import com.hkust.comp4521.hippos.datastructures.Invoice;
+import com.hkust.comp4521.hippos.events.InvoiceSynchronizedEvent;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
@@ -23,6 +29,7 @@ import com.hkust.comp4521.hippos.utils.StatisticsUtils;
 import com.hkust.comp4521.hippos.views.InventoryRevenueListAdapter;
 import com.hkust.comp4521.hippos.views.InvoiceListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +57,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
     // Views
     private ViewPager mViewPager;
     private RelativeLayout mActionBar;
-    private SwipeRefreshLayout mRefreshLayout;
+    private SwipeRefreshLayout mLocalRefreshLayout, mRemoteRefreshLayout;
     private LineChartView chartTop;
     private ColumnChartView chartBottom;
     private RecyclerView localRecList, remoteRecList, revenueRecList;
@@ -117,21 +124,64 @@ public class SalesHistoryActivity extends AppCompatActivity {
         localRecList.setLayoutManager(llm);
 
         // initialize pull-to-refresh listener
-        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        mLocalRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         // retrieve invoice from server
-        mRefreshLayout.setColorSchemeResources(
+        mLocalRefreshLayout.setColorSchemeResources(
                 R.color.refresh_progress_1,
                 R.color.refresh_progress_2,
                 R.color.refresh_progress_3);
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mLocalRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh items
-                refreshLocalInvoiceItems();
+                synchronizeLocalInvoiceItems();
             }
         });
-        mRefreshLayout.setRefreshing(true);
         refreshLocalInvoiceItems();
+    }
+
+    private void synchronizeLocalInvoiceItems() {
+        // Attempt to synchronize local invoice to server
+        Commons.recoverLoginInformation(mContext, new Commons.onInitializedListener() {
+            @Override
+            public void onInitialized() {
+                // Upload invoice record by record, if record is uploaded, remove it from local DB
+                DatabaseHelper.initDatabase(mContext);
+                final InvoiceDB invoiceHelper = InvoiceDB.getInstance();
+                List<Invoice> invoiceList = invoiceHelper.getAll();
+                if(invoiceList.size() < 1)
+                    mLocalRefreshLayout.setRefreshing(false);
+                for(final Invoice inv : invoiceList) {
+                    // Mark local record as updating to prevent repeated upload
+                    if(inv.getStatus() != Invoice.INVOICE_UPLOADING) {
+                        Log.i("InvoiceHandler", "Uploading invoice: " + inv.getId());
+                        inv.setStatus(Invoice.INVOICE_UPLOADING);
+                        invoiceHelper.update(inv);
+                        RestClient.getInstance(mContext).createInvoice(inv, new RestListener<Invoice>() {
+                            @Override
+                            public void onSuccess(Invoice invoice) {
+                                Toast.makeText(mContext, "Uploaded invoice as #" + invoice.getId(), Toast.LENGTH_SHORT);
+                                invoiceHelper.delete(inv.getId());
+
+                                // hide refresh animation as one or more record is deleted
+                                mLocalRefreshLayout.setRefreshing(false);
+
+                                Commons.getBusInstance().register(mContext);
+                                Commons.getBusInstance().post(new InvoiceSynchronizedEvent());
+                                Commons.getBusInstance().unregister(mContext);
+                            }
+
+                            @Override
+                            public void onFailure(int status) {
+                                inv.setStatus(Invoice.INVOICE_LOCAL);
+                                invoiceHelper.update(inv);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
     }
 
     private void refreshLocalInvoiceItems() {
@@ -141,11 +191,11 @@ public class SalesHistoryActivity extends AppCompatActivity {
         adapter.setOnClickListener(new InvoiceListAdapter.OnInvoiceClickListener() {
             @Override
             public void onClick(View v, int invIndex) {
-                /*Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
-                                Bundle b = new Bundle();
-                                b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
-                                i.putExtras(b);
-                                startActivity(i);*/
+                Intent i = new Intent(SalesHistoryActivity.this, SalesDetailsActivity.class);
+                Bundle b = new Bundle();
+                b.putInt(Inventory.INVENTORY_INV_ID, invIndex);
+                i.putExtras(b);
+                startActivity(i);
             }
         });
         localRecList.setAdapter(adapter);
@@ -161,7 +211,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         revenueRecList.setLayoutManager(llm);
 
-        RestClient.getInstance().getRevenueList(new RestListener<List<InventoryRevenue>>() {
+        RestClient.getInstance(mContext).getRevenueList(new RestListener<List<InventoryRevenue>>() {
             @Override
             public void onSuccess(List<InventoryRevenue> inventoryRevenues) {
                 // setup list adapter
@@ -197,22 +247,21 @@ public class SalesHistoryActivity extends AppCompatActivity {
         remoteRecList.setLayoutManager(llm);
 
         // initialize pull-to-refresh listener
-        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        mRemoteRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         // retrieve invoice from server
-        mRefreshLayout.setColorSchemeResources(
+        mRemoteRefreshLayout.setColorSchemeResources(
                 R.color.refresh_progress_1,
                 R.color.refresh_progress_2,
                 R.color.refresh_progress_3);
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRemoteRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh items
                 refreshRemoteInvoiceItems();
             }
         });
-        mRefreshLayout.setRefreshing(true);
+        mRemoteRefreshLayout.setRefreshing(true);
         refreshRemoteInvoiceItems();
-
     }
 
     private void refreshRemoteInvoiceItems() {
@@ -233,7 +282,7 @@ public class SalesHistoryActivity extends AppCompatActivity {
                 });
                 remoteRecList.setAdapter(adapter);
                 // Stop refresh animation
-                mRefreshLayout.setRefreshing(false);
+                mRemoteRefreshLayout.setRefreshing(false);
                 setupStatisticsPage();
             }
         });
@@ -363,9 +412,33 @@ public class SalesHistoryActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Register Bus event
+        Commons.getBusInstance().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Unregister Bus event
+        Commons.getBusInstance().unregister(this);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.none, android.R.anim.fade_out);
+    }
+
+
+    @Subscribe
+    public void onInvoiceSynchronized(InvoiceSynchronizedEvent event) {
+        Log.i("Test", "onInvoiceSynchronized!");
+        // Update invoice adapter
+        refreshLocalInvoiceItems();
+        refreshRemoteInvoiceItems();
     }
 
 }

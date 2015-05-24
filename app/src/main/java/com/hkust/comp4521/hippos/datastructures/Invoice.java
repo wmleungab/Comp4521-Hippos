@@ -15,6 +15,11 @@ import java.util.List;
  */
 public class Invoice {
 
+    // Flags
+    public static int INVOICE_LOCAL = 0;
+    public static int INVOICE_REMOTE = 1;
+    public static int INVOICE_UPLOADING = 2;
+
     // Attributes
     int id;
     double total_price;
@@ -43,8 +48,24 @@ public class Invoice {
         this.total_price = total_price;
     }
 
+    public String getFormattedTotalPrice() {
+        return "$" + String.format("%.1f", total_price);
+    }
+
+    public String getFormattedAdjustment() {
+        double adjustment = final_price - total_price;
+        if(adjustment >= 0)
+            return "$" + String.format("%.1f", adjustment);
+        else
+            return "-$" + String.format("%.1f", adjustment);
+    }
+
     public double getFinalPrice() {
         return final_price;
+    }
+
+    public String getFormattedFinalPrice() {
+        return "$" + String.format("%.1f", final_price);
     }
 
     public void setFinalPrice(double final_price) {
@@ -57,6 +78,18 @@ public class Invoice {
 
     public void setPaid(double paid) {
         this.paid = paid;
+    }
+
+    public String getFormattedPaid() {
+        return "$" + String.format("%.1f", paid);
+    }
+
+    public String getFormattedChange() {
+        double value = paid - final_price;
+        if(value >= 0)
+            return "$" + String.format("%.1f", value);
+        else
+            return "-$" + String.format("%.1f", value);
     }
 
     public String getDateTime() {

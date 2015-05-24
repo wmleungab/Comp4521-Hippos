@@ -7,7 +7,7 @@
     <View
         android:id="@+id/view_sales_confirm_banner"
         android:layout_width="fill_parent"
-        android:layout_height="36dp">
+        android:layout_height="48dp">
     </View>
 
     <TextView
@@ -16,7 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignBottom="@id/view_sales_confirm_banner"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/dialog_sales_confirm_title"
         android:textStyle="bold"
         android:textColor="@color/green_primary_highlighted"

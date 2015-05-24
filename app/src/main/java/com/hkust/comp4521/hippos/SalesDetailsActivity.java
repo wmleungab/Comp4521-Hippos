@@ -42,7 +42,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
 
     private View mFlexibleSpaceView;
     private View mToolbarView;
-    private TextView mTitleView, mSubTitleView;
+    private TextView mTitleView, mSubTitleView, mItemTotal, mAdjustment, mGrandTotal, mPaid, mChanges;
     private int mFlexibleSpaceHeight;
     private ImageButton btnBack, btnShare, btnQR;
 
@@ -55,15 +55,32 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
 
         mContext = this;
 
+        // get information from previous activity (for retrieving sales info)
+        Bundle bundle = this.getIntent().getExtras();
+        if(bundle != null) {
+            int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
+            currentInvoice = Commons.getRemoteInvoice(invId);
+        }
+
         // Init views
         mFlexibleSpaceView = findViewById(R.id.flexible_space);
         mTitleView = (TextView) findViewById(R.id.tv_sales_details_title);
         mSubTitleView = (TextView) findViewById(R.id.tv_sales_details_subtitle);
+        mItemTotal = (TextView) findViewById(R.id.tv_sales_details_item_total);
+        mAdjustment = (TextView) findViewById(R.id.tv_sales_details_adjustment);
+        mGrandTotal = (TextView) findViewById(R.id.tv_sales_details_grand_total);
+        mPaid = (TextView) findViewById(R.id.tv_sales_details_paid);
+        mChanges = (TextView) findViewById(R.id.tv_sales_details_changes);
+        mItemTotal.setText(currentInvoice.getFormattedTotalPrice());
+        mAdjustment.setText(currentInvoice.getFormattedAdjustment());
+        mGrandTotal.setText(currentInvoice.getFormattedFinalPrice());
+        mPaid.setText(currentInvoice.getFormattedPaid());
+        mChanges.setText(currentInvoice.getFormattedChange());
         btnBack = (ImageButton) findViewById(R.id.ib_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onBackPressed();
             }
         });
         btnQR = (ImageButton) findViewById(R.id.ib_sales_details_qr);
@@ -116,13 +133,6 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
             }
         });
 
-        // get information from previous activity (for retrieving sales info)
-        Bundle bundle = this.getIntent().getExtras();
-        if(bundle != null) {
-            int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
-            currentInvoice = Commons.getRemoteInvoice(invId);
-        }
-
         // Setup views
         mTitleView.setText(getResources().getString(R.string.invoice_id_text) + currentInvoice.getId());
         mSubTitleView.setText(getResources().getString(R.string.sales_details_invoice_date) + currentInvoice.getDateTime()+ "\n"
@@ -133,15 +143,14 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         mToolbarView = findViewById(R.id.actionBar);
         TintedStatusBar.changeStatusBarColor(this, TintedStatusBar.getColorFromTag(mToolbarView));
 
+
+        // Setup for dynamic header
         final ObservableScrollView scrollView = (ObservableScrollView) findViewById(R.id.scroll);
         scrollView.setScrollViewCallbacks(this);
-
         mFlexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_height);
         int flexibleSpaceAndToolbarHeight = mFlexibleSpaceHeight + mTitleView.getHeight();
-
         findViewById(R.id.body).setPadding(0, flexibleSpaceAndToolbarHeight, 0, 0);
         mFlexibleSpaceView.getLayoutParams().height = flexibleSpaceAndToolbarHeight;
-
         ScrollUtils.addOnGlobalLayoutListener(mTitleView, new Runnable() {
             @Override
             public void run() {
@@ -149,6 +158,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
             }
         });
 
+        // Setup invoice item list to LinearLayout
         LinearLayout llInvoiceItems = (LinearLayout) findViewById(R.id.ll_sales_details_invoice_items);
         List<InvoiceInventory> invList = currentInvoice.getInvoiceInventories();
         for(int i=0; i < invList.size(); i++) {
@@ -168,12 +178,17 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
             Log.i("SalesDetails", inv.getName() + " inflated");
             llInvoiceItems.addView(itemView);
         }
-        // Adding padding item
+
+        // Adding padding items
         View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
+        itemView.setVisibility(View.INVISIBLE);
+        llInvoiceItems.addView(itemView);
+        itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
         itemView.setVisibility(View.INVISIBLE);
         llInvoiceItems.addView(itemView);
     }
 
+    // For initializing from invoice object
     public static void setCurrentInvoice(Invoice currentInvoice) {
         SalesDetailsActivity.currentInvoice = currentInvoice;
     }
@@ -183,14 +198,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         updateFlexibleSpaceText(scrollY);
     }
 
-    @Override
-    public void onDownMotionEvent() {
-    }
-
-    @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-    }
-
+    // Update dynamic header dimension
     private void updateFlexibleSpaceText(final int scrollY) {
         ViewHelper.setTranslationY(mFlexibleSpaceView, -scrollY);
         int adjustedScrollY = scrollY;
@@ -225,4 +233,11 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         ViewHelper.setAlpha(mSubTitleView, heightScale);
     }
 
+    @Override
+    public void onDownMotionEvent() {
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+    }
 }

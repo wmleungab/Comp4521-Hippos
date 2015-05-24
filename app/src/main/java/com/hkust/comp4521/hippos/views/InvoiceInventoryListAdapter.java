@@ -12,21 +12,18 @@ import android.widget.TextView;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
-import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInventoryListAdapter.InvoiceInventoryViewHolder>{
+public class InvoiceInventoryListAdapter extends ImageListBaseAdapter<InvoiceInventoryListAdapter.InvoiceInventoryViewHolder>{
 
         private Context mContext;
-        private int mode = -1;
         private List<InvoiceInventory> invList;
 
-        public InvoiceInventoryListAdapter(Context pCon, int mode) {
+        public InvoiceInventoryListAdapter(Context pCon) {
             this.mContext = pCon;
             this.invList = new ArrayList<InvoiceInventory>();
-            this.mode = mode;
         }
          
         @Override
@@ -62,7 +59,8 @@ public class InvoiceInventoryListAdapter extends RecyclerView.Adapter<InvoiceInv
              contactViewHolder.invIdx = i;
              contactViewHolder.inv = cii;
              contactViewHolder.adapter = this;
-             new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
+             setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 128);
+             //new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 
         @Override

@@ -118,9 +118,15 @@ public class Commons {
             String email = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_USERNAME);
             String apiKey = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_API_KEY);
             user = new User(name, email, password, apiKey, "");
+            RestClient.authorization = apiKey;
         }
         if(mListener != null)
             mListener.onInitialized();
+    }
+
+    public static void resetInventoryList() {
+        categorizedinventoryHMList = null;
+        inventoryHM = null;
     }
 
     public static void initializeInventoryList(final onInitializedListener mListener) {
@@ -195,7 +201,10 @@ public class Commons {
     public static Inventory getInventory(int iId) {
         if(inventoryHM == null)
             return null;
-        return inventoryHM.get(iId);
+        if(inventoryHM.containsKey(iId))
+            return inventoryHM.get(iId);
+        else
+            return null;
     }
     public static ArrayList<Inventory> getInventoryList(int index) {
         if(categorizedinventoryHMList == null)
