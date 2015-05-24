@@ -12,6 +12,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
@@ -33,8 +34,9 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
     private Boolean fileExist = false;
     private Activity activity = null;        // for tinted status bar
     private int sbColor;
-    public int invId;
     public int targetSize = 0;
+    public Inventory inv = null;
+    public int oldStatus = -1;
 
     // For trivial use
     public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable) {
@@ -50,28 +52,38 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
     }
 
     // For cache availabled views
-    public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, int pInv) {
-        this(imageView, fileName, defaultDrawable);
+    public ImageRetriever(ImageView imageView, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, Inventory passedInv) {
+        this(imageView, passedInv.getImage(), defaultDrawable);
         mMemoryCache = new WeakReference<android.support.v4.util.LruCache<String, Bitmap>>(cache);
-        invId = pInv;
+        inv = passedInv;
+        oldStatus = inv.getStatus();
     }
 
     // For resized cached bitmaps
-    public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, int pInv, int resizeTo) {
-        this(imageView, fileName, defaultDrawable, cache, pInv);
+    public ImageRetriever(ImageView imageView, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, Inventory passedInv, int resizeTo) {
+        this(imageView, defaultDrawable, cache, passedInv);
         targetSize = resizeTo;
     }
 
     @Override
     protected Bitmap doInBackground(String... params) {
         // skip if no url supplied
-        if(fileUrl != null && fileUrl.equals(""))
+        if(fileUrl != null && (fileUrl.equals("") || fileUrl.equals("null")))
             return null;
         // Check if file exists locally first
         Bitmap bitmap = null;
         File file = new File(ImageUtils.IMAGE_CACHE_PATH + fileUrl);
         fileExist = file.exists();
-        if(fileExist) {
+        if(inv != null && inv.getStatus() == Inventory.INVENTORY_DIRTY){
+            // force download from remote server
+            try {
+                Log.i("ImageRetriever", "Force Download!");
+                bitmap = RestClient.getInstance().downloadAsBitmap(fileUrl);
+                fileExist = false;
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        } else if(fileExist) {
             // load locally
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         } else {
@@ -120,6 +132,8 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
                 } else {
                     imageView.setImageDrawable(defaultDrawable);
                 }
+                if(inv != null)
+                    inv.setStatus(oldStatus);
                 // animate the view
                 Animation am = new AlphaAnimation( 0, 1 );
                 am.setDuration(300);
@@ -142,5 +156,9 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
                 Log.i("Cache", "added with key=" + key);
             }
         }
+    }
+
+    public int getInventoryId() {
+        return inv.getId();
     }
 }

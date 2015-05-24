@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hkust.comp4521.hippos.R;
@@ -120,6 +119,7 @@ public class GcmMessageHandler extends IntentService {
                 inventoryHelper.insert(inventory);
 
                 // Send message to activity using Bus event
+                Commons.resetInventoryList();
                 Commons.initializeInventoryList(new Commons.onInitializedListener() {
                     @Override
                     public void onInitialized() {
@@ -157,6 +157,7 @@ public class GcmMessageHandler extends IntentService {
 
                 // Send message to activity using Bus event
                 if(reinitialize) {
+                    Commons.resetInventoryList();
                     Commons.initializeInventoryList(new Commons.onInitializedListener() {
                         @Override
                         public void onInitialized() {

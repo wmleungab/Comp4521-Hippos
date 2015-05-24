@@ -12,6 +12,7 @@ import com.hkust.comp4521.hippos.InventoryDetailsActivity;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
+import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
 import java.util.List;
 
@@ -50,10 +51,11 @@ public class InventoryListAdapter extends ImageListBaseAdapter<InventoryListAdap
                  contactViewHolder.mListener = mOnClickListener;
              }
              contactViewHolder.itemPrice.setText(ci.getFormattedPrice());
-             contactViewHolder.itemStock.setText("Stock: " + ci.getStock());
+             contactViewHolder.itemStock.setText(mContext.getString(R.string.stock) + ci.getStock());
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
-             setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 0);
+             //setBitmapToView(mContext, ci, contactViewHolder.heroImage, 0);
+             new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 
         public void removeImageCache(String key) {

@@ -122,9 +122,9 @@ public class SettingActivity extends PreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     PreferenceService.saveStringValue(getResources().getString(R.string.user_email_prefs), "");
                     PreferenceService.saveStringValue(getResources().getString(R.string.user_password_prefs), "");
+                    RestClient.resetServerAPI();
 
                     startActivity(intent);
-
                     return true;
                 }
             });

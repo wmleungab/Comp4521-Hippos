@@ -26,7 +26,6 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
-import com.hkust.comp4521.hippos.utils.ImageUtils;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 import com.squareup.otto.Subscribe;
@@ -206,6 +205,7 @@ public class InventoryListActivity extends AppCompatActivity {
     public void onInventoryInfoChanged(final InventoryInfoChangedEvent event) {
         // Update inventory view from bus message
         if(event.refreshAll == true) {
+            Log.i("onInventoryInfoChanged", "refreshAll");
             // notify all adapters that info changed
             for(InventoryListAdapter adapter : adapterList) {
                 adapter.setInventoryList(Commons.getInventoryList(adapter.getCategoryId()));
@@ -216,24 +216,13 @@ public class InventoryListActivity extends AppCompatActivity {
         if(adapter != null && event.getInventory() != null) {
             final Inventory inv = event.getInventory();
             final InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
-            // Defer image loading to avoid I/O error
-            ThreadService.delayedStart(this, new Runnable() {
+            ThreadService.delayedStart(InventoryListActivity.this, new Runnable() {
                 @Override
                 public void run() {
-                    // Delete the old image
-                    Log.i("onInventoryInfoChanged", "Deleting the old image " + inv.getName());
-                    ImageUtils.deleteFile(event.getInventory());
-                    adapter.removeImageCache(inv.getImage());
-                    ThreadService.delayedStart(InventoryListActivity.this, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Delete the old image
-                            Log.i("onInventoryInfoChanged", "Reloading image " + inv.getName());
-                            adapter.notifyItemChanged(inv.getInvIndex());
-                        }
-                    }, 300);
+                    Log.i("onInventoryInfoChanged", "Reloading image " + inv.getName());
+                    adapter.notifyItemChanged(inv.getInvIndex());
                 }
-            }, 150);
+            }, 300);
         }
     }
 

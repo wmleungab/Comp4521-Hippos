@@ -57,8 +57,7 @@ public class CategoryDB {
         return db.update(TABLE_NAME, cv, where, null) > 0;
     }
 
-    //There should not be a delete operation anyway
-    private boolean delete(int cate_id) {
+    public boolean delete(int cate_id) {
         String where = COLUMN_ID + " = " + cate_id;
         return db.delete(TABLE_NAME, where, null) > 0;
     }

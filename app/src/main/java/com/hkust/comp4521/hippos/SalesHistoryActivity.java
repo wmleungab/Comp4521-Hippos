@@ -166,9 +166,8 @@ public class SalesHistoryActivity extends AppCompatActivity {
                                 // hide refresh animation as one or more record is deleted
                                 mLocalRefreshLayout.setRefreshing(false);
 
-                                Commons.getBusInstance().register(mContext);
+                                // Call bus event
                                 Commons.getBusInstance().post(new InvoiceSynchronizedEvent());
-                                Commons.getBusInstance().unregister(mContext);
                             }
 
                             @Override

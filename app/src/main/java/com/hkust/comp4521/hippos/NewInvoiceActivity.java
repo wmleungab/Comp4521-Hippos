@@ -1,6 +1,7 @@
 package com.hkust.comp4521.hippos;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,9 +51,6 @@ public class NewInvoiceActivity extends AppCompatActivity {
     // Services
     private NFCService mNFC;
 
-    // Data
-    private Invoice mInvoice;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,20 +60,20 @@ public class NewInvoiceActivity extends AppCompatActivity {
         mContext = this;
         mNFC = new NFCService(mActivity, mContext);
 
+        // Init views and tint status bar
         mActionBar = (RelativeLayout) findViewById(R.id.actionBar);
         btnAddFromInventoryList = (ImageButton) findViewById(R.id.ib_new_invoice_add_from_inv_list);
         btnCompleteSales = (ImageButton) findViewById(R.id.ib_new_invoice_complete);
         TintedStatusBar.changeStatusBarColor(mActivity, TintedStatusBar.getColorFromTag(mActionBar));
 
+        // Setup recycler view for item list
         RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(mContext);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
-
         mAdapter = new InvoiceInventoryListAdapter(mContext);
         recList.setAdapter(mAdapter);
-        //recList.setItemAnimator(new DefaultItemAnimator());
         recList.setItemAnimator(null);
 
         SwipeDismissRecyclerViewTouchListener touchListener =
@@ -183,19 +181,23 @@ public class NewInvoiceActivity extends AppCompatActivity {
         invoice.setDateTime(invoice.generateCurrentDatetimeString());
         // if the device is online, try to upload to server first
         if(Commons.ONLINE_MODE) {
+            final ProgressDialog progressDialog = ProgressDialog.show(mContext, null, mContext.getString(R.string.uploading_invoice), true);
             RestClient.getInstance(mContext).createInvoice(invoice, new RestListener<Invoice>() {
                 @Override
                 public void onSuccess(Invoice invoice) {
-                    Toast.makeText(mContext, "Invoice created!", Toast.LENGTH_SHORT).show();
+                    mAdapter.resetInvoiceInventoryList();
+                    Toast.makeText(mContext, mContext.getString(R.string.invoice_created), Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(mContext, SalesDetailsActivity.class);
                     SalesDetailsActivity.setCurrentInvoice(invoice);
                     invoice.setStatus(Invoice.INVOICE_REMOTE);
                     startActivity(i);
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onFailure(int status) {
                     storeInvoiceToLocalDB(invoice);
+                    progressDialog.dismiss();
                 }
             });
         } else {
@@ -206,11 +208,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
     private void storeInvoiceToLocalDB(Invoice invoice) {
         InvoiceDB invoiceHelper = InvoiceDB.getInstance();
         invoiceHelper.insert(invoice);
-        Toast.makeText(mContext, "Invoice cached!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.invoice_cached), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(mContext, SalesDetailsActivity.class);
         SalesDetailsActivity.setCurrentInvoice(invoice);
         invoice.setStatus(Invoice.INVOICE_LOCAL);
         startActivity(i);
+        mAdapter.resetInvoiceInventoryList();
     }
 
     @Override

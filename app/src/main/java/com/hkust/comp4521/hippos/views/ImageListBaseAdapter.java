@@ -7,10 +7,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.hkust.comp4521.hippos.R;
+import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
 import java.lang.ref.WeakReference;
@@ -39,18 +39,17 @@ public abstract class ImageListBaseAdapter<VH extends RecyclerView.ViewHolder> e
         };
     }
 
-    public void setBitmapToView(Context mContext, int bitmapId, String bitmapName, ImageView toImageView, int targetSize) {
-        Bitmap cacheBM = getBitmapFromMemCache(bitmapName);
-        if(cacheBM != null) {
-            // bitmap exists on cache, load directly from cache
-            Log.i("onInventoryInfoChanged", "Loaded cache image for " + bitmapName);
-            toImageView.setImageBitmap(cacheBM);
-        } else {
-            // bitmap does not exist on cache, load image from asynctask (that is cancellable)
-            if (cancelPotentialWork(bitmapId, toImageView)) {
-                Log.i("onInventoryInfoChanged", "Started Image Retriever for " + bitmapName);
+    public void setBitmapToView(Context mContext, Inventory inventory, ImageView toImageView, int targetSize) {
+        Bitmap cacheBM = getBitmapFromMemCache(inventory.getImage());
+        // Cancel unprocessed AsyncTask before anything else
+        if (cancelPotentialWork(inventory.getId(), toImageView)) {
+            if (cacheBM != null) {
+                // bitmap exists on cache, load directly from cache
+                toImageView.setImageBitmap(cacheBM);
+            } else {
+                // bitmap does not exist on cache, load image from asynctask (that is cancellable)
                 Bitmap bm = ((BitmapDrawable) mContext.getResources().getDrawable(R.mipmap.placeholder)).getBitmap();
-                final ImageRetriever task = new ImageRetriever(toImageView, bitmapName, mContext.getResources().getDrawable(R.mipmap.placeholder), mMemoryCache, bitmapId, targetSize);
+                final ImageRetriever task = new ImageRetriever(toImageView, mContext.getResources().getDrawable(R.mipmap.placeholder), mMemoryCache, inventory, targetSize);
                 final AsyncDrawable asyncDrawable = new AsyncDrawable(mContext.getResources(), bm, task);
                 toImageView.setImageDrawable(asyncDrawable);
                 task.execute();
@@ -75,7 +74,7 @@ public abstract class ImageListBaseAdapter<VH extends RecyclerView.ViewHolder> e
         final ImageRetriever bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
         if (bitmapWorkerTask != null) {
-            final int bitmapData = bitmapWorkerTask.invId;
+            final int bitmapData = bitmapWorkerTask.getInventoryId();
             if (bitmapData != data) {
                 // Cancel previous task
                 bitmapWorkerTask.cancel(true);

@@ -45,19 +45,6 @@ public class RestClient {
     private static ServerAPI serverAPI;
     public static String authorization;
 
-    static {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setConnectTimeout(2, TimeUnit.SECONDS);
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(SERVER_URL)
-                .setErrorHandler(new RetrofitErrorHandler())
-                .setClient(new OkClient(okHttpClient))
-                .setLogLevel(RestAdapter.LogLevel.FULL);
-
-        RestAdapter restAdapter = builder.build();
-        serverAPI = restAdapter.create(ServerAPI.class);
-    }
-
     private RestClient() {
         authorization = "";
     }
@@ -70,10 +57,25 @@ public class RestClient {
     }
 
     public static RestClient getInstance(Context mContext) {
-        if (instance == null) {
+        if(serverAPI == null) {
+            // set to use from preference's address
             PreferenceService.initPreference(mContext);
             SERVER_ID = PreferenceService.getStringValue(PreferenceService.KEY_SERVER_LOCATION);
             SERVER_URL = "http://" + SERVER_ID;
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient.setConnectTimeout(2, TimeUnit.SECONDS);
+            RestAdapter.Builder builder = new RestAdapter.Builder()
+                    .setEndpoint(SERVER_URL)
+                    .setErrorHandler(new RetrofitErrorHandler())
+                    .setClient(new OkClient(okHttpClient))
+                    .setLogLevel(RestAdapter.LogLevel.FULL);
+
+            RestAdapter restAdapter = builder.build();
+            serverAPI = restAdapter.create(ServerAPI.class);
+        }
+
+        // create instance
+        if (instance == null) {
             instance = new RestClient();
         }
         return instance;
@@ -100,6 +102,8 @@ public class RestClient {
                     rl.onFailure(RestListener.NETWORK_UNREACHABLE);
                 else if (error.getResponse().getStatus() == 400)
                     rl.onFailure(RestListener.INVALID_EMAIL);
+                else
+                    rl.onFailure(RestListener.UNKNOWN_REASON);
                 return;
             }
         });
@@ -894,5 +898,9 @@ public class RestClient {
                 return;
             }
         });
+    }
+
+    public static void resetServerAPI() {
+        serverAPI = null;
     }
 }

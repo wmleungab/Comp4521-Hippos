@@ -91,6 +91,7 @@ public class EditInventoryActivity extends AppCompatActivity {
 
             // setup mode flag
             currentMode = MODE_EDIT_INVENTORY;
+            actionBarTitle.setText(getString(R.string.title_activity_edit_inventory));
         }
 
     }
@@ -102,11 +103,7 @@ public class EditInventoryActivity extends AppCompatActivity {
         etItemPrice = (EditText) findViewById(R.id.et_edit_inventory_item_price);
         etItemStock = (EditText) findViewById(R.id.et_edit_inventory_item_stock);
         actionBarTitle = (TextView) findViewById(R.id.actionBarTitle);
-        if(currentMode == MODE_NEW_INVENTORY) {
-            actionBarTitle.setText(getResources().getString(R.string.title_activity_edit_inventory_new));
-        } else {
-            actionBarTitle.setText(getString(R.string.title_activity_edit_inventory));
-        }
+        actionBarTitle.setText(getResources().getString(R.string.title_activity_edit_inventory_new));
 
         // buttons
         btnFinish = (ImageButton) findViewById(R.id.ib_edit_inventory_complete_item);

@@ -44,6 +44,9 @@
 
     <!-- For NewInvoiceActivity-->
     <string name="new_invoice_hint">Tap NFC tag to add item</string>
+    <string name="uploading_invoice">Uploading invoice ...</string>
+    <string name="invoice_created">Invoice created!</string>
+    <string name="invoice_cached">Invoice cached!</string>
 
     <!--For SalesDetailsActivity-->
     <string name="sales_details_totals_title">Totals</string>

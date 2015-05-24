@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         // login to slim server
+        PreferenceService.saveStringValue(PreferenceService.KEY_SERVER_LOCATION, serverAddr.getText().toString());
         RestClient instance = RestClient.getInstance(mContext);
         final String email = userName.getText().toString();
         final String pw = password.getText().toString();
@@ -132,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 Commons.setUser(user);
                 // store login info to SharedPreferences
-                PreferenceService.saveStringValue(PreferenceService.KEY_SERVER_LOCATION, serverAddr.getText().toString());
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_USERNAME, email);
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_PASSWORD, pw);
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_API_KEY, user.apiKey);

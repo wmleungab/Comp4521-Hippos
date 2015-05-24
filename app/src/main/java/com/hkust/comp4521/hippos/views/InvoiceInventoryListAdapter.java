@@ -49,6 +49,10 @@ public class InvoiceInventoryListAdapter extends ImageListBaseAdapter<InvoiceInv
             return invList;
         }
 
+        public void resetInvoiceInventoryList(){
+            invList = new ArrayList<InvoiceInventory>();
+        }
+
         @Override
         public void onBindViewHolder(InvoiceInventoryViewHolder contactViewHolder, int i) {
              InvoiceInventory cii = invList.get(i);
@@ -59,7 +63,7 @@ public class InvoiceInventoryListAdapter extends ImageListBaseAdapter<InvoiceInv
              contactViewHolder.invIdx = i;
              contactViewHolder.inv = cii;
              contactViewHolder.adapter = this;
-             setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 128);
+             setBitmapToView(mContext, ci, contactViewHolder.heroImage, 128);
              //new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
         }
 

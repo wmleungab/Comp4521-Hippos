@@ -86,5 +86,6 @@
     <string name="offline_mode_msg">離線模式</string>
     <string name="sales_details_shared_via">共享通過</string>
     <string name="stock">庫存：</string>
+    <string name="sales_details_paid_title"></string>
 
 </resources>
