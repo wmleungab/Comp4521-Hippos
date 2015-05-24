@@ -41,6 +41,9 @@ public abstract class ImageListBaseAdapter<VH extends RecyclerView.ViewHolder> e
 
     public void setBitmapToView(Context mContext, Inventory inventory, ImageView toImageView, int targetSize) {
         Bitmap cacheBM = getBitmapFromMemCache(inventory.getImage());
+        // Discard dirtied bitmap
+        if(inventory.getStatus() == Inventory.INVENTORY_DIRTY)
+            cacheBM = null;
         // Cancel unprocessed AsyncTask before anything else
         if (cancelPotentialWork(inventory.getId(), toImageView)) {
             if (cacheBM != null) {

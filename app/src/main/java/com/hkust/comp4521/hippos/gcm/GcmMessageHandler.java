@@ -157,27 +157,28 @@ public class GcmMessageHandler extends IntentService {
 
                 // Send message to activity using Bus event
                 if(reinitialize) {
-                    Commons.resetInventoryList();
-                    Commons.initializeInventoryList(new Commons.onInitializedListener() {
-                        @Override
-                        public void onInitialized() {
-                            Commons.getBusInstance().register(mContext);
-                            Commons.getBusInstance().post(new InventoryInfoChangedEvent());
-                            Commons.getBusInstance().unregister(mContext);
-                        }
-                    });
-                } else {
-                    Commons.getBusInstance().register(mContext);
-                    Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
-                    Commons.getBusInstance().unregister(mContext);
-                }
-            }
-            @Override
-            public void onFailure(int status) {
+                    Commons.resetInventoryList();                // Update inventory list if exists
 
+                Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                    @Override
+                    public void onInitialized() {
+                        Commons.getBusInstance().register(mContext);
+                        Commons.getBusInstance().post(new InventoryInfoChangedEvent());
+                        Commons.getBusInstance().unregister(mContext);
+                    }
+                });
+            } else {
+                Commons.getBusInstance().register(mContext);
+                Commons.getBusInstance().post(new InventoryInfoChangedEvent(toUpdateInv));
+                Commons.getBusInstance().unregister(mContext);
             }
-        });
-    }
+        }
+        @Override
+        public void onFailure(int status) {
+
+        }
+    });
+}
 
     private void notifyImageChanged() {
         RestClient.getInstance(mContext).getInventory(inventoryId, new RestListener<Inventory>(){
@@ -187,7 +188,6 @@ public class GcmMessageHandler extends IntentService {
                 InventoryDB inventoryHelper = InventoryDB.getInstance();
                 inventoryHelper.update(inventory);
 
-                // Update inventory list if exists
                 Inventory toUpdateInv = Commons.getInventory(inventory.getId());
                 if(toUpdateInv != null) {
                     toUpdateInv.update(inventory);

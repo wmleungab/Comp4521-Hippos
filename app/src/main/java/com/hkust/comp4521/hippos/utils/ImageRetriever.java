@@ -56,7 +56,7 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
         this(imageView, passedInv.getImage(), defaultDrawable);
         mMemoryCache = new WeakReference<android.support.v4.util.LruCache<String, Bitmap>>(cache);
         inv = passedInv;
-        oldStatus = inv.getStatus();
+        oldStatus = Inventory.INVENTORY_NORMAL;
     }
 
     // For resized cached bitmaps
