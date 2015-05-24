@@ -186,12 +186,14 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         }
 
         // Adding padding items
-        View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
-        itemView.setVisibility(View.INVISIBLE);
-        llInvoiceItems.addView(itemView);
-        itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
-        itemView.setVisibility(View.INVISIBLE);
-        llInvoiceItems.addView(itemView);
+        if(invList.size() < 6) {
+            View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
+            itemView.setVisibility(View.INVISIBLE);
+            llInvoiceItems.addView(itemView);
+            itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
+            itemView.setVisibility(View.INVISIBLE);
+            llInvoiceItems.addView(itemView);
+        }
     }
 
     // For initializing from invoice object

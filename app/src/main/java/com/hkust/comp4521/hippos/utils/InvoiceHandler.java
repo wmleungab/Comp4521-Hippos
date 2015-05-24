@@ -52,6 +52,7 @@ public class InvoiceHandler extends IntentService {
                 DatabaseHelper.initDatabase(mContext);
                 final InvoiceDB invoiceHelper = InvoiceDB.getInstance();
                 List<Invoice> invoiceList = invoiceHelper.getAll();
+                Toast.makeText(mContext, "Start syncing ...", Toast.LENGTH_SHORT).show();
                 for(final Invoice inv : invoiceList) {
                     // Mark local record as updating to prevent repeated upload
                     if(inv.getStatus() != Invoice.INVOICE_UPLOADING) {

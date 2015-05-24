@@ -15,7 +15,9 @@
         android:elevation="6dp"
         android:background="@color/green_primary" >
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/ib_back"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentLeft="true"

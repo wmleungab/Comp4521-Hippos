@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
@@ -212,6 +213,12 @@ public class NewInvoiceActivity extends AppCompatActivity {
         Intent i = new Intent(mContext, SalesDetailsActivity.class);
         SalesDetailsActivity.setCurrentInvoice(invoice);
         invoice.setStatus(Invoice.INVOICE_LOCAL);
+        // Update inventory stock
+        InventoryDB inventoryHelper = InventoryDB.getInstance();
+        for(InvoiceInventory inv : mAdapter.getInvoiceInventories()) {
+            inv.getInventory().setStock(inv.getInventory().getStock() - inv.getQuantity());
+            inventoryHelper.update(inv.getInventory());
+        }
         startActivity(i);
         mAdapter.resetInvoiceInventoryList();
     }
@@ -224,7 +231,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 Inventory inv = Commons.getInventory(b.getInt(Inventory.INVENTORY_INV_ID));
-                mAdapter.addItem(new InvoiceInventory(inv, 1));
+                mAdapter.addItem(new InvoiceInventory(inv, Math.min(1, inv.getStock())));
             }
         }
     }

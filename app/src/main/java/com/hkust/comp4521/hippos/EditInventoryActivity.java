@@ -52,7 +52,7 @@ public class EditInventoryActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private ImageView ivHeroImage;
     private EditText etItemName, etItemPrice, etItemStock;
-    private ImageButton btnFinish;
+    private ImageButton btnFinish, btnBack;
     private TextView actionBarTitle;
 
     // Data
@@ -110,11 +110,18 @@ public class EditInventoryActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentMode == MODE_NEW_INVENTORY) {
+                if (currentMode == MODE_NEW_INVENTORY) {
                     createNewInventory();
-                } else if(currentMode == MODE_EDIT_INVENTORY) {
+                } else if (currentMode == MODE_EDIT_INVENTORY) {
                     editInventory();
                 }
+            }
+        });
+        btnBack = (ImageButton) findViewById(R.id.ib_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 

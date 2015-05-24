@@ -73,6 +73,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cardList"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
         android:layout_below="@id/tv_new_invoice_invoice_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

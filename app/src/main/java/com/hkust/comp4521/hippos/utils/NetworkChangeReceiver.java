@@ -27,6 +27,7 @@ public class NetworkChangeReceiver extends WakefulBroadcastReceiver {
         boolean hasConnectivity = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
 
         if (hasConnectivity) {
+            Log.i("onReceive", "hasConnectivity");
             if(!previouslyConnected) {
                 Log.i("onReceive", "Connected");
                 // Explicitly specify that InvoiceHandler will handle the intent.

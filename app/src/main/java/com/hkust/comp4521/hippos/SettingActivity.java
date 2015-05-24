@@ -156,10 +156,6 @@ public class SettingActivity extends PreferenceActivity {
             });
         }
 
-        public void companyInfoUpdateView() {
-
-        }
-
         @Override
         public void onResume() {
             super.onResume();

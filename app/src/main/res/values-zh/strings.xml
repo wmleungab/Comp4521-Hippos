@@ -86,7 +86,7 @@
     <string name="offline_mode_msg">離線模式</string>
     <string name="sales_details_shared_via">共享通過</string>
     <string name="stock">庫存：</string>
-    <string name="sales_details_paid_title"></string>
+    <string name="sales_details_paid_title">付費</string>
     <string name="invoice_cached">發票已緩存!</string>
     <string name="invoice_created">發票已建立！</string>
     <string name="uploading_invoice">發票更新中...</string>
