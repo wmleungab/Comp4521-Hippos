@@ -46,7 +46,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
     private int mFlexibleSpaceHeight;
     private ImageButton btnBack, btnShare, btnQR;
 
-    private Invoice currentInvoice;
+    private static Invoice currentInvoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
                         null,
                         Contents.Type.TEXT,
                         BarcodeFormat.QR_CODE.toString(),
-                        500);
+                        getResources().getDimensionPixelSize(R.dimen.qr_code_dimension));
                 try {
                     Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
                     ImageView myImage = (ImageView) dialogView.findViewById(R.id.qr_dialog_image);
@@ -112,7 +112,7 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
                 intent.putExtra(Intent.EXTRA_SUBJECT,  mContext.getString(R.string.email_subject_text)+companyName);
                 intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.email_text_msg)+ RestClient.SERVER_URL+RestClient.SERVER_RECEIPT+currentInvoice.getId());
 
-                startActivity(Intent.createChooser(intent, "Send Email"));
+                startActivity(Intent.createChooser(intent, getString(R.string.sales_details_shared_via)));
             }
         });
 
@@ -121,15 +121,12 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         if(bundle != null) {
             int invId = bundle.getInt(Inventory.INVENTORY_INV_ID);
             currentInvoice = Commons.getRemoteInvoice(invId);
-
-            // Setup views
-            mTitleView.setText(getResources().getString(R.string.invoice_id_text) + currentInvoice.getId());
-            mSubTitleView.setText(getResources().getString(R.string.sales_details_invoice_date) + currentInvoice.getDateTime()+ "\n"
-                                 + getResources().getString(R.string.sales_details_invoice_handled_by) + Commons.getUser().name);
         }
 
-        //mTitleView.setText("Invoice #001");
-        //mSubTitleView.setText("Date: May 26th, 2015\nHandled by: Wyman Leung");
+        // Setup views
+        mTitleView.setText(getResources().getString(R.string.invoice_id_text) + currentInvoice.getId());
+        mSubTitleView.setText(getResources().getString(R.string.sales_details_invoice_date) + currentInvoice.getDateTime()+ "\n"
+                + getResources().getString(R.string.sales_details_invoice_handled_by) + Commons.getUser().name);
         setTitle(null);
 
         // Change status bar color
@@ -175,6 +172,10 @@ public class SalesDetailsActivity extends AppCompatActivity implements Observabl
         View itemView = LayoutInflater.from(this).inflate(R.layout.item_sales_details, null, false);
         itemView.setVisibility(View.INVISIBLE);
         llInvoiceItems.addView(itemView);
+    }
+
+    public static void setCurrentInvoice(Invoice currentInvoice) {
+        SalesDetailsActivity.currentInvoice = currentInvoice;
     }
 
     @Override

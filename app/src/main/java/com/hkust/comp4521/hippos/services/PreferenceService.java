@@ -13,11 +13,14 @@ public class PreferenceService {
 	public static final String KEY_LOGIN_USERNAME = "user_email";
 	public static final String KEY_LOGIN_PASSWORD = "user_password";
 	public static final String KEY_SERVER_LOCATION = "server_location";
+	public static final String KEY_LOGIN_API_KEY = "api_key";
+	public static final String KEY_LOGIN_NAME = "user_name";
 	public static final String KEY_GCM_REGISTRATION_ID = "gcm_registration_id";
 	
 	// Shared Preferences methods
 	public static void initPreference(Context context) {
-		preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+		if(preferences == null)
+			preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
 	}
 
 	public static String getStringValue(Context context, String key) {

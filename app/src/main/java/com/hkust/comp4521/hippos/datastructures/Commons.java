@@ -11,6 +11,7 @@ import com.hkust.comp4521.hippos.database.InventoryDB;
 import com.hkust.comp4521.hippos.database.InvoiceDB;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
+import com.hkust.comp4521.hippos.services.PreferenceService;
 import com.squareup.otto.Bus;
 
 import java.io.File;
@@ -74,7 +75,7 @@ public class Commons {
                         categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
                         categoryHelper.insert(c);
                     }
-                    for(int i = 0; i < categories.size(); i++) {
+                    for (int i = 0; i < categories.size(); i++) {
                         INVENTORY_CATEGORY[i] = categories.get(i).getName();
                     }
                     // Init Inventory information
@@ -88,9 +89,10 @@ public class Commons {
                                 inventoryHM.put(inv.getId(), inv);
                                 inventoryHelper.insert(inv);
                             }
-                            if(mListener != null)
+                            if (mListener != null)
                                 mListener.onInitialized();
                         }
+
                         @Override
                         public void onFailure(int status) {
 
@@ -105,39 +107,60 @@ public class Commons {
             }
         });
     }
+
+    public static void recoverLoginInformation(Context mContext, final onInitializedListener mListener) {
+        DatabaseHelper.initDatabase(mContext);
+        PreferenceService.initPreference(mContext);
+        // Recover user information if needed
+        if(user == null) {
+            String name = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_NAME);
+            String password = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_PASSWORD);
+            String email = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_USERNAME);
+            String apiKey = PreferenceService.getStringValue(PreferenceService.KEY_LOGIN_API_KEY);
+            user = new User(name, email, password, apiKey, "");
+        }
+        if(mListener != null)
+            mListener.onInitialized();
+    }
+
     public static void initializeInventoryList(final onInitializedListener mListener) {
-        // fetch list from local DB first, go to remote server if local DB does not exist
-        categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
-        inventoryHM = new HashMap<Integer, Inventory>();
-        final InventoryDB inventoryHelper = InventoryDB.getInstance();
-        final CategoryDB categoryHelper = CategoryDB.getInstance();
-        if(inventoryHelper.getCount() > 0) {
-            // Inventory table is initialized already
-            final RestClient rc = RestClient.getInstance();
-            // Init Category information
-            List<Category> categories = categoryHelper.getAll();
-            if (categories != null) {
-                Log.i("Commons", "Get category list");
-                categoryList = categories;
-                INVENTORY_CATEGORY = new String[categories.size()];
-                for (Category c : categories) {
-                    categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
+        if(categorizedinventoryHMList == null || inventoryHM == null) {
+            // fetch list from local DB first, go to remote server if local DB does not exist
+            categorizedinventoryHMList = new HashMap<Integer, ArrayList<Inventory>>();
+            inventoryHM = new HashMap<Integer, Inventory>();
+            final InventoryDB inventoryHelper = InventoryDB.getInstance();
+            final CategoryDB categoryHelper = CategoryDB.getInstance();
+            if(inventoryHelper.getCount() > 0) {
+                // Inventory table is initialized, but not loaded
+                // Init Category information
+                List<Category> categories = categoryHelper.getAll();
+                if (categories != null) {
+                    Log.i("Commons", "Get category list");
+                    categoryList = categories;
+                    INVENTORY_CATEGORY = new String[categories.size()];
+                    for (Category c : categories) {
+                        categorizedinventoryHMList.put(c.getID(), new ArrayList<Inventory>());
+                    }
+                    for (int i = 0; i < categories.size(); i++) {
+                        INVENTORY_CATEGORY[i] = categories.get(i).getName();
+                    }
+                    List<Inventory> netInventories = inventoryHelper.getAll();
+                    Log.i("Commons", "Inventory table already initialized, load from local DB instead");
+                    for (Inventory inv : netInventories) {
+                        ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
+                        list.add(inv);
+                        inventoryHM.put(inv.getId(), inv);
+                    }
+                    if(mListener != null)
+                        mListener.onInitialized();
                 }
-                for (int i = 0; i < categories.size(); i++) {
-                    INVENTORY_CATEGORY[i] = categories.get(i).getName();
-                }
-                List<Inventory> netInventories = inventoryHelper.getAll();
-                Log.i("Commons", "Inventory table already initialized, load from local DB instead");
-                for (Inventory inv : netInventories) {
-                    ArrayList<Inventory> list = categorizedinventoryHMList.get(inv.getCategory());
-                    list.add(inv);
-                    inventoryHM.put(inv.getId(), inv);
-                }
-                if(mListener != null)
-                    mListener.onInitialized();
+            } else {
+                forceUpdateInventoryList(mListener);
             }
         } else {
-            forceUpdateInventoryList(mListener);
+            // Inventory table is initialized already
+            if(mListener != null)
+                mListener.onInitialized();
         }
     }
 
@@ -193,7 +216,6 @@ public class Commons {
                 remoteInvoiceList = invoices;
                 mListener.onInitialized();
             }
-
             @Override
             public void onFailure(int status) {
 

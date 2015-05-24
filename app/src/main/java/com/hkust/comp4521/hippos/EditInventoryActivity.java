@@ -105,6 +105,8 @@ public class EditInventoryActivity extends AppCompatActivity {
         actionBarTitle = (TextView) findViewById(R.id.actionBarTitle);
         if(currentMode == MODE_NEW_INVENTORY) {
             actionBarTitle.setText(getResources().getString(R.string.title_activity_edit_inventory_new));
+        } else {
+            actionBarTitle.setText(getString(R.string.title_activity_edit_inventory));
         }
 
         // buttons
@@ -255,7 +257,7 @@ public class EditInventoryActivity extends AppCompatActivity {
                 Bitmap mBitmap = null;
                 try {
                     mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileUri);
-                    mBitmap = ImageUtils.getSizedBitmap(mBitmap);
+                    mBitmap = ImageUtils.getSizedBitmap(mBitmap, 512);
                     selectedFile = ImageUtils.writeBitmapToFile(mBitmap, ImageUtils.UPLOAD_IMAGE_PATH);
                     ivHeroImage.setImageBitmap(mBitmap);
 
@@ -273,7 +275,6 @@ public class EditInventoryActivity extends AppCompatActivity {
         RestClient.getInstance().updateInventoryImage(mItem.getId(), selectedFile, new RestListener<Inventory>() {
             @Override
             public void onSuccess(Inventory inventory) {
-                Toast.makeText(mContext, "Image uploaded!", Toast.LENGTH_SHORT).show();
                 // Delete the old image
                 ImageUtils.deleteFile(mItem);
             }

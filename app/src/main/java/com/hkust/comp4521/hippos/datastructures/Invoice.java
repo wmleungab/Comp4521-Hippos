@@ -139,6 +139,9 @@ public class Invoice {
         }
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public Date getDate() {
         SimpleDateFormat sdf;
@@ -151,5 +154,14 @@ public class Invoice {
         }
         ;
         return date;
+    }
+
+    public String generateCurrentDatetimeString() {
+        SimpleDateFormat sdf;
+        Date date = new Date();
+        String toReturn = null;
+        sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        toReturn = sdf.format(date);
+        return toReturn;
     }
 }

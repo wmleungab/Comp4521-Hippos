@@ -16,6 +16,7 @@ import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -26,11 +27,14 @@ Image AsyncTask: for loading image from either local storage or fetch remotely (
  */
 public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
+    private WeakReference<android.support.v4.util.LruCache<String, Bitmap>> mMemoryCache;
     private Drawable defaultDrawable = null;
     private final String fileUrl;
     private Boolean fileExist = false;
     private Activity activity = null;        // for tinted status bar
     private int sbColor;
+    public int invId;
+    public int targetSize = 0;
 
     // For trivial use
     public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable) {
@@ -45,6 +49,19 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
         activity = mActivity;
     }
 
+    // For cache availabled views
+    public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, int pInv) {
+        this(imageView, fileName, defaultDrawable);
+        mMemoryCache = new WeakReference<android.support.v4.util.LruCache<String, Bitmap>>(cache);
+        invId = pInv;
+    }
+
+    // For resized cached bitmaps
+    public ImageRetriever(ImageView imageView, String fileName, Drawable defaultDrawable, android.support.v4.util.LruCache<String, Bitmap> cache, int pInv, int resizeTo) {
+        this(imageView, fileName, defaultDrawable, cache, pInv);
+        targetSize = resizeTo;
+    }
+
     @Override
     protected Bitmap doInBackground(String... params) {
         // skip if no url supplied
@@ -53,7 +70,6 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
         // Check if file exists locally first
         Bitmap bitmap = null;
         File file = new File(ImageUtils.IMAGE_CACHE_PATH + fileUrl);
-        Log.i("ImageRetriever", "Loading: " + file.getAbsolutePath());
         fileExist = file.exists();
         if(fileExist) {
             // load locally
@@ -64,6 +80,18 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
                 bitmap = RestClient.getInstance().downloadAsBitmap(fileUrl);
             } catch(Exception ex) {
                 ex.printStackTrace();
+            }
+        }
+        // Put bitmap to memory cache if available
+        if(mMemoryCache != null && mMemoryCache.get() != null && bitmap != null) {
+            // shrink bitmap to smaller size, and add to provided cache
+            try {
+                if(targetSize != 0)
+                    addBitmapToMemoryCache(fileUrl, ImageUtils.getSizedBitmap(bitmap, targetSize));
+                else
+                    addBitmapToMemoryCache(fileUrl, bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         // generate color for status bar if needed
@@ -103,6 +131,16 @@ public class ImageRetriever extends AsyncTask<String, Void, Bitmap> {
         if(activity != null) {
             // Change action bar theme
             TintedStatusBar.changeStatusBarColor(activity, sbColor);
+        }
+    }
+
+    // If cache pool is supplied, this method push bitmap to cache
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (mMemoryCache.get() != null) {
+            mMemoryCache.get().put(key, bitmap);
+            if(mMemoryCache.get().get(key) != null) {
+                Log.i("Cache", "added with key=" + key);
+            }
         }
     }
 }

@@ -55,31 +55,40 @@
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" />
         <activity
             android:name=".NewInvoiceActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_new_invoice" />
         <activity
             android:name=".InventoryListActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_inventory_list" />
         <activity
             android:name=".InventoryDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_inventory_details" />
         <activity
             android:name=".SalesHistoryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_sales_history" />
         <activity
             android:name=".SalesDetailsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_sales_details" />
         <activity
             android:name=".SettingActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_setting" />
         <activity
             android:name=".EditInventoryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_edit_inventory" >
         </activity>
         <activity
             android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login" >
         </activity>
         <activity
@@ -91,9 +100,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".GenerateQRCodeActivity"
-            android:label="@string/title_activity_generate_qrcode"></activity>
     </application>
 
 </manifest>

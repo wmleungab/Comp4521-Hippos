@@ -23,6 +23,8 @@ import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.datastructures.Invoice;
 import com.hkust.comp4521.hippos.datastructures.InvoiceInventory;
+import com.hkust.comp4521.hippos.rest.RestClient;
+import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.NFCService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.views.InvoiceInventoryListAdapter;
@@ -39,6 +41,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
     private Activity mActivity;
     private Context mContext;
     private InvoiceInventoryListAdapter mAdapter;
+    private boolean inventoryDataReady = false;
 
     // Views
     private RelativeLayout mActionBar;
@@ -179,17 +182,51 @@ public class NewInvoiceActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Initialize Inventory List
+        Commons.recoverLoginInformation(mContext, new Commons.onInitializedListener() {
+            @Override
+            public void onInitialized() {
+                Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                    @Override
+                    public void onInitialized() {
+                        inventoryDataReady = true;
+                    }
+                });
+            }
+        });
     }
 
     private void generateInvoiceRecord(double totalPrice, double paidPrice) {
-        InvoiceDB invoiceHelper = InvoiceDB.getInstance();
+        // Setup new invoice object
         List<InvoiceInventory> invList = mAdapter.getInvoiceInventories();
         Invoice invoice = new Invoice();
         invoice.setInvoiceInventories(invList);
+        invoice.setUser(Commons.getUser().name);
+        invoice.setEmail(Commons.getUser().email);
         invoice.setTotalPrice(mAdapter.getInvoiceInventoriesTotal());
         invoice.setFinalPrice(totalPrice);
         invoice.setPaid(paidPrice);
-        invoice.setDateTime("2015-05-24 21:16:22");
+        invoice.setDateTime(invoice.generateCurrentDatetimeString());
+        // if the device is online, try to upload to server first
+        if(Commons.ONLINE_MODE) {
+            RestClient.getInstance().createInvoice(invoice, new RestListener<Invoice>() {
+                @Override
+                public void onSuccess(Invoice invoice) {
+                    Toast.makeText(mContext, "Invoice created!", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(mContext, SalesDetailsActivity.class);
+                    SalesDetailsActivity.setCurrentInvoice(invoice);
+                    startActivity(i);
+                }
+
+                @Override
+                public void onFailure(int status) {
+
+                }
+            });
+        }
+        InvoiceDB invoiceHelper = InvoiceDB.getInstance();
+        //invoiceHelper.insert(invoice);
     }
 
     @Override
@@ -208,7 +245,7 @@ public class NewInvoiceActivity extends AppCompatActivity {
     // NFC intent received actions
     @Override
     protected void onNewIntent(Intent intent) {
-        if(mNFC.discoverTag(intent) != null) {
+        if(inventoryDataReady && mNFC.discoverTag(intent) != null) {
             mNFC.readTag(new NFCService.NFCReadTagListener() {
                 @Override
                 public void onTagRead(String readStr) {

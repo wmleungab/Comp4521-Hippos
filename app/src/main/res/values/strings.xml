@@ -54,6 +54,7 @@
     <string name="sales_details_invoice_items_title">Invoice Items</string>
     <string name="sales_details_invoice_date">Date: </string>
     <string name="sales_details_invoice_handled_by">Handled by: </string>
+    <string name="sales_details_shared_via">Shared via</string>
 
     <!--For  dialogs-->
     <string name="dialog_nfc_hint">Tap to a NFC tag</string>
@@ -87,7 +88,6 @@
     <string name="tab_revenue">Revenue</string>
     <string name="weekly_sales">Weekly Sales</string>
     <string name="monthly_sales">Monthly Sales</string>
-    <string name="top_reveune_items">Top reveune items</string>
 
     <!-- Preference keys-->
     <string name="user_email_prefs" translatable="false">user_email</string>
@@ -100,10 +100,7 @@
     <string name="logout_prefs" translatable="false">logout</string>
     <string name="clear_cache_prefs" translatable="false">clear_cache</string>
     <string name="clear_db_prefs" translatable="false">clear_db</string>
-    <string name="title_activity_generate_qrcode">GenerateQRCodeActivity</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="QR_Dialog_title">Invoice link</string>
+    <string name="QR_Dialog_title">Invoice QR Code</string>
 
 </resources>

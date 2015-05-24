@@ -8,4 +8,6 @@
     <dimen name="main_icon_cutout_size">96dp</dimen>
 
     <dimen name="flexible_space_height">192dp</dimen>
+
+    <dimen name="qr_code_dimension">256dp</dimen>
 </resources>

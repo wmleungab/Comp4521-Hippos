@@ -94,11 +94,16 @@ public class SalesHistoryActivity extends AppCompatActivity {
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs_sales_history);
         tabs.setViewPager(mViewPager);
 
-        // setup data for each page
-        setupLocalInvoicePage();
-        setupRemoteInvoicePage();
-        setupRevenuePage();
-
+        // Initialize Invoice List
+        Commons.recoverLoginInformation(mContext, new Commons.onInitializedListener() {
+            @Override
+            public void onInitialized() {
+                // setup data for each page
+                setupLocalInvoicePage();
+                setupRemoteInvoicePage();
+                setupRevenuePage();
+            }
+        });
     }
 
     private void setupLocalInvoicePage() {

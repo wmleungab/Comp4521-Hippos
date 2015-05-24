@@ -12,17 +12,13 @@ import com.hkust.comp4521.hippos.InventoryDetailsActivity;
 import com.hkust.comp4521.hippos.R;
 import com.hkust.comp4521.hippos.datastructures.Commons;
 import com.hkust.comp4521.hippos.datastructures.Inventory;
-import com.hkust.comp4521.hippos.utils.ImageRetriever;
 
 import java.util.List;
 
-public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.InventoryViewHolder>{
+public class InventoryListAdapter extends ImageListBaseAdapter<InventoryListAdapter.InventoryViewHolder>{
 
-    public int getCategoryId() {
-        return categoryId;
-    }
 
-    private int categoryId, catIndex;
+        private int categoryId, catIndex;
         private Context mContext;
         private List<Inventory> invList;
         private OnInventoryClickListener mOnClickListener;
@@ -39,6 +35,10 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             return invList.size();
         }
 
+        public int getCategoryId() {
+        return categoryId;
+    }
+
         @Override
         public void onBindViewHolder(InventoryViewHolder contactViewHolder, int i) {
              Inventory ci = invList.get(i);
@@ -53,7 +53,11 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
              contactViewHolder.itemStock.setText("Stock: " + ci.getStock());
              contactViewHolder.catId = categoryId;
              contactViewHolder.invId = i;
-             new ImageRetriever(contactViewHolder.heroImage, ci.getImage(), mContext.getResources().getDrawable(R.mipmap.placeholder)).execute();
+             setBitmapToView(mContext, ci.getId(), ci.getImage(), contactViewHolder.heroImage, 0);
+        }
+
+        public void removeImageCache(String key) {
+            mMemoryCache.remove(key);
         }
 
         public void setOnClickListener(OnInventoryClickListener ocl) {

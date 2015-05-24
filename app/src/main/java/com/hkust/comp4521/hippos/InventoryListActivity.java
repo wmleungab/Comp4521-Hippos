@@ -1,6 +1,9 @@
 package com.hkust.comp4521.hippos;
 
+import android.animation.TimeInterpolator;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -9,8 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
@@ -20,6 +26,7 @@ import com.hkust.comp4521.hippos.datastructures.Inventory;
 import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
+import com.hkust.comp4521.hippos.utils.ImageUtils;
 import com.hkust.comp4521.hippos.views.InventoryListAdapter;
 import com.hkust.comp4521.hippos.views.ViewPagerAdapter;
 import com.squareup.otto.Subscribe;
@@ -29,6 +36,9 @@ import java.util.List;
 
 
 public class InventoryListActivity extends AppCompatActivity {
+
+    // Activity
+    private Context mContext;
 
     // Mode Flag
     public static int MODE_NORMAL = 0;
@@ -54,6 +64,8 @@ public class InventoryListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
+        mContext = this;
+
         // change onclicklistener behaviour for different mode
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -78,7 +90,17 @@ public class InventoryListActivity extends AppCompatActivity {
         });
 
         // Initialize Inventory List
-        setupList();
+        Commons.recoverLoginInformation(mContext, new Commons.onInitializedListener() {
+            @Override
+            public void onInitialized() {
+                Commons.initializeInventoryList(new Commons.onInitializedListener() {
+                    @Override
+                    public void onInitialized() {
+                        setupList();
+                    }
+                });
+            }
+        });
     }
 
     private void setupList() {
@@ -119,19 +141,25 @@ public class InventoryListActivity extends AppCompatActivity {
                     // get position of the card
                     Inventory item = Commons.getInventoryFromIndex(catId, invIndex);
                     if(currentMode == MODE_NORMAL) {
+                        // Launch inventory detail activity
                         Intent intent = new Intent(InventoryListActivity.this, InventoryDetailsActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putInt(Inventory.INVENTORY_INV_ID, item.getId());
-                        if(item.getImage() != null && !item.getImage().equals(""))
-                            InventoryDetailsActivity.itemIndex = invIndex;
-                        else
-                            InventoryDetailsActivity.itemIndex = -1;
                         intent.putExtras(bundle);
+                        // Add scene transition for Lolipop devices
                         ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
                                 InventoryListActivity.this,
                                 new Pair<View, String>(v.findViewById(R.id.iv_inventory), InventoryDetailsActivity.VIEW_NAME_HEADER_IMAGE),
                                 new Pair<View, String>(v.findViewById(R.id.tv_inventory_item_name), InventoryDetailsActivity.VIEW_NAME_HEADER_TITLE)
                         );
+                        if(Build.VERSION.SDK_INT >= 21) {
+                            TimeInterpolator interpolator = AnimationUtils.loadInterpolator(mContext, android.R.interpolator.fast_out_slow_in);
+                            Window window = getWindow();
+                            window.getSharedElementEnterTransition().setInterpolator(interpolator);
+                            window.getSharedElementExitTransition().setInterpolator(interpolator);
+                            window.getSharedElementReenterTransition().setInterpolator(interpolator);
+                            window.getSharedElementReturnTransition().setInterpolator(interpolator);
+                        }
                         // Now we can start the Activity, providing the activity options as a bundle
                         ActivityCompat.startActivity(InventoryListActivity.this, intent, activityOptions.toBundle());
                     } else if(currentMode == MODE_SELECT_INVENTORY) {
@@ -175,7 +203,7 @@ public class InventoryListActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
+    public void onInventoryInfoChanged(final InventoryInfoChangedEvent event) {
         // Update inventory view from bus message
         if(event.refreshAll == true) {
             // notify all adapters that info changed
@@ -184,6 +212,7 @@ public class InventoryListActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         }
+        Log.i("onInventoryInfoChanged", "onInventoryInfoChanged()");
         if(adapter != null && event.getInventory() != null) {
             final Inventory inv = event.getInventory();
             final InventoryListAdapter adapter = adapterList.get(inv.getCatIndex());
@@ -191,10 +220,20 @@ public class InventoryListActivity extends AppCompatActivity {
             ThreadService.delayedStart(this, new Runnable() {
                 @Override
                 public void run() {
-                    adapter.notifyItemChanged(inv.getInvIndex());
+                    // Delete the old image
+                    Log.i("onInventoryInfoChanged", "Deleting the old image " + inv.getName());
+                    ImageUtils.deleteFile(event.getInventory());
+                    adapter.removeImageCache(inv.getImage());
+                    ThreadService.delayedStart(InventoryListActivity.this, new Runnable() {
+                        @Override
+                        public void run() {
+                            // Delete the old image
+                            Log.i("onInventoryInfoChanged", "Reloading image " + inv.getName());
+                            adapter.notifyItemChanged(inv.getInvIndex());
+                        }
+                    }, 300);
                 }
             }, 150);
-            inv.setStatus(Inventory.INVENTORY_NORMAL);
         }
     }
 

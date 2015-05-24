@@ -135,6 +135,8 @@ public class LoginActivity extends AppCompatActivity {
                 PreferenceService.saveStringValue(PreferenceService.KEY_SERVER_LOCATION, serverAddr.getText().toString());
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_USERNAME, email);
                 PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_PASSWORD, pw);
+                PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_API_KEY, user.apiKey);
+                PreferenceService.saveStringValue(PreferenceService.KEY_LOGIN_NAME, user.name);
                 // Initialize Inventory List
                 Commons.forceUpdateInventoryList(new Commons.onInitializedListener() {
                     @Override

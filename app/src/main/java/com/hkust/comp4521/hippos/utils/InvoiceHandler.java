@@ -10,9 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.hkust.comp4521.hippos.datastructures.Commons;
-import com.hkust.comp4521.hippos.events.InvoiceSynchronizedEvent;
-
 public class InvoiceHandler extends IntentService {
 
     private Context mContext;
@@ -38,9 +35,9 @@ public class InvoiceHandler extends IntentService {
         // Attempt to synchronize local invoice to server
 
 
-        Commons.getBusInstance().register(mContext);
+        /*Commons.getBusInstance().register(mContext);
         Commons.getBusInstance().post(new InvoiceSynchronizedEvent());
-        Commons.getBusInstance().unregister(mContext);
+        Commons.getBusInstance().unregister(mContext);*/
 
         NetworkChangeReceiver.completeWakefulIntent(intent);
 

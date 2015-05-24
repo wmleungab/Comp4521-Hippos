@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hkust.comp4521.hippos.R;
@@ -53,34 +52,39 @@ public class GcmMessageHandler extends IntentService {
         if(extras.getString("id") != null) {
             inventoryId = Integer.parseInt(extras.getString("id"));
             statusCode = Integer.parseInt(extras.getString("statusCode"));
-            showToast();
+            reactMessage();
         }
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
 
     }
 
-    public void showToast(){
+    public void reactMessage(){
         mHandler.post(new Runnable() {
             public void run() {
                 // initialize database for updating
                 DatabaseHelper.initDatabase(mContext);
-
-                // perform action on different status code
-                switch (statusCode) {
-                    case RestClient.ONLY_INVEN_IMAGE_CHANGED:
-                        notifyImageChanged();
-                        break;
-                    case RestClient.ONLY_INVEN_TEXT_CHANGED:
-                        notifyTextChanged();
-                        break;
-                    case RestClient.BOTH_INVEN_IMAGE_TEXT_CHANGED:
-                        notifyNewInventory();
-                        break;
-                    case RestClient.COMPANY_CHANGED:
-                        notifyCompanyChanged();
-                        break;
-                }
+                // initialize login information
+                Commons.recoverLoginInformation(mContext, new Commons.onInitializedListener() {
+                    @Override
+                    public void onInitialized() {
+                        // perform action on different status code
+                        switch (statusCode) {
+                            case RestClient.ONLY_INVEN_IMAGE_CHANGED:
+                                notifyImageChanged();
+                                break;
+                            case RestClient.ONLY_INVEN_TEXT_CHANGED:
+                                notifyTextChanged();
+                                break;
+                            case RestClient.BOTH_INVEN_IMAGE_TEXT_CHANGED:
+                                notifyNewInventory();
+                                break;
+                            case RestClient.COMPANY_CHANGED:
+                                notifyCompanyChanged();
+                                break;
+                        }
+                    }
+                });
 
             }
         });
@@ -119,8 +123,6 @@ public class GcmMessageHandler extends IntentService {
                 InventoryDB inventoryHelper = InventoryDB.getInstance();
                 inventoryHelper.insert(inventory);
 
-                Toast.makeText(mContext, "Inventory created!", Toast.LENGTH_SHORT).show();
-
                 // Send message to activity using Bus event
                 Commons.initializeInventoryList(new Commons.onInitializedListener() {
                     @Override
@@ -156,8 +158,6 @@ public class GcmMessageHandler extends IntentService {
                     }
                     toUpdateInv.update(inventory);
                 }
-
-                Toast.makeText(mContext, "Inventory updated!", Toast.LENGTH_SHORT).show();
 
                 // Send message to activity using Bus event
                 if(reinitialize) {
@@ -197,8 +197,6 @@ public class GcmMessageHandler extends IntentService {
                     toUpdateInv.setStatus(Inventory.INVENTORY_DIRTY);
                     ImageUtils.deleteFile(toUpdateInv);
                 }
-
-                Toast.makeText(mContext, "Inventory image updated!", Toast.LENGTH_SHORT).show();
 
                 // Send message to activity using Bus event
                 Commons.getBusInstance().register(mContext);

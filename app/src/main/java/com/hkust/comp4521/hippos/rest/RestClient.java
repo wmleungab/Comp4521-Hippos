@@ -630,8 +630,13 @@ public class RestClient {
         });
     }
 
-    public void createInvoice(final double total_price, final double final_price, final double paid, final String date_time,
-                              final String content, final String email, final RestListener<Invoice> restListener) {
+    public void createInvoice(final Invoice invoice, final RestListener<Invoice> restListener) {
+        final double total_price = invoice.getTotalPrice();
+        final double final_price = invoice.getFinalPrice();
+        final double paid = invoice.getPaid();
+        final String date_time = invoice.getDateTime();
+        final String content = invoice.getContent();
+        final String email = invoice.getEmail();
         if (authorization.equals("")) {
             restListener.onFailure(RestListener.AUTHORIZATION_FAIL);
             return;

@@ -34,7 +34,7 @@
     <string name="login_password">密碼</string>
 
     <!-- For NewInvoiceActivity-->
-    <string name="new_invoice_hint">Tap NFC tag to add item</string>
+    <string name="new_invoice_hint">輕觸NFC標籤以添加項</string>
 
     <!--For SalesDetailsActivity-->
     <string name="sales_details_totals_title">總計</string>
@@ -75,6 +75,16 @@
     <string name="tab_revenue">收入</string>
     <string name="weekly_sales">每週銷售</string>
     <string name="monthly_sales">每月銷售</string>
-    <string name="dialog_disable_inventory_content"></string>
+    <string name="dialog_disable_inventory_content">你確定要禁用此存貨？</string>
+    <string name="QR_Dialog_title">QR編碼</string>
+    <string name="company_info_updated_msg">資料己更新</string>
+    <string name="dialog_nfc_hint">請輕觸NFC標籤</string>
+    <string name="email_subject_text">收據:</string>
+    <string name="email_text_msg">親愛的顧客：\n請到以下鏈接閱覽收貨詳細：\n</string>
+    <string name="nfc_error_msg">NFC標籤不可讀，請重試</string>
+    <string name="nfc_success_msg">NFC標籤讀取成功</string>
+    <string name="offline_mode_msg">離線模式</string>
+    <string name="sales_details_shared_via">共享通過</string>
+    <string name="stock">庫存：</string>
 
 </resources>

@@ -38,13 +38,13 @@ public class ImageUtils {
         return fileName;
     }
 
-    public static Bitmap getSizedBitmap(Bitmap inputBitmap) throws IOException {
+    public static Bitmap getSizedBitmap(Bitmap inputBitmap, int targetHeight) throws IOException {
         int width = inputBitmap.getWidth();
         int height = inputBitmap.getHeight();
         float ratio = (float)width / height;
         // Limit resolution to have height max=512 pixel
-        height = 512;
-        width = (int) (512 * ratio);
+        height = targetHeight;
+        width = (int) (targetHeight * ratio);
         // Rotate bitmap by 90 deg
         //Matrix matrix = new Matrix();
         //matrix.postRotate(90);
