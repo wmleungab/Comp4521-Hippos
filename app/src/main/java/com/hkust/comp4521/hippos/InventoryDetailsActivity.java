@@ -31,6 +31,7 @@ import com.hkust.comp4521.hippos.events.InventoryInfoChangedEvent;
 import com.hkust.comp4521.hippos.rest.RestClient;
 import com.hkust.comp4521.hippos.rest.RestListener;
 import com.hkust.comp4521.hippos.services.NFCService;
+import com.hkust.comp4521.hippos.services.ThreadService;
 import com.hkust.comp4521.hippos.services.TintedStatusBar;
 import com.hkust.comp4521.hippos.utils.ImageRetriever;
 import com.skyfishjy.library.RippleBackground;
@@ -282,7 +283,7 @@ public class InventoryDetailsActivity extends ActionBarActivity {
     @Subscribe
     public void onInventoryInfoChanged(InventoryInfoChangedEvent event) {
         // Update inventory view from bus message
-        Inventory updatedItem = event.getInventory();
+        final Inventory updatedItem = event.getInventory();
         if(updatedItem != null && mItem.getId() == updatedItem.getId()) {
             mHeaderTitle.setText(updatedItem.getName());
             tvItemDesc.setText(updatedItem.getTimeStamp());
@@ -291,8 +292,12 @@ public class InventoryDetailsActivity extends ActionBarActivity {
             if(updatedItem.getStatus() == Inventory.INVENTORY_DISABLED)
                 disableInventory();
 
-            Toast.makeText(mContext, "Inventory image updated!", Toast.LENGTH_SHORT).show();
-            new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
+            ThreadService.delayedStart(mActivity, new Runnable() {
+                @Override
+                public void run() {
+                    new ImageRetriever(mHeaderImageView, updatedItem.getImage(), getResources().getDrawable(R.mipmap.placeholder), mActivity).execute();
+                }
+            }, 300);
         }
     }
 

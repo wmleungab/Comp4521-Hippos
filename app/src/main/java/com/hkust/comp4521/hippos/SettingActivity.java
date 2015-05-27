@@ -120,9 +120,10 @@ public class SettingActivity extends PreferenceActivity {
             button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    PreferenceService.saveStringValue(getResources().getString(R.string.user_email_prefs), "");
-                    PreferenceService.saveStringValue(getResources().getString(R.string.user_password_prefs), "");
+                    PreferenceService.removeValue(getResources().getString(R.string.user_email_prefs));
+                    PreferenceService.removeValue(getResources().getString(R.string.user_password_prefs));
                     RestClient.resetServerAPI();
+                    RestClient.resetClient(mContext);
 
                     startActivity(intent);
                     return true;

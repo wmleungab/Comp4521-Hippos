@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         // login to slim server
+        RestClient.resetClient(mContext);
         PreferenceService.saveStringValue(PreferenceService.KEY_SERVER_LOCATION, serverAddr.getText().toString());
         RestClient instance = RestClient.getInstance(mContext);
         final String email = userName.getText().toString();
@@ -201,6 +202,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(int status) {
                 Toast.makeText(LoginActivity.this, "Login failed!", Toast.LENGTH_SHORT).show();
+                RestClient.resetClient(mContext);
                 recoverLoginLayout();
             }
         });

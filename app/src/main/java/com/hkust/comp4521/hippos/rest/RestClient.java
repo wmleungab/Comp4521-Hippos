@@ -49,6 +49,13 @@ public class RestClient {
         authorization = "";
     }
 
+    public static void resetClient(Context mContext){
+        PreferenceService.initPreference(mContext);
+        PreferenceService.removeValue(PreferenceService.KEY_SERVER_LOCATION);
+        instance = null;
+        serverAPI = null;
+    }
+
     public static RestClient getInstance() {
         if (instance == null) {
             instance = new RestClient();

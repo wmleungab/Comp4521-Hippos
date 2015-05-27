@@ -26,7 +26,7 @@ public class PreferenceService {
 	public static String getStringValue(Context context, String key) {
 		if(preferences == null && context != null)
 			initPreference(context);
-		return preferences.getString(key, "");
+		return preferences.getString(key, null);
 	}
 
 	public static String getStringValue(String key) {
@@ -72,6 +72,14 @@ public class PreferenceService {
 			return;
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(key, info);
+		editor.commit();
+	}
+
+	public static void removeValue(String key) {
+		if(preferences == null)
+			return;
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(key);
 		editor.commit();
 	}
 
